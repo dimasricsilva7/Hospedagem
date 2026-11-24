@@ -108,7 +108,8 @@ async function main() {
 
   await db.campaign.upsert({
     where: { hotelId_slug: { hotelId: hotel.id, slug: "black-friday" } },
-    update: { content, status: "PUBLISHED" },
+    update: {}, // não sobrescreve edições feitas no painel quando o build roda o seed de novo
+
     create: {
       hotelId: hotel.id,
       name: "Black Friday — Demonstração",
