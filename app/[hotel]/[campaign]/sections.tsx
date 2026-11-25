@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { Star, Check, Plane, Building2 } from "lucide-react";
+import { Star, Check, Plane, Building2, ChevronRight, CalendarDays } from "lucide-react";
 import type { CampaignContent, FormConfig } from "@/app/lib/content";
 import { Reveal } from "@/app/components/Reveal";
 import { Countdown } from "@/app/components/Countdown";
@@ -32,13 +32,19 @@ const SectionTitle = ({ kicker, title, brand, light }: { kicker?: string; title?
 export function PromoBar({ data, brand }: { data: CampaignContent["promo"]; brand: string }) {
   if (!data.text) return null;
   return (
-    <div className="relative z-30 px-4 py-2.5 text-center text-sm font-medium text-white" style={{ backgroundColor: brand }}>
-      <span>{data.text}</span>
-      {data.cta && data.ctaHref && (
-        <a href={data.ctaHref} className="ml-3 underline underline-offset-2">
-          {data.cta}
-        </a>
-      )}
+    <div
+      className="sticky top-0 z-40 px-4 py-2.5 text-center text-[13px] font-medium tracking-wide text-white"
+      style={{ background: `linear-gradient(90deg, ${brand}, color-mix(in srgb, ${brand} 70%, #000))` }}
+    >
+      <div className="mx-auto flex max-w-5xl items-center justify-center gap-2">
+        <span className="inline-block size-1.5 rounded-full bg-white/80" />
+        <span>{data.text}</span>
+        {data.cta && data.ctaHref && (
+          <a href={data.ctaHref} className="ml-1 inline-flex items-center gap-0.5 font-semibold underline-offset-2 hover:underline">
+            {data.cta} <ChevronRight className="size-3.5" />
+          </a>
+        )}
+      </div>
     </div>
   );
 }
@@ -50,55 +56,88 @@ export function Hero({
   showCountdown,
   hotel,
   brand,
+  reservarPath,
 }: {
   data: CampaignContent["hero"];
   countdown: CampaignContent["countdown"];
   showCountdown: boolean;
   hotel: HotelInfo;
   brand: string;
+  reservarPath?: string;
 }) {
-  const h = data.height === "full" ? "min-h-[92vh]" : data.height === "tall" ? "min-h-[78vh]" : "min-h-[60vh]";
+  const h = data.height === "full" ? "min-h-[92vh]" : data.height === "tall" ? "min-h-[80vh]" : "min-h-[62vh]";
+  const alignSelf = data.align === "left" ? "flex-start" : "center";
   const align = data.align === "left" ? "items-start text-left" : "items-center text-center";
   return (
     <section className={`relative flex ${h} flex-col justify-center overflow-hidden`}>
-      {data.videoUrl ? (
-        <video autoPlay muted loop playsInline poster={data.bgDesktop} className="absolute inset-0 size-full object-cover">
-          <source src={data.videoUrl} />
-        </video>
-      ) : data.bgDesktop ? (
-        <>
-          <Image src={data.bgDesktop} alt="" fill priority sizes="100vw" className={`object-cover ${data.bgMobile ? "hidden sm:block" : ""}`} />
-          {data.bgMobile && <Image src={data.bgMobile} alt="" fill priority sizes="100vw" className="object-cover sm:hidden" />}
-        </>
-      ) : (
-        <div className="absolute inset-0 bg-[color:var(--color-night)]" />
-      )}
-      <div className="absolute inset-0 bg-black" style={{ opacity: data.overlay }} />
+      <div className="absolute inset-0 kenburns">
+        {data.videoUrl ? (
+          <video autoPlay muted loop playsInline poster={data.bgDesktop} className="size-full object-cover">
+            <source src={data.videoUrl} />
+          </video>
+        ) : data.bgDesktop ? (
+          <>
+            <Image src={data.bgDesktop} alt="" fill priority sizes="100vw" className={`object-cover ${data.bgMobile ? "hidden sm:block" : ""}`} />
+            {data.bgMobile && <Image src={data.bgMobile} alt="" fill priority sizes="100vw" className="object-cover sm:hidden" />}
+          </>
+        ) : (
+          <div className="size-full bg-[color:var(--color-night)]" />
+        )}
+      </div>
+      {/* Overlay cinematográfico: escurece embaixo p/ leitura + tint geral configurável. */}
+      <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/35 to-black/55" />
+      <div className="absolute inset-0 bg-black" style={{ opacity: data.overlay * 0.5 }} />
 
-      <div className={`relative mx-auto flex w-full max-w-4xl flex-col gap-5 px-5 py-20 ${align}`}>
-        {hotel.logoUrl && (
-          <Image src={hotel.logoUrl} alt={hotel.name} width={160} height={54} className="h-12 w-auto object-contain" style={{ alignSelf: data.align === "left" ? "flex-start" : "center" }} />
-        )}
-        {data.kicker && <p className="text-sm font-semibold uppercase tracking-[0.25em] text-white/85">{data.kicker}</p>}
-        <h1 className="font-display text-4xl font-bold leading-tight text-white sm:text-6xl">{data.title}</h1>
-        {data.subtitle && <p className="max-w-2xl text-lg text-white/90 sm:text-xl">{data.subtitle}</p>}
-        {data.offer && (
-          <p className="inline-flex w-fit rounded-full bg-white/15 px-4 py-1.5 text-sm font-medium text-white ring-1 ring-white/25 backdrop-blur" style={data.align === "center" ? { marginInline: "auto" } : undefined}>
-            {data.offer}
-          </p>
-        )}
-        {showCountdown && countdown.endsAt && (
-          <div className={`mt-2 ${data.align === "center" ? "flex justify-center" : ""}`}>
-            <Countdown endsAt={countdown.endsAt} finishedMessage={countdown.finishedMessage} />
+      <Reveal>
+        <div className={`relative mx-auto flex w-full max-w-4xl flex-col gap-5 px-5 py-24 ${align}`}>
+          {hotel.logoUrl && (
+            <Image src={hotel.logoUrl} alt={hotel.name} width={170} height={56} className="h-12 w-auto object-contain drop-shadow" style={{ alignSelf }} />
+          )}
+          {data.kicker && (
+            <p className="flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.35em] text-white/80" style={{ alignSelf }}>
+              <span className="hidden h-px w-8 sm:inline-block" style={{ backgroundColor: brand }} />
+              {data.kicker}
+            </p>
+          )}
+          <h1 className="font-display text-5xl font-bold leading-[1.05] text-white drop-shadow-sm sm:text-7xl">{data.title}</h1>
+          {data.subtitle && <p className="max-w-2xl text-lg leading-relaxed text-white/85 sm:text-xl">{data.subtitle}</p>}
+          {data.offer && (
+            <p
+              className="inline-flex w-fit items-center gap-2 rounded-full px-5 py-2 text-sm font-semibold text-white shadow-lg ring-1 ring-white/30 backdrop-blur"
+              style={{ alignSelf, background: `color-mix(in srgb, ${brand} 85%, transparent)` }}
+            >
+              <Star className="size-4 fill-current" /> {data.offer}
+            </p>
+          )}
+          {showCountdown && countdown.endsAt && (
+            <div className={`mt-2 ${data.align === "center" ? "flex justify-center" : ""}`}>
+              <Countdown endsAt={countdown.endsAt} finishedMessage={countdown.finishedMessage} />
+            </div>
+          )}
+          <div className="mt-4 flex flex-col gap-3 sm:flex-row" style={{ alignSelf }}>
+            <a
+              href="#form"
+              className="inline-flex items-center justify-center rounded-full px-8 py-4 text-base font-semibold text-white shadow-xl transition hover:-translate-y-0.5 hover:brightness-110"
+              style={{ backgroundColor: brand }}
+            >
+              {data.ctaLabel}
+            </a>
+            {reservarPath && (
+              <a
+                href={reservarPath}
+                className="inline-flex items-center justify-center gap-2 rounded-full border border-white/40 bg-white/5 px-7 py-4 text-base font-semibold text-white backdrop-blur transition hover:bg-white/15"
+              >
+                <CalendarDays className="size-5" /> Reservar agora
+              </a>
+            )}
           </div>
-        )}
-        <a
-          href="#form"
-          className="mt-3 inline-flex w-fit items-center rounded-xl px-7 py-4 text-base font-semibold text-white shadow-xl transition hover:brightness-110"
-          style={{ backgroundColor: brand, alignSelf: data.align === "left" ? "flex-start" : "center" }}
-        >
-          {data.ctaLabel}
-        </a>
+        </div>
+      </Reveal>
+
+      <div className="pointer-events-none absolute inset-x-0 bottom-6 flex justify-center">
+        <span className="h-9 w-5 rounded-full border border-white/40">
+          <span className="mx-auto mt-1.5 block size-1 animate-bounce rounded-full bg-white/70" />
+        </span>
       </div>
     </section>
   );
@@ -138,7 +177,7 @@ export function Benefits({ data, brand }: { data: CampaignContent["benefits"]; b
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {data.items.map((b, i) => (
             <Reveal key={i} delay={i * 0.05}>
-              <div className="h-full rounded-2xl border border-[color:var(--color-line)] bg-white p-7">
+              <div className="h-full rounded-2xl border border-[color:var(--color-line)] bg-white p-7 transition duration-300 hover:-translate-y-1 hover:border-transparent hover:shadow-xl">
                 <div className="mb-4 flex size-12 items-center justify-center rounded-xl" style={{ backgroundColor: `${brand}14`, color: brand }}>
                   <Check className="size-6" />
                 </div>
@@ -211,10 +250,10 @@ export function Accommodations({ data, brand }: { data: CampaignContent["accommo
         <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
           {data.items.map((a, i) => (
             <Reveal key={i} delay={i * 0.05}>
-              <article className="flex h-full flex-col overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-black/5">
+              <article className="group flex h-full flex-col overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-black/5 transition duration-300 hover:shadow-xl">
                 {a.image && (
-                  <div className="relative aspect-4/3">
-                    <Image src={a.image} alt={a.name} fill sizes="(max-width:768px) 100vw, 33vw" className="object-cover" />
+                  <div className="relative aspect-4/3 overflow-hidden">
+                    <Image src={a.image} alt={a.name} fill sizes="(max-width:768px) 100vw, 33vw" className="object-cover transition duration-500 group-hover:scale-105" />
                   </div>
                 )}
                 <div className="flex flex-1 flex-col p-6">
@@ -337,18 +376,25 @@ export function FaqSection({ data, brand }: { data: CampaignContent["faq"]; bran
 }
 
 // ── CTA final ────────────────────────────────────────────────────────────────
-export function FinalCta({ data, brand }: { data: CampaignContent["finalCta"]; brand: string }) {
+export function FinalCta({ data, brand, reservarPath }: { data: CampaignContent["finalCta"]; brand: string; reservarPath?: string }) {
   return (
     <section className="relative overflow-hidden px-5 py-28 text-center">
       {data.bg ? <Image src={data.bg} alt="" fill sizes="100vw" className="object-cover" /> : <div className="absolute inset-0" style={{ backgroundColor: brand }} />}
-      <div className="absolute inset-0 bg-black/50" />
+      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/55 to-black/60" />
       <Reveal>
         <div className="relative mx-auto max-w-2xl">
-          <h2 className="font-display text-3xl font-bold text-white sm:text-5xl">{data.title}</h2>
-          {data.subtitle && <p className="mt-4 text-lg text-white/90">{data.subtitle}</p>}
-          <a href="#form" className="mt-8 inline-flex rounded-xl bg-white px-8 py-4 text-base font-semibold shadow-xl transition hover:brightness-95" style={{ color: brand }}>
-            {data.ctaLabel}
-          </a>
+          <h2 className="font-display text-4xl font-bold text-white sm:text-5xl">{data.title}</h2>
+          {data.subtitle && <p className="mt-4 text-lg text-white/85">{data.subtitle}</p>}
+          <div className="mt-9 flex flex-col justify-center gap-3 sm:flex-row">
+            <a href="#form" className="inline-flex items-center justify-center rounded-full bg-white px-8 py-4 text-base font-semibold shadow-xl transition hover:-translate-y-0.5" style={{ color: brand }}>
+              {data.ctaLabel}
+            </a>
+            {reservarPath && (
+              <a href={reservarPath} className="inline-flex items-center justify-center gap-2 rounded-full border border-white/50 px-7 py-4 text-base font-semibold text-white transition hover:bg-white/10">
+                <CalendarDays className="size-5" /> Reservar agora
+              </a>
+            )}
+          </div>
         </div>
       </Reveal>
     </section>

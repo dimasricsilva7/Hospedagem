@@ -62,7 +62,7 @@ export default async function LandingPage({ params, searchParams }: { params: Pr
       case "countdown":
         return null; // consumida pelo hero
       case "hero":
-        return <S.Hero key={k} data={content.hero} countdown={content.countdown} showCountdown={showCountdown} hotel={hotelInfo} brand={brand} />;
+        return <S.Hero key={k} data={content.hero} countdown={content.countdown} showCountdown={showCountdown} hotel={hotelInfo} brand={brand} reservarPath={`/${hotel}/${campaign}/reservar`} />;
       case "form":
         return <S.FormSection key={k} form={form} campaignId={c.id} brand={brand} hero={content.hero} reservarPath={`/${hotel}/${campaign}/reservar`} />;
       case "benefits":
@@ -80,7 +80,7 @@ export default async function LandingPage({ params, searchParams }: { params: Pr
       case "faq":
         return <S.FaqSection key={k} data={content.faq} brand={brand} />;
       case "finalCta":
-        return <S.FinalCta key={k} data={content.finalCta} brand={brand} />;
+        return <S.FinalCta key={k} data={content.finalCta} brand={brand} reservarPath={`/${hotel}/${campaign}/reservar`} />;
     }
   };
 
