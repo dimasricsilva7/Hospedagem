@@ -98,14 +98,14 @@ export function Hero({
         <Reveal>
           <div className="flex flex-col items-center gap-4">
             <Martini className="size-8 drop-shadow" style={{ color: accent }} />
-            <h1 className="font-display text-6xl font-black uppercase leading-[0.9] drop-shadow-lg sm:text-8xl">
+            <h1 className="font-display text-[2.6rem] font-black uppercase leading-[0.98] drop-shadow-lg break-words sm:text-7xl sm:leading-[0.95] lg:text-8xl">
               {words.map((w, i) => (
                 <span key={i} className="block" style={i === words.length - 1 && words.length > 1 ? { color: accent } : undefined}>
                   {w}
                 </span>
               ))}
             </h1>
-            <p className="text-xs font-semibold uppercase tracking-[0.4em] text-white/85 sm:text-sm">{hotel.name}</p>
+            <p className="text-[11px] font-semibold uppercase tracking-[0.3em] text-white/85 sm:text-sm sm:tracking-[0.4em]">{hotel.name}</p>
 
             {/* selos laterais: data + oferta */}
             <div className="mt-2 flex flex-wrap items-center justify-center gap-3">
@@ -166,11 +166,17 @@ function shortDate(iso: string): string {
 }
 
 // ── Aviso de urgência (abaixo do hero) ────────────────────────────────────────
-export function UrgencyBand({ brand, accent, reservarPath }: { brand: string; accent: string; reservarPath?: string }) {
+export function UrgencyBand({ brand, accent, reservarPath, image }: { brand: string; accent: string; reservarPath?: string; image?: string }) {
   return (
-    <section className="relative overflow-hidden px-5 py-16 text-center text-white" style={{ background: `linear-gradient(120deg, color-mix(in srgb, ${brand} 80%, #000), ${brand})` }}>
+    <section className="relative overflow-hidden px-5 py-20 text-center text-white" style={image ? undefined : { background: `linear-gradient(120deg, color-mix(in srgb, ${brand} 80%, #000), ${brand})` }}>
+      {image && (
+        <>
+          <HeroBg images={[]} bgDesktop={image} />
+          <div className="absolute inset-0" style={{ background: `linear-gradient(120deg, color-mix(in srgb, ${brand} 85%, transparent), rgba(0,0,0,.7))` }} />
+        </>
+      )}
       <Reveal>
-        <div className="mx-auto max-w-3xl">
+        <div className="relative z-10 mx-auto max-w-3xl">
           <p className="mb-3 inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-1.5 text-xs font-bold uppercase tracking-[0.2em] ring-1 ring-white/20">
             <Sparkles className="size-4" style={{ color: accent }} /> Ofertas no ar
           </p>
@@ -208,6 +214,9 @@ export function FormSection({ form, campaignId, brand, hero, reservarPath }: { f
           <h2 className="font-display text-3xl font-semibold sm:text-4xl">{hero.title}</h2>
           <p className="mt-4 text-lg text-[color:var(--color-mute)]">
             Preencha seus dados e seja o primeiro a receber as condições especiais desta campanha, direto no seu WhatsApp.
+          </p>
+          <p className="mt-3 text-sm text-[color:var(--color-mute)]">
+            <strong className="text-[color:var(--color-ink)]">A reserva é realizada diretamente com o hotel.</strong> O envio do formulário é uma solicitação e não confirma a reserva.
           </p>
         </Reveal>
         <Reveal delay={0.1}>
@@ -260,9 +269,9 @@ export function Benefits({ data, accent }: { data: CampaignContent["benefits"]; 
                   <div className={`relative ${size}`} style={{ clipPath: HEX, background: accent }}>
                     <div className="absolute inset-[3px]" style={{ clipPath: HEX, background: deep }}>
                       <div className="absolute inset-[6px]" style={{ clipPath: HEX, background: accent }}>
-                        <div className="absolute inset-[2px] flex flex-col items-center justify-center gap-2 px-3" style={{ clipPath: HEX, background: big ? deeper : deep }}>
-                          <Icon className={big ? "size-10" : "size-8"} style={{ color: iconColor }} strokeWidth={1.75} />
-                          <figcaption className="text-[11px] font-bold uppercase leading-tight tracking-wide text-white">{b.title}</figcaption>
+                        <div className="absolute inset-[2px] flex flex-col items-center justify-center gap-1.5 px-5" style={{ clipPath: HEX, background: big ? deeper : deep }}>
+                          <Icon className={big ? "size-9" : "size-7"} style={{ color: iconColor }} strokeWidth={1.75} />
+                          <figcaption className="mx-auto max-w-[78%] text-[10px] font-bold uppercase leading-[1.15] tracking-wide text-white">{b.title}</figcaption>
                         </div>
                       </div>
                     </div>

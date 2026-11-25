@@ -67,7 +67,8 @@ export type CampaignContent = {
   testimonials: { title?: string; items: Testimonial[] };
   faq: { title?: string; items: Faq[] };
   finalCta: { title: string; subtitle?: string; bg?: string; ctaLabel: string };
-  videos: string[]; // URLs de vídeos (Instagram/YouTube) para a seção de vídeos
+  videos: string[]; // URLs de vídeos (mp4/YouTube/Instagram) para a seção de vídeos
+  offerBg?: string; // imagem de fundo da faixa "ofertas no ar" (abaixo do hero)
 };
 
 export type FormField = { key: string; label: string; type: "text" | "email" | "tel" | "cpf" | "number"; enabled: boolean; required: boolean };
@@ -188,6 +189,7 @@ export function normalizeContent(raw: unknown): CampaignContent {
     faq: { ...d.faq, ...c.faq, items: c.faq?.items ?? [] },
     finalCta: { ...d.finalCta, ...c.finalCta },
     videos: Array.isArray(c.videos) ? c.videos.filter(Boolean) : [],
+    offerBg: typeof c.offerBg === "string" ? c.offerBg : "",
   };
 }
 

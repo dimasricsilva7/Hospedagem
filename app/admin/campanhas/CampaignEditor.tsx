@@ -99,6 +99,7 @@ export function CampaignEditor({ meta, hotels, content: c0, form: f0, tracking: 
           <label className="sm:col-span-3"><span className={lbl}>Texto</span><input value={c.promo.text} onChange={(e) => setC((p) => ({ ...p, promo: { ...p.promo, text: e.target.value } }))} className={input} /></label>
           <label><span className={lbl}>Rótulo do link</span><input value={c.promo.cta ?? ""} onChange={(e) => setC((p) => ({ ...p, promo: { ...p.promo, cta: e.target.value } }))} className={input} /></label>
           <label className="sm:col-span-2"><span className={lbl}>Destino do link</span><input value={c.promo.ctaHref ?? ""} onChange={(e) => setC((p) => ({ ...p, promo: { ...p.promo, ctaHref: e.target.value } }))} placeholder="#form" className={input} /></label>
+          <label className="sm:col-span-3"><span className={lbl}>Imagem de fundo do aviso “ofertas no ar” (abaixo do hero) — URL</span><input value={c.offerBg ?? ""} onChange={(e) => setC((p) => ({ ...p, offerBg: e.target.value }))} placeholder="https://..." className={input} /></label>
         </div>
       </Panel>
 

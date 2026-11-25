@@ -15,12 +15,29 @@
 html {
   scroll-behavior: smooth;
 }
+html,
+body {
+  overflow-x: hidden; /* nenhuma seção deve gerar rolagem horizontal no mobile */
+  max-width: 100%;
+}
 body {
   background: #ffffff;
   color: var(--color-ink);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
+}
+/* Mídia nunca estoura a largura do contêiner (mobile-first). */
+img,
+video,
+iframe {
+  max-width: 100%;
+}
+/* Quebra palavras longas em títulos para não vazar a margem no celular. */
+h1,
+h2,
+h3 {
+  overflow-wrap: break-word;
 }
 
 /* Tipografia de títulos: serifada, sofisticada. */

@@ -67,7 +67,7 @@ export default async function LandingPage({ params, searchParams }: { params: Pr
       case "hero":
         return [
           <S.Hero key="hero" data={content.hero} countdown={content.countdown} showCountdown={showCountdown} hotel={hotelInfo} accent={accent} trust={trust} reservarPath={`/${hotel}/${campaign}/reservar`} />,
-          <S.UrgencyBand key="urgency" brand={brand} accent={accent} reservarPath={`/${hotel}/${campaign}/reservar`} />,
+          <S.UrgencyBand key="urgency" brand={brand} accent={accent} reservarPath={`/${hotel}/${campaign}/reservar`} image={content.offerBg} />,
         ];
       case "form":
         return <S.FormSection key={k} form={form} campaignId={c.id} brand={brand} hero={content.hero} reservarPath={`/${hotel}/${campaign}/reservar`} />;

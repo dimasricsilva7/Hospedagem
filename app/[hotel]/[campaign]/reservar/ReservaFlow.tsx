@@ -194,8 +194,8 @@ export function ReservaFlow({
             >
               {i < step ? <Check className="size-4" /> : i + 1}
             </span>
-            <span className={i <= step ? "font-medium text-[color:var(--color-ink)]" : "text-[color:var(--color-mute)]"}>{label}</span>
-            {i < STEPS.length - 1 && <span className="mx-1 hidden h-px flex-1 bg-[color:var(--color-line)] sm:block" />}
+            <span className={`hidden sm:inline ${i <= step ? "font-medium text-[color:var(--color-ink)]" : "text-[color:var(--color-mute)]"}`}>{label}</span>
+            {i < STEPS.length - 1 && <span className="mx-1 h-px flex-1 bg-[color:var(--color-line)]" />}
           </li>
         ))}
       </ol>
@@ -608,8 +608,8 @@ function StepReview({
         </label>
       </div>
       {rules && <div className="mt-5 rounded-xl border border-[color:var(--color-line)] bg-white p-4 text-sm text-[color:var(--color-mute)]"><strong className="text-[color:var(--color-ink)]">Regras da hospedagem:</strong> {rules}</div>}
-      <p className="mt-5 flex items-center gap-2 text-xs text-[color:var(--color-mute)]">
-        <ShieldCheck className="size-4" style={{ color: brand }} /> Nada é confirmado automaticamente — o hotel valida a disponibilidade com você.
+      <p className="mt-5 flex items-start gap-2 text-xs text-[color:var(--color-mute)]">
+        <ShieldCheck className="mt-0.5 size-4 shrink-0" style={{ color: brand }} /> Esta é uma solicitação — não confirma a reserva. <strong className="text-[color:var(--color-ink)]">A reserva é realizada diretamente com o hotel</strong>, que valida a disponibilidade, o preço e as condições com você.
       </p>
     </section>
   );

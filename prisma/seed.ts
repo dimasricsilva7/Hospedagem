@@ -18,6 +18,32 @@ const HERO_IMAGES = [
 ];
 const HERO_VIDEOS = ["https://www.instagram.com/reel/DYkDzGBmd0Z/", "https://www.instagram.com/p/DFpzQqBIIUz/"];
 
+// Fotos fornecidas pelo responsável (editáveis no painel).
+const OFFER_BG = "https://cf.bstatic.com/xdata/images/hotel/max1024x768/911596793.jpg?k=ed79b36daf49accd8b372114b7276fe341e8dfc9e991554b9c978640f473ae21&o=";
+const ABOUT_IMG = "https://cf.bstatic.com/xdata/images/hotel/max1024x768/911598602.jpg?k=cc69510f026d07706e422596f0267c29d05f12aa5f1c1ed4d4575a4fb5586230&o=";
+const DESTINO_IMG = "https://cf.bstatic.com/xdata/images/hotel/max1024x768/475622015.jpg?k=68f8b54bd12fc593067118b90dac8dc3ba8d626efdc90a1335f76066f3856106&o=";
+const FINALCTA_IMG = "https://cf.bstatic.com/xdata/images/hotel/max1024x768/911613178.jpg?k=7823ab7db2e47d69f77d6ff5d52af002db751cb92aa9dc9a99b233c7653394c0&o=";
+const GALLERY_IMAGES = [
+  { url: "https://cf.bstatic.com/xdata/images/hotel/max1024x768/911593179.jpg?k=31604f12030dcdb95ff4500bab8039af841ad2c0d137d36ca6254b936f97dbcc&o=", caption: "Piscinas e paisagismo tropical" },
+  { url: "https://cf.bstatic.com/xdata/images/hotel/max1024x768/475625148.jpg?k=760b84cf7e985fad504c1f5361e4513f34350d4c1b3a15b3983fcdff9613df98&o=", caption: "Vista para o mar de Muro Alto" },
+  { url: "https://cf.bstatic.com/xdata/images/hotel/max1024x768/911593855.jpg?k=ed068647329610e48382742248fd3d40320433d31e0bcb4b52a2c697e2222f57&o=", caption: "Ambientes exclusivos" },
+  { url: "https://cf.bstatic.com/xdata/images/hotel/max1024x768/911595700.jpg?k=2ef3f34a6892e485dc6505d0e7e8c583925f93347f4642fdb762c5d794320044&o=", caption: "Acomodações sofisticadas" },
+  { url: "https://cf.bstatic.com/xdata/images/hotel/max1024x768/911605129.jpg?k=55b0e3eef2a8700705d9e355c15fb150ed69f044b03d88fdf702c3db63756dbd&o=", caption: "Áreas de lazer" },
+  { url: "https://cf.bstatic.com/xdata/images/hotel/max1024x768/475622026.jpg?k=1a0d0ca583827db5895226ba650c5c04ca3e35327a4f8323a893a248f8cf4fd4&o=", caption: "Praia de águas mornas e calmas" },
+  { url: "https://cf.bstatic.com/xdata/images/hotel/max1024x768/911613180.jpg?k=7234b59b7e7f69bc67d9840a20eb1fae136e042b722b4957dabe8bef0fbab980&o=", caption: "Gastronomia diferenciada" },
+  { url: "https://cf.bstatic.com/xdata/images/hotel/max1024x768/911615003.jpg?k=1452a9c4627c58bc301d1f4441affd5f91f6ab4d2f16ca17babce8fc8085a6ff&o=", caption: "Momentos para recordar" },
+];
+// Avaliações reais fornecidas pelo responsável.
+const REVIEWS = [
+  { name: "Ana", rating: 5, source: "Brasil", demo: false, text: "Nossa experiência no Nannai Muro Alto foi simplesmente extraordinária! Tudo impecável, do início ao fim. A acomodação é maravilhosa, extremamente confortável, com uma atmosfera de tranquilidade, sofisticação e exclusividade." },
+  { name: "Marina", rating: 5, source: "Brasil", demo: false, text: "Simplesmente incrível, não há palavras que descrevam tão bem esse hotel, tem que viver a experiência para entender. Levam a experiência do cliente ao nível máximo." },
+  { name: "Guillermo", rating: 5, source: "Brasil", demo: false, text: "Estrutura espetacular. Staff atenciosíssimo, com destaque para o Lucas (garçom), cujo atendimento consideramos impecável durante o jantar." },
+  { name: "Jeremias", rating: 5, source: "Austrália", demo: false, text: "Equipe muito bem treinada, simpática e competente. Todos os ambientes impecáveis, absolutamente nada fora do lugar. Comida maravilhosa!" },
+  { name: "Andreia", rating: 5, source: "Brasil", demo: false, text: "O ponto alto foi o chá da tarde — tinha tapioca, café, vários pães e doces e até supercoffee." },
+  { name: "Luiz", rating: 5, source: "Brasil", demo: false, text: "Todas as refeições de excelente qualidade e variedade também." },
+  { name: "Ricardo", rating: 5, source: "Brasil", demo: false, text: "Excelente café da manhã, bom atendimento no geral nos restaurantes e piscina." },
+];
+
 async function main() {
   // slug mantido como "resort-exemplo" para preservar a URL já publicada.
   // WhatsApp/e-mail ficam vazios de propósito: configure no painel (não inventar contato do NANNAI).
@@ -76,25 +102,13 @@ async function main() {
       title: "Mais do que uma hospedagem. Uma experiência para viver e recordar.",
       text:
         "Entre a beleza natural da Praia de Muro Alto e a sofisticação da hospitalidade NANNAI, cada detalhe convida a desacelerar e aproveitar o melhor da viagem. Descubra ambientes exclusivos, gastronomia diferenciada e experiências cuidadosamente pensadas para transformar seus dias em momentos especiais.",
-      images: [img("1571896349842-33c89424de2d")], // PLACEHOLDER
+      images: [ABOUT_IMG],
       highlights: ["Piscinas privativas", "Experiências gastronômicas", "SPA by L'Occitane", "Praia de Muro Alto"],
     },
     gallery: {
       title: "Momentos que merecem ser vividos",
       autoplay: true,
-      images: [
-        // PLACEHOLDER — substituir pelas fotos reais do acervo (experiências NANNAI).
-        { url: img("1540541338287-41700207dee6"), caption: "Piscinas privativas e paisagismo" },
-        { url: img("1519046904884-53103b34b206"), caption: "Praia de Muro Alto" },
-        { url: img("1414235077428-338989a2e8c0"), caption: "Experiências gastronômicas" },
-        { url: img("1582719478250-c89cae4dc85b"), caption: "Bangalôs exclusivos" },
-        { url: img("1512100356356-de1b84283e18"), caption: "Pôr do sol inesquecível" },
-        { url: img("1544161515-4ab6ce6db874"), caption: "Bem-estar no SPA" },
-        { url: img("1544551763-46a013bb70d5"), caption: "Esportes aquáticos" },
-        { url: img("1468413253725-0d5181091126"), caption: "Momentos em família" },
-        { url: img("1437846972679-9e6e537be46e"), caption: "Café da manhã especial" },
-        { url: img("1602002418082-a4443e081dd1"), caption: "Jantares à beira da piscina" },
-      ],
+      images: GALLERY_IMAGES,
     },
     accommodations: {
       title: "Encontre o refúgio perfeito para sua experiência.",
@@ -113,12 +127,11 @@ async function main() {
       title: "Um cenário naturalmente extraordinário",
       text:
         "A Praia de Muro Alto, em Ipojuca, é conhecida pelas piscinas naturais formadas por arrecifes, pelo mar de águas mornas e calmas e pela orla de coqueiros. Um refúgio tropical a poucos minutos de Porto de Galinhas, no litoral sul de Pernambuco.",
-      images: [img("1505228395891-9a51e7e86bf6")], // PLACEHOLDER — aérea real da praia
+      images: [DESTINO_IMG],
       airportDistance: "A cerca de 1h do Aeroporto do Recife",
       centerDistance: "Pertinho de Porto de Galinhas",
     },
-    // Sem avaliações reais autorizadas → seção oculta (não inventar depoimentos).
-    testimonials: { title: "Experiências que ficam na memória", items: [] },
+    testimonials: { title: "Experiências que ficam na memória", items: REVIEWS },
     faq: {
       title: "Perguntas frequentes",
       items: [
@@ -134,10 +147,11 @@ async function main() {
     finalCta: {
       title: "Seu próximo capítulo começa em Muro Alto.",
       subtitle: "Descubra as condições especiais e permita-se viver uma experiência extraordinária no NANNAI.",
-      bg: img("1519046904884-53103b34b206"), // PLACEHOLDER
+      bg: FINALCTA_IMG,
       ctaLabel: "Quero conhecer as condições",
     },
     videos: HERO_VIDEOS,
+    offerBg: OFFER_BG,
   };
 
   await db.campaign.upsert({
