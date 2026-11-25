@@ -16,7 +16,12 @@ const HERO_IMAGES = [
   "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTk5nTGjlmwq31JBEA4ToBSCWWDZ-BNSXOq5OeTAlSsmloJqx0NFrPe-Z4&s=10",
   "https://letsimage.s3.amazonaws.com/editor/nannai/imgs/1744208690918-geral_1.jpg",
 ];
-const HERO_VIDEOS = ["https://www.instagram.com/reel/DYkDzGBmd0Z/", "https://www.instagram.com/p/DFpzQqBIIUz/"];
+const HERO_VIDEOS = [
+  "/assets/resorts/nannai-muro-alto/videos/nannai-1.mp4",
+  "/assets/resorts/nannai-muro-alto/videos/nannai-2.mp4",
+  "/assets/resorts/nannai-muro-alto/videos/nannai-3.mp4",
+  "/assets/resorts/nannai-muro-alto/videos/nannai-4.mp4",
+];
 
 // Fotos fornecidas pelo responsável (editáveis no painel).
 const OFFER_BG = "https://cf.bstatic.com/xdata/images/hotel/max1024x768/911593854.jpg?k=48fb8f69e6ed3692e561c5af0aa0f8fd564334a4283b4b75f26925edb5f49c85&o=";
@@ -69,6 +74,9 @@ async function main() {
   const content: CampaignContent = {
     ...defaultContent(),
     theme: { brand: "#173e38", accent: "#a58a64" },
+    // Ordem: hero → (Natal/urgência, fixa) → O resort → Por que escolher → Momentos →
+    // Refúgio (acomodações) → Destino → Acesso (form) → Avaliações → CTA → FAQ → (vídeos/confiança/rodapé, fixos)
+    order: ["promo", "hero", "countdown", "about", "benefits", "gallery", "accommodations", "destination", "form", "testimonials", "finalCta", "faq"],
     promo: { text: "NATAL E ANO NOVO NO NANNAI MURO ALTO — condições especiais da Black Friday. Garanta sua data.", cta: "Saber mais", ctaHref: "#form" },
     hero: {
       kicker: "NANNAI MURO ALTO · PERNAMBUCO",

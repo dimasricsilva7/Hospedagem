@@ -11,6 +11,7 @@ import { LeadForm } from "@/app/components/LeadForm";
 import { Gallery } from "@/app/components/Gallery";
 import { TestimonialRotator } from "@/app/components/TestimonialRotator";
 import { HeroBg } from "@/app/components/HeroBg";
+import { DSun, DPalm, DShell, DMoon, DWave } from "@/app/components/Doodles";
 import { Faq } from "@/app/components/Faq";
 
 export type HotelInfo = {
@@ -166,10 +167,14 @@ export function UrgencyBand({ brand, accent, reservarPath, image }: { brand: str
     <section className="relative overflow-hidden px-5 py-20 text-center text-white" style={image ? undefined : { background: `linear-gradient(120deg, color-mix(in srgb, ${brand} 80%, #000), ${brand})` }}>
       {image && (
         <>
-          <HeroBg images={[]} bgDesktop={image} />
+          <div className="absolute inset-0">
+            <HeroBg images={[]} bgDesktop={image} />
+          </div>
           <div className="absolute inset-0" style={{ background: `linear-gradient(120deg, color-mix(in srgb, ${brand} 85%, transparent), rgba(0,0,0,.7))` }} />
         </>
       )}
+      <DMoon className="floaty pointer-events-none absolute right-4 top-6 z-10 size-12 opacity-90 sm:right-12 sm:size-16" />
+      <DSun className="floaty-slow pointer-events-none absolute bottom-6 left-5 z-10 hidden size-12 opacity-80 sm:block" />
       <Reveal>
         <div className="relative z-10 mx-auto max-w-3xl">
           <p className="mb-3 inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-1.5 text-xs font-bold uppercase tracking-[0.2em] ring-1 ring-white/20">
@@ -240,33 +245,31 @@ function emblemIcon(keyword: string | undefined, title: string): LucideIcon {
 }
 
 // Seção "Motivos" como faixa de emblemas hexagonais (editável no painel via Benefícios).
-export function Benefits({ data, accent }: { data: CampaignContent["benefits"]; accent: string }) {
+export function Benefits({ data }: { data: CampaignContent["benefits"] }) {
   if (!data.items.length) return null;
   const mid = Math.floor(data.items.length / 2);
-  const deep = "#173e38";
-  const deeper = "#102b27";
+  const line = "#2dd4bf"; // teal vivo (estilo do print)
   return (
-    <section className="px-5 py-20 text-white" style={{ backgroundColor: deep }}>
+    <section className="bg-black px-5 py-20 text-white">
       <div className="mx-auto max-w-5xl">
         <Reveal>
-          <SectionTitle kicker="Por que escolher" title={data.title} brand={accent} light />
+          <SectionTitle kicker="Por que escolher" title={data.title} brand={line} light />
         </Reveal>
-        <div className="flex flex-wrap items-start justify-center gap-x-5 gap-y-10 sm:gap-x-8">
+        <div className="flex flex-wrap items-start justify-center gap-x-6 gap-y-9 sm:gap-x-9">
           {data.items.map((b, i) => {
             const Icon = emblemIcon(b.icon, b.title);
             const big = i === mid;
-            const size = big ? "size-36 sm:size-44" : "size-32 sm:size-36";
-            const iconColor = big ? accent : "#ffffff";
+            const size = big ? "size-40 sm:size-48" : "size-36 sm:size-40";
             return (
               <Reveal key={i} delay={i * 0.04}>
-                <figure className="flex w-32 flex-col items-center text-center sm:w-36">
-                  {/* contorno duplo dourado sobre verde profundo */}
-                  <div className={`relative ${size}`} style={{ clipPath: HEX, background: accent }}>
-                    <div className="absolute inset-[3px]" style={{ clipPath: HEX, background: deep }}>
-                      <div className="absolute inset-[6px]" style={{ clipPath: HEX, background: accent }}>
-                        <div className="absolute inset-[2px] flex flex-col items-center justify-center gap-1.5 px-5" style={{ clipPath: HEX, background: big ? deeper : deep }}>
-                          <Icon className={big ? "size-9" : "size-7"} style={{ color: iconColor }} strokeWidth={1.75} />
-                          <figcaption className="mx-auto max-w-[78%] text-[10px] font-bold uppercase leading-[1.15] tracking-wide text-white">{b.title}</figcaption>
+                <figure className="flex w-36 flex-col items-center text-center sm:w-40">
+                  {/* contorno duplo teal com brilho, sobre preto (estilo do print) */}
+                  <div className={`relative ${size} drop-shadow-[0_0_10px_rgba(45,212,191,0.5)]`} style={{ clipPath: HEX, background: line }}>
+                    <div className="absolute inset-[3px]" style={{ clipPath: HEX, background: "#000" }}>
+                      <div className="absolute inset-[6px]" style={{ clipPath: HEX, background: line }}>
+                        <div className="absolute inset-[2px] flex flex-col items-center justify-center gap-2" style={{ clipPath: HEX, background: big ? "#06201d" : "#000" }}>
+                          <Icon className={big ? "size-9" : "size-7"} style={{ color: big ? line : "#ffffff" }} strokeWidth={1.6} />
+                          <figcaption className="mx-auto max-w-[62%] text-[9.5px] font-bold uppercase leading-[1.12] tracking-wide text-white">{b.title}</figcaption>
                         </div>
                       </div>
                     </div>
@@ -291,7 +294,7 @@ export function About({ data, brand, accent }: { data: CampaignContent["about"];
           {data.images[0] && (
             <div className="relative">
               <span className="pointer-events-none absolute -bottom-5 -right-5 hidden h-full w-full border lg:block" style={{ borderColor: accent }} />
-              <div className="relative aspect-4/5 overflow-hidden shadow-xl">
+              <div className="relative aspect-4/5 overflow-hidden rounded-2xl shadow-2xl ring-1 ring-black/5 lg:rounded-none">
                 <Image src={data.images[0]} alt={data.title} fill sizes="(max-width:1024px) 100vw, 50vw" className="object-cover" />
               </div>
             </div>
@@ -329,8 +332,13 @@ export function About({ data, brand, accent }: { data: CampaignContent["about"];
 export function GallerySection({ data, brand }: { data: CampaignContent["gallery"]; brand: string }) {
   if (!data.images.length) return null;
   return (
-    <section className="bg-[color:var(--color-sand)] px-5 py-24">
-      <div className="mx-auto max-w-6xl">
+    <section className="relative overflow-hidden bg-[color:var(--color-sand)] px-5 py-24">
+      {/* acentos tropicais (decorativos) */}
+      <DSun className="floaty pointer-events-none absolute left-3 top-16 size-10 opacity-80 sm:left-10 sm:size-14" />
+      <DPalm className="floaty-slow pointer-events-none absolute right-3 top-10 size-12 opacity-80 sm:right-12 sm:size-16" />
+      <DShell className="floaty-slow pointer-events-none absolute bottom-14 left-4 size-9 opacity-70 sm:left-14 sm:size-12" />
+      <DWave className="floaty pointer-events-none absolute bottom-20 right-5 h-8 w-12 opacity-70 sm:right-16 sm:h-12 sm:w-20" />
+      <div className="relative mx-auto max-w-6xl">
         <Reveal>
           <SectionTitle kicker="Momentos" title={data.title} brand={brand} />
         </Reveal>
@@ -396,7 +404,7 @@ export function Destination({ data, brand, accent }: { data: CampaignContent["de
           {data.images[0] && (
             <div className="relative">
               <span className="pointer-events-none absolute -bottom-5 -left-5 hidden h-full w-full border lg:block" style={{ borderColor: accent }} />
-              <div className="relative aspect-4/5 overflow-hidden shadow-xl">
+              <div className="relative aspect-4/5 overflow-hidden rounded-2xl shadow-2xl ring-1 ring-black/5 lg:rounded-none">
                 <Image src={data.images[0]} alt={data.title} fill sizes="(max-width:1024px) 100vw, 50vw" className="object-cover" />
               </div>
             </div>
