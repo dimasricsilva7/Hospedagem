@@ -105,7 +105,7 @@ export function Hero({
 }
 
 // ── Formulário / Lista VIP ──────────────────────────────────────────────────────
-export function FormSection({ form, campaignId, brand, hero }: { form: FormConfig; campaignId: string; brand: string; hero: CampaignContent["hero"] }) {
+export function FormSection({ form, campaignId, brand, hero, reservarPath }: { form: FormConfig; campaignId: string; brand: string; hero: CampaignContent["hero"]; reservarPath?: string }) {
   return (
     <section id="form" className="bg-[color:var(--color-sand)] px-5 py-20">
       <div className="mx-auto grid max-w-5xl items-center gap-10 lg:grid-cols-2">
@@ -119,7 +119,7 @@ export function FormSection({ form, campaignId, brand, hero }: { form: FormConfi
           </p>
         </Reveal>
         <Reveal delay={0.1}>
-          <LeadForm campaignId={campaignId} form={form} brand={brand} />
+          <LeadForm campaignId={campaignId} form={form} brand={brand} reservarPath={reservarPath} />
         </Reveal>
       </div>
     </section>

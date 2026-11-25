@@ -25,3 +25,9 @@ export const formatDateTime = (d: Date | string) => dtf.format(new Date(d));
 
 const df = new Intl.DateTimeFormat("pt-BR", { dateStyle: "short", timeZone: "America/Sao_Paulo" });
 export const formatDate = (d: Date | string) => df.format(new Date(d));
+
+/** "2026-12-10" → "10/12/2026" (sem converter fuso — evita cair no dia anterior). */
+export function formatIsoDate(s: string): string {
+  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(s || "");
+  return m ? `${m[3]}/${m[2]}/${m[1]}` : s;
+}

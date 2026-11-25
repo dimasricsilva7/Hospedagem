@@ -64,6 +64,7 @@ export default async function CampanhasPage() {
                     <td className="px-4 py-3">
                       <div className="flex flex-wrap items-center justify-end gap-3">
                         <Link href={`/admin/campanhas/${c.id}`} className="inline-flex items-center gap-1 text-slate-600 hover:text-slate-900"><Pencil className="size-4" /> Editar</Link>
+                        <Link href={`/admin/campanhas/${c.id}/reservas`} className="text-slate-600 hover:text-slate-900">Reservas</Link>
                         <a href={`${url}?preview=1`} target="_blank" className="inline-flex items-center gap-1 text-slate-600 hover:text-slate-900"><ExternalLink className="size-4" /> Preview</a>
                         <form action={setStatus}>
                           <input type="hidden" name="id" value={c.id} />

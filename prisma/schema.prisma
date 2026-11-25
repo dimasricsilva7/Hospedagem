@@ -34,6 +34,13 @@ enum LeadStatus {
   DESCARTADO
 }
 
+enum ReservationStatus {
+  PENDENTE
+  EM_ATENDIMENTO
+  CONFIRMADA
+  CANCELADA
+}
+
 model User {
   id                     String    @id @default(cuid())
   email                  String    @unique
@@ -80,6 +87,8 @@ model Hotel {
   campaigns      Campaign[]
   leads          Lead[]
   media          MediaAsset[]
+  rooms          Room[]
+  reservations   ReservationRequest[]
 
   @@index([isActive])
 }
@@ -96,11 +105,13 @@ model Campaign {
   content        Json           // CampaignContent — seções, ordem, visibilidade, tema (app/lib/content.ts)
   formConfig     Json           // FormConfig — campos, botão, mensagem, consentimento
   trackingConfig Json           // TrackingConfig — Meta Pixel, GA4, GTM
+  reservationConfig Json?        // ReservationConfig — WhatsApp, horários, limites (app/lib/content.ts); null = defaults
   createdAt      DateTime       @default(now())
   updatedAt      DateTime       @updatedAt
   hotel          Hotel          @relation(fields: [hotelId], references: [id], onDelete: Cascade)
   leads          Lead[]
   media          MediaAsset[]
+  reservations   ReservationRequest[]
 
   @@unique([hotelId, slug]) // URL /{hotel}/{campanha}
   @@index([status])
@@ -128,6 +139,73 @@ model Lead {
   createdAt    DateTime   @default(now())
   hotel        Hotel      @relation(fields: [hotelId], references: [id], onDelete: Cascade)
   campaign     Campaign?  @relation(fields: [campaignId], references: [id], onDelete: SetNull)
+  reservations ReservationRequest[]
+
+  @@index([hotelId, createdAt])
+  @@index([campaignId])
+  @@index([status])
+  @@index([createdAt])
+}
+
+// Acomodação (quarto) de um hotel. Preços em centavos (nunca float p/ dinheiro).
+model Room {
+  id                 String   @id @default(cuid())
+  hotelId            String
+  name               String
+  description        String?
+  mainImage          String?
+  images             Json?    // string[] de URLs (galeria)
+  amenities          Json?    // string[] de comodidades
+  beds               String?  // ex.: "1 cama de casal + 1 solteiro"
+  maxAdults          Int      @default(2)
+  maxChildren        Int      @default(0)
+  priceOriginalCents Int      @default(0)
+  pricePromoCents    Int      @default(0)
+  badgeCount         Int?     // "Restam apenas N" — indicador comercial, NÃO estoque real
+  active             Boolean  @default(true)
+  sortOrder          Int      @default(0)
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+  hotel              Hotel    @relation(fields: [hotelId], references: [id], onDelete: Cascade)
+  reservations       ReservationRequest[]
+
+  @@index([hotelId, sortOrder])
+}
+
+// Solicitação de reserva (status inicial PENDENTE). Guarda uma CÓPIA dos preços/condições
+// no momento do pedido — alterações futuras no painel não mudam pedidos antigos.
+model ReservationRequest {
+  id                 String            @id @default(cuid())
+  code               String            @unique // identificador curto p/ o atendimento localizar o pedido
+  hotelId            String
+  campaignId         String?
+  leadId             String?
+  roomId             String?
+  roomName           String            // snapshot do nome
+  guestName          String
+  guestPhone         String?
+  guestEmail         String?
+  checkIn            String            // "YYYY-MM-DD" (sem fuso, evita drift)
+  checkInTime        String
+  checkOut           String            // "YYYY-MM-DD"
+  checkOutTime       String
+  nights             Int
+  adults             Int               @default(1)
+  children           Int               @default(0)
+  childrenAges       Json?             // number[]
+  rooms              Int               @default(1)
+  priceOriginalCents Int               // snapshot/diária
+  pricePromoCents    Int               // snapshot/diária
+  discountPercent    Int
+  totalOriginalCents Int
+  totalPromoCents    Int
+  notes              String?
+  status             ReservationStatus @default(PENDENTE)
+  createdAt          DateTime          @default(now())
+  hotel              Hotel             @relation(fields: [hotelId], references: [id], onDelete: Cascade)
+  campaign           Campaign?         @relation(fields: [campaignId], references: [id], onDelete: SetNull)
+  lead               Lead?             @relation(fields: [leadId], references: [id], onDelete: SetNull)
+  room               Room?             @relation(fields: [roomId], references: [id], onDelete: SetNull)
 
   @@index([hotelId, createdAt])
   @@index([campaignId])

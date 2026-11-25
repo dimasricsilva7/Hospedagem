@@ -80,6 +80,22 @@ export type FormConfig = {
 
 export type TrackingConfig = { metaPixelId?: string; ga4Id?: string; gtmId?: string };
 
+// Configuração do funil de reservas (WhatsApp). whatsapp vazio = usa o do hotel.
+export type ReservationConfig = {
+  enabled: boolean;
+  whatsapp: string;
+  checkInMin: string; // "07:00"
+  checkInMax: string; // "15:00"
+  checkOutMax: string; // "12:00"
+  checkOutDefault: string; // "12:00"
+  timeStepMin: number; // intervalo dos horários (min)
+  minNights: number;
+  maxNights: number;
+  maxGuests: number;
+  buttonLabel: string;
+  rules: string; // regras/observações da hospedagem
+};
+
 // ── Defaults ────────────────────────────────────────────────────────────────
 
 export function defaultContent(): CampaignContent {
@@ -131,6 +147,23 @@ export function defaultTracking(): TrackingConfig {
   return {};
 }
 
+export function defaultReservation(): ReservationConfig {
+  return {
+    enabled: true,
+    whatsapp: "",
+    checkInMin: "07:00",
+    checkInMax: "15:00",
+    checkOutMax: "12:00",
+    checkOutDefault: "12:00",
+    timeStepMin: 30,
+    minNights: 1,
+    maxNights: 30,
+    maxGuests: 10,
+    buttonLabel: "Solicitar reserva pelo WhatsApp",
+    rules: "",
+  };
+}
+
 // Mescla o JSON salvo com os defaults para o renderer nunca quebrar por chave ausente.
 export function normalizeContent(raw: unknown): CampaignContent {
   const d = defaultContent();
@@ -169,4 +202,23 @@ export function normalizeForm(raw: unknown): FormConfig {
 export function normalizeTracking(raw: unknown): TrackingConfig {
   const c = (raw ?? {}) as Partial<TrackingConfig>;
   return { metaPixelId: c.metaPixelId || undefined, ga4Id: c.ga4Id || undefined, gtmId: c.gtmId || undefined };
+}
+
+export function normalizeReservation(raw: unknown): ReservationConfig {
+  const d = defaultReservation();
+  const c = (raw ?? {}) as Partial<ReservationConfig>;
+  return {
+    enabled: c.enabled ?? d.enabled,
+    whatsapp: c.whatsapp ?? d.whatsapp,
+    checkInMin: c.checkInMin || d.checkInMin,
+    checkInMax: c.checkInMax || d.checkInMax,
+    checkOutMax: c.checkOutMax || d.checkOutMax,
+    checkOutDefault: c.checkOutDefault || d.checkOutDefault,
+    timeStepMin: Number(c.timeStepMin) > 0 ? Number(c.timeStepMin) : d.timeStepMin,
+    minNights: Number(c.minNights) > 0 ? Number(c.minNights) : d.minNights,
+    maxNights: Number(c.maxNights) > 0 ? Number(c.maxNights) : d.maxNights,
+    maxGuests: Number(c.maxGuests) > 0 ? Number(c.maxGuests) : d.maxGuests,
+    buttonLabel: c.buttonLabel || d.buttonLabel,
+    rules: c.rules ?? d.rules,
+  };
 }

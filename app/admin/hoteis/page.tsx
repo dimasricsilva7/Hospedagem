@@ -46,6 +46,7 @@ export default async function HoteisPage() {
                   </td>
                   <td className="px-4 py-3 text-right">
                     <div className="flex items-center justify-end gap-3">
+                      <Link href={`/admin/hoteis/${h.id}/quartos`} className="text-slate-600 hover:text-slate-900">Quartos</Link>
                       <Link href={`/admin/hoteis/${h.id}`} className="inline-flex items-center gap-1 text-slate-600 hover:text-slate-900">
                         <Pencil className="size-4" /> Editar
                       </Link>

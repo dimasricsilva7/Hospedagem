@@ -4,7 +4,7 @@ import { Check, Loader2 } from "lucide-react";
 import type { FormConfig } from "@/app/lib/content";
 import { maskCpf, maskPhone } from "@/app/lib/format";
 
-type Props = { campaignId: string; form: FormConfig; brand: string };
+type Props = { campaignId: string; form: FormConfig; brand: string; reservarPath?: string };
 
 function readTracking() {
   if (typeof window === "undefined") return { utm: {}, fbclid: undefined, gclid: undefined, landingPage: "" };
@@ -17,7 +17,7 @@ function readTracking() {
   return { utm, fbclid: p.get("fbclid") || undefined, gclid: p.get("gclid") || undefined, landingPage: window.location.href };
 }
 
-export function LeadForm({ campaignId, form, brand }: Props) {
+export function LeadForm({ campaignId, form, brand, reservarPath }: Props) {
   const fields = form.fields.filter((f) => f.enabled);
   const [values, setValues] = useState<Record<string, string>>({});
   const [marketing, setMarketing] = useState(false);
@@ -25,6 +25,7 @@ export function LeadForm({ campaignId, form, brand }: Props) {
   const [honey, setHoney] = useState(""); // honeypot
   const [state, setState] = useState<"idle" | "sending" | "done" | "error">("idle");
   const [error, setError] = useState("");
+  const [leadId, setLeadId] = useState("");
 
   const set = (key: string, raw: string, type: string) => {
     const v = type === "tel" ? maskPhone(raw) : type === "cpf" ? maskCpf(raw) : raw;
@@ -60,7 +61,7 @@ export function LeadForm({ campaignId, form, brand }: Props) {
           ...tr,
         }),
       });
-      const data = (await res.json().catch(() => ({}))) as { ok?: boolean; error?: string };
+      const data = (await res.json().catch(() => ({}))) as { ok?: boolean; error?: string; id?: string };
       if (!res.ok || !data.ok) {
         setState("error");
         setError(data.error || "Não foi possível concluir o cadastro. Tente novamente.");
@@ -71,8 +72,11 @@ export function LeadForm({ campaignId, form, brand }: Props) {
         window.fbq?.("track", "Lead");
         window.gtag?.("event", "generate_lead");
       } catch {}
+      setLeadId(data.id || "");
       setState("done");
-      if (form.redirectUrl) setTimeout(() => (window.location.href = form.redirectUrl!), 1200);
+      // O cadastro não encerra a experiência: encaminha para a seleção da reserva (seção 5 do spec).
+      const next = reservarPath ? `${reservarPath}?lead=${encodeURIComponent(data.id || "")}` : form.redirectUrl;
+      if (next) setTimeout(() => (window.location.href = next), 1000);
     } catch {
       setState("error");
       setError("Falha de conexão. Tente novamente.");
@@ -86,6 +90,11 @@ export function LeadForm({ campaignId, form, brand }: Props) {
           <Check className="size-7" />
         </div>
         <p className="font-display text-xl font-semibold">{form.successMessage}</p>
+        {reservarPath && (
+          <a href={`${reservarPath}?lead=${encodeURIComponent(leadId)}`} className="mt-5 inline-block rounded-xl px-6 py-3 font-semibold text-white" style={{ backgroundColor: brand }}>
+            Montar minha reserva →
+          </a>
+        )}
       </div>
     );
   }

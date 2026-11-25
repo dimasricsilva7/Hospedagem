@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { LayoutDashboard, Hotel, Megaphone, Users, Settings, LogOut } from "lucide-react";
+import { LayoutDashboard, Hotel, Megaphone, Users, CalendarCheck, Settings, LogOut } from "lucide-react";
 import { getSession } from "@/app/server/auth";
 import { logoutAction } from "./actions";
 
@@ -12,6 +12,7 @@ const nav = [
   { href: "/admin/hoteis", label: "Hotéis", icon: Hotel },
   { href: "/admin/campanhas", label: "Campanhas", icon: Megaphone },
   { href: "/admin/leads", label: "Leads", icon: Users },
+  { href: "/admin/solicitacoes", label: "Solicitações", icon: CalendarCheck },
   { href: "/admin/configuracoes", label: "Configurações", icon: Settings },
 ];
 

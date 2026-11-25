@@ -1,5 +1,5 @@
 import { PrismaClient } from "@prisma/client";
-import { defaultContent, defaultFormConfig, defaultTracking, type CampaignContent } from "../app/lib/content";
+import { defaultContent, defaultFormConfig, defaultReservation, defaultTracking, type CampaignContent } from "../app/lib/content";
 
 const db = new PrismaClient();
 
@@ -120,10 +120,23 @@ async function main() {
       content,
       formConfig: defaultFormConfig(),
       trackingConfig: defaultTracking(),
+      reservationConfig: defaultReservation(), // WhatsApp vazio → usa o do hotel
     },
   });
 
-  console.log("Seed concluído: /resort-exemplo/black-friday");
+  // Quartos demo (preços do spec, em centavos). Só cria se o hotel ainda não tem quartos.
+  if ((await db.room.count({ where: { hotelId: hotel.id } })) === 0) {
+    await db.room.createMany({
+      data: [
+        { hotelId: hotel.id, name: "Quarto Standard", description: "Conforto e ótimo custo-benefício para a sua estadia.", mainImage: img("1631049307264-da0ec9d70304"), beds: "1 cama de casal", maxAdults: 2, maxChildren: 1, priceOriginalCents: 75000, pricePromoCents: 48000, badgeCount: 6, sortOrder: 1, amenities: ["Ar-condicionado", "Wi-Fi", "Café da manhã"] },
+        { hotelId: hotel.id, name: "Quarto Superior", description: "Mais espaço e vista privilegiada.", mainImage: img("1582719478250-c89cae4dc85b"), beds: "1 cama de casal + 1 solteiro", maxAdults: 3, maxChildren: 1, priceOriginalCents: 95000, pricePromoCents: 60800, badgeCount: 4, sortOrder: 2, amenities: ["Vista mar", "Ar-condicionado", "Frigobar", "Café da manhã"] },
+        { hotelId: hotel.id, name: "Suíte Luxo", description: "Suíte ampla com área de estar e varanda.", mainImage: img("1591088398332-8a7791972843"), beds: "1 cama king", maxAdults: 3, maxChildren: 2, priceOriginalCents: 125000, pricePromoCents: 80000, badgeCount: 3, sortOrder: 3, amenities: ["Varanda", "Vista mar", "Banheira", "All-inclusive"] },
+        { hotelId: hotel.id, name: "Suíte Premium", description: "A experiência mais exclusiva, com serviço dedicado.", mainImage: img("1596436889106-be35e843f974"), beds: "1 cama king + sofá-cama", maxAdults: 4, maxChildren: 2, priceOriginalCents: 160000, pricePromoCents: 102400, badgeCount: 2, sortOrder: 4, amenities: ["Piscina privativa", "Serviço de quarto", "Vista panorâmica", "All-inclusive"] },
+      ],
+    });
+  }
+
+  console.log("Seed concluído: /resort-exemplo/black-friday (landing + 4 quartos de reserva)");
 }
 
 main()
