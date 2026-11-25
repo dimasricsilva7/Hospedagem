@@ -27,26 +27,26 @@ export function TestimonialRotator({ items, accent }: { items: Testimonial[]; ac
   const t = items[Math.min(i, n - 1)];
 
   return (
-    <div className="mx-auto max-w-2xl">
+    <div className="mx-auto max-w-lg">
       <AnimatePresence mode="wait">
         <motion.figure
           key={i}
-          initial={reduce ? {} : { opacity: 0, y: 16 }}
+          initial={reduce ? {} : { opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
-          exit={reduce ? {} : { opacity: 0, y: -16 }}
+          exit={reduce ? {} : { opacity: 0, y: -12 }}
           transition={{ duration: 0.4 }}
-          className="rounded-3xl bg-white/5 p-8 text-center ring-1 ring-white/10 sm:p-10"
+          className="rounded-2xl bg-white/5 p-5 text-center ring-1 ring-white/10 sm:p-7"
         >
-          <Quote className="mx-auto mb-4 size-8" style={{ color: accent }} />
+          <Quote className="mx-auto mb-3 size-6" style={{ color: accent }} />
           {typeof t.rating === "number" && (
-            <div className="mb-4 flex justify-center gap-0.5" style={{ color: accent }}>
+            <div className="mb-3 flex justify-center gap-0.5" style={{ color: accent }}>
               {Array.from({ length: 5 }).map((_, s) => (
-                <Star key={s} className={`size-5 ${s < t.rating! ? "fill-current" : "opacity-30"}`} />
+                <Star key={s} className={`size-4 ${s < t.rating! ? "fill-current" : "opacity-30"}`} />
               ))}
             </div>
           )}
-          <blockquote className="font-display text-xl leading-relaxed text-white sm:text-2xl">“{t.text}”</blockquote>
-          <figcaption className="mt-5 text-sm text-white/70">
+          <blockquote className="text-[15px] leading-relaxed text-white/90 sm:text-lg">“{t.text}”</blockquote>
+          <figcaption className="mt-4 text-sm text-white/70">
             <span className="font-semibold text-white">{t.name}</span>
             {t.source && <span> · {t.source}</span>}
           </figcaption>

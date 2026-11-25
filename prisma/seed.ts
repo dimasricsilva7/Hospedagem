@@ -19,7 +19,7 @@ const HERO_IMAGES = [
 const HERO_VIDEOS = ["https://www.instagram.com/reel/DYkDzGBmd0Z/", "https://www.instagram.com/p/DFpzQqBIIUz/"];
 
 // Fotos fornecidas pelo responsável (editáveis no painel).
-const OFFER_BG = "https://cf.bstatic.com/xdata/images/hotel/max1024x768/911596793.jpg?k=ed79b36daf49accd8b372114b7276fe341e8dfc9e991554b9c978640f473ae21&o=";
+const OFFER_BG = "https://cf.bstatic.com/xdata/images/hotel/max1024x768/911593854.jpg?k=48fb8f69e6ed3692e561c5af0aa0f8fd564334a4283b4b75f26925edb5f49c85&o=";
 const ABOUT_IMG = "https://cf.bstatic.com/xdata/images/hotel/max1024x768/911598602.jpg?k=cc69510f026d07706e422596f0267c29d05f12aa5f1c1ed4d4575a4fb5586230&o=";
 const DESTINO_IMG = "https://cf.bstatic.com/xdata/images/hotel/max1024x768/475622015.jpg?k=68f8b54bd12fc593067118b90dac8dc3ba8d626efdc90a1335f76066f3856106&o=";
 const FINALCTA_IMG = "https://cf.bstatic.com/xdata/images/hotel/max1024x768/911613178.jpg?k=7823ab7db2e47d69f77d6ff5d52af002db751cb92aa9dc9a99b233c7653394c0&o=";
@@ -69,7 +69,7 @@ async function main() {
   const content: CampaignContent = {
     ...defaultContent(),
     theme: { brand: "#173e38", accent: "#a58a64" },
-    promo: { text: "NANNAI MURO ALTO · PERNAMBUCO — fale com o atendimento e conheça as condições especiais.", cta: "Saber mais", ctaHref: "#form" },
+    promo: { text: "NATAL E ANO NOVO NO NANNAI MURO ALTO — condições especiais da Black Friday. Garanta sua data.", cta: "Saber mais", ctaHref: "#form" },
     hero: {
       kicker: "NANNAI MURO ALTO · PERNAMBUCO",
       title: "O extraordinário espera por você",

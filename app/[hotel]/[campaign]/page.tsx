@@ -74,13 +74,13 @@ export default async function LandingPage({ params, searchParams }: { params: Pr
       case "benefits":
         return <S.Benefits key={k} data={content.benefits} accent={accent} />;
       case "about":
-        return <S.About key={k} data={content.about} brand={brand} />;
+        return <S.About key={k} data={content.about} brand={brand} accent={accent} />;
       case "gallery":
         return <S.GallerySection key={k} data={content.gallery} brand={brand} />;
       case "accommodations":
         return <S.Accommodations key={k} data={content.accommodations} brand={brand} />;
       case "destination":
-        return <S.Destination key={k} data={content.destination} brand={brand} />;
+        return <S.Destination key={k} data={content.destination} brand={brand} accent={accent} />;
       case "testimonials":
         return <S.Testimonials key={k} data={content.testimonials} brand={brand} accent={accent} />;
       case "faq":

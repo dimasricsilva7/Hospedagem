@@ -71,7 +71,6 @@ export function Hero({
   trust: string[];
   reservarPath?: string;
 }) {
-  const words = data.title.trim().split(/\s+/);
   const endLabel = countdown.endsAt ? shortDate(countdown.endsAt) : "";
   return (
     <section className="relative flex min-h-[94vh] flex-col overflow-hidden text-white">
@@ -98,12 +97,8 @@ export function Hero({
         <Reveal>
           <div className="flex flex-col items-center gap-4">
             <Martini className="size-8 drop-shadow" style={{ color: accent }} />
-            <h1 className="font-display text-[2.6rem] font-black uppercase leading-[0.98] drop-shadow-lg break-words sm:text-7xl sm:leading-[0.95] lg:text-8xl">
-              {words.map((w, i) => (
-                <span key={i} className="block" style={i === words.length - 1 && words.length > 1 ? { color: accent } : undefined}>
-                  {w}
-                </span>
-              ))}
+            <h1 className="mx-auto max-w-[15ch] text-balance font-display text-4xl font-semibold leading-[1.08] drop-shadow-lg sm:text-6xl sm:leading-[1.05] lg:text-7xl">
+              {data.title}
             </h1>
             <p className="text-[11px] font-semibold uppercase tracking-[0.3em] text-white/85 sm:text-sm sm:tracking-[0.4em]">{hotel.name}</p>
 
@@ -178,13 +173,13 @@ export function UrgencyBand({ brand, accent, reservarPath, image }: { brand: str
       <Reveal>
         <div className="relative z-10 mx-auto max-w-3xl">
           <p className="mb-3 inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-1.5 text-xs font-bold uppercase tracking-[0.2em] ring-1 ring-white/20">
-            <Sparkles className="size-4" style={{ color: accent }} /> Ofertas no ar
+            <Sparkles className="size-4" style={{ color: accent }} /> Natal &amp; Ano Novo
           </p>
-          <h2 className="font-display text-3xl font-bold sm:text-4xl">
-            A Black Friday já começou — <span style={{ color: accent }}>aproveite</span> antes que as reservas se esgotem
+          <h2 className="font-display text-3xl font-bold leading-tight sm:text-4xl">
+            Passe o <span style={{ color: accent }}>Natal e o Ano Novo</span> no melhor hotel do Brasil
           </h2>
-          <p className="mx-auto mt-4 max-w-2xl text-lg text-white/80">
-            As melhores datas e acomodações saem primeiro. Garanta as condições especiais enquanto ainda há disponibilidade.
+          <p className="mx-auto mt-4 max-w-2xl text-lg text-white/85">
+            A Black Friday já começou — garanta as melhores datas de dezembro e janeiro antes que as acomodações se esgotem.
           </p>
           <div className="mt-7 flex flex-col justify-center gap-3 sm:flex-row">
             <a href="#form" className="inline-flex items-center justify-center rounded-full px-8 py-4 text-base font-semibold text-black shadow-xl transition hover:-translate-y-0.5 hover:brightness-110" style={{ backgroundColor: accent }}>
@@ -287,31 +282,38 @@ export function Benefits({ data, accent }: { data: CampaignContent["benefits"]; 
 }
 
 // ── Apresentação do hotel ─────────────────────────────────────────────────────
-export function About({ data, brand }: { data: CampaignContent["about"]; brand: string }) {
+export function About({ data, brand, accent }: { data: CampaignContent["about"]; brand: string; accent: string }) {
   if (!data.text && !data.images.length) return null;
   return (
-    <section className="px-5 py-20">
-      <div className="mx-auto grid max-w-6xl items-center gap-12 lg:grid-cols-2">
+    <section className="overflow-hidden bg-[color:var(--color-sand)] px-5 py-24">
+      <div className="mx-auto grid max-w-6xl items-center gap-14 lg:grid-cols-2 lg:gap-20">
         <Reveal>
           {data.images[0] && (
-            <div className="relative aspect-4/5 overflow-hidden rounded-3xl">
-              <Image src={data.images[0]} alt={data.title} fill sizes="(max-width:1024px) 100vw, 50vw" className="object-cover" />
+            <div className="relative">
+              <span className="pointer-events-none absolute -bottom-5 -right-5 hidden h-full w-full border lg:block" style={{ borderColor: accent }} />
+              <div className="relative aspect-4/5 overflow-hidden shadow-xl">
+                <Image src={data.images[0]} alt={data.title} fill sizes="(max-width:1024px) 100vw, 50vw" className="object-cover" />
+              </div>
             </div>
           )}
         </Reveal>
         <Reveal delay={0.1}>
-          <h2 className="font-display text-3xl font-semibold sm:text-4xl">{data.title}</h2>
+          <div className="mb-4 flex items-center gap-3">
+            <span className="h-px w-10" style={{ backgroundColor: accent }} />
+            <span className="text-xs font-semibold uppercase tracking-[0.3em]" style={{ color: brand }}>O resort</span>
+          </div>
+          <h2 className="font-display text-3xl font-semibold leading-tight sm:text-[2.6rem]">{data.title}</h2>
           {data.text && <p className="mt-5 whitespace-pre-line text-lg leading-relaxed text-[color:var(--color-mute)]">{data.text}</p>}
           {data.highlights.length > 0 && (
-            <ul className="mt-6 grid gap-4 sm:grid-cols-2">
+            <ul className="mt-7 grid gap-4 sm:grid-cols-2">
               {data.highlights.map((h, i) => {
                 const Icon = emblemIcon(undefined, h);
                 return (
                   <li key={i} className="flex items-center gap-3 text-[color:var(--color-ink)]">
-                    <span className="flex size-9 shrink-0 items-center justify-center rounded-lg" style={{ backgroundColor: `${brand}12`, color: brand }}>
+                    <span className="flex size-10 shrink-0 items-center justify-center rounded-full ring-1" style={{ color: brand, borderColor: accent, backgroundColor: `${brand}0d` }}>
                       <Icon className="size-5" strokeWidth={1.75} />
                     </span>
-                    {h}
+                    <span className="text-[15px]">{h}</span>
                   </li>
                 );
               })}
@@ -385,15 +387,29 @@ export function Accommodations({ data, brand }: { data: CampaignContent["accommo
 }
 
 // ── Sobre o destino ──────────────────────────────────────────────────────────
-export function Destination({ data, brand }: { data: CampaignContent["destination"]; brand: string }) {
+export function Destination({ data, brand, accent }: { data: CampaignContent["destination"]; brand: string; accent: string }) {
   if (!data.text && !data.images.length) return null;
   return (
-    <section className="px-5 py-20">
-      <div className="mx-auto grid max-w-6xl items-center gap-12 lg:grid-cols-2">
-        <Reveal>
-          <h2 className="font-display text-3xl font-semibold sm:text-4xl">{data.title}</h2>
+    <section className="overflow-hidden px-5 py-24">
+      <div className="mx-auto grid max-w-6xl items-center gap-14 lg:grid-cols-2 lg:gap-20">
+        <Reveal delay={0.1} className="order-2 lg:order-1">
+          {data.images[0] && (
+            <div className="relative">
+              <span className="pointer-events-none absolute -bottom-5 -left-5 hidden h-full w-full border lg:block" style={{ borderColor: accent }} />
+              <div className="relative aspect-4/5 overflow-hidden shadow-xl">
+                <Image src={data.images[0]} alt={data.title} fill sizes="(max-width:1024px) 100vw, 50vw" className="object-cover" />
+              </div>
+            </div>
+          )}
+        </Reveal>
+        <Reveal className="order-1 lg:order-2">
+          <div className="mb-4 flex items-center gap-3">
+            <span className="h-px w-10" style={{ backgroundColor: accent }} />
+            <span className="text-xs font-semibold uppercase tracking-[0.3em]" style={{ color: brand }}>O destino</span>
+          </div>
+          <h2 className="font-display text-3xl font-semibold leading-tight sm:text-[2.6rem]">{data.title}</h2>
           {data.text && <p className="mt-5 whitespace-pre-line text-lg leading-relaxed text-[color:var(--color-mute)]">{data.text}</p>}
-          <div className="mt-6 flex flex-wrap gap-6">
+          <div className="mt-7 flex flex-wrap gap-6">
             {data.airportDistance && (
               <div className="flex items-center gap-2 text-[color:var(--color-ink)]">
                 <Plane className="size-5" style={{ color: brand }} /> {data.airportDistance}
@@ -406,15 +422,8 @@ export function Destination({ data, brand }: { data: CampaignContent["destinatio
             )}
           </div>
           {data.mapEmbed && (
-            <div className="mt-6 overflow-hidden rounded-2xl">
+            <div className="mt-6 overflow-hidden rounded-sm">
               <iframe src={data.mapEmbed} title="Mapa" loading="lazy" className="h-64 w-full border-0" referrerPolicy="no-referrer-when-downgrade" />
-            </div>
-          )}
-        </Reveal>
-        <Reveal delay={0.1}>
-          {data.images[0] && (
-            <div className="relative aspect-4/5 overflow-hidden rounded-3xl">
-              <Image src={data.images[0]} alt={data.title} fill sizes="(max-width:1024px) 100vw, 50vw" className="object-cover" />
             </div>
           )}
         </Reveal>
