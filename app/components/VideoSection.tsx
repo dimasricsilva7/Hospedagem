@@ -1,4 +1,5 @@
 import { Play } from "lucide-react";
+import { AutoVideo } from "./AutoVideo";
 
 type Kind = { type: "file"; src: string } | { type: "embed"; src: string } | { type: "instagram"; src: string };
 
@@ -29,24 +30,21 @@ export function VideoSection({ videos, brand }: { videos: string[]; brand: strin
           </div>
           <h2 className="font-display text-3xl font-semibold tracking-tight text-[color:var(--color-ink)] sm:text-5xl">O NANNAI em movimento</h2>
         </div>
-        <div className="grid justify-center gap-6 sm:grid-cols-2">
+        <div className="mx-auto grid max-w-2xl grid-cols-2 gap-4 sm:gap-6">
           {list.map((raw) => {
             const v = resolve(raw);
+            if (v.type === "file") return <AutoVideo key={raw} src={v.src} />;
             return (
-              <div key={raw} className="mx-auto w-full max-w-[420px] overflow-hidden rounded-2xl bg-black shadow-sm ring-1 ring-black/10">
-                {v.type === "file" ? (
-                  <video src={v.src} controls playsInline preload="metadata" className="aspect-video w-full bg-black" />
-                ) : (
-                  <iframe
-                    src={v.src}
-                    title="Vídeo"
-                    loading="lazy"
-                    scrolling="no"
-                    allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share; fullscreen"
-                    allowFullScreen
-                    className={`w-full border-0 ${v.type === "instagram" ? "h-[560px]" : "aspect-video"}`}
-                  />
-                )}
+              <div key={raw} className="overflow-hidden rounded-2xl bg-black shadow-sm ring-1 ring-black/10">
+                <iframe
+                  src={v.src}
+                  title="Vídeo"
+                  loading="lazy"
+                  scrolling="no"
+                  allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share; fullscreen"
+                  allowFullScreen
+                  className="aspect-[9/16] w-full border-0"
+                />
               </div>
             );
           })}

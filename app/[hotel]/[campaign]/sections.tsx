@@ -12,7 +12,7 @@ import { LeadForm } from "@/app/components/LeadForm";
 import { Gallery } from "@/app/components/Gallery";
 import { TestimonialRotator } from "@/app/components/TestimonialRotator";
 import { HeroBg } from "@/app/components/HeroBg";
-import { DSun, DPalm, DShell, DMoon, DWave } from "@/app/components/Doodles";
+import { DSun, DPalm, DShell, DWave, DHibiscus, DMonstera, DStar, DLeaves } from "@/app/components/Doodles";
 import { Faq } from "@/app/components/Faq";
 
 export type HotelInfo = {
@@ -174,8 +174,8 @@ export function UrgencyBand({ brand, accent, reservarPath, image }: { brand: str
           <div className="absolute inset-0" style={{ background: `linear-gradient(120deg, color-mix(in srgb, ${brand} 85%, transparent), rgba(0,0,0,.7))` }} />
         </>
       )}
-      <DMoon className="floaty pointer-events-none absolute right-4 top-6 z-10 size-12 opacity-90 sm:right-12 sm:size-16" />
-      <DSun className="floaty-slow pointer-events-none absolute bottom-6 left-5 z-10 hidden size-12 opacity-80 sm:block" />
+      <DHibiscus className="floaty absolute right-4 top-6 z-10 size-14 opacity-95 sm:right-12 sm:size-20" />
+      <DStar className="floaty-slow absolute bottom-6 left-5 z-10 hidden size-14 opacity-90 sm:block sm:size-16" />
       <Reveal>
         <div className="relative z-10 mx-auto max-w-3xl">
           <p className="mb-3 inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-1.5 text-xs font-bold uppercase tracking-[0.2em] ring-1 ring-white/20">
@@ -221,8 +221,8 @@ export function TrustBadges({ brand }: { brand: string }) {
                 <it.icon className="size-5" strokeWidth={1.9} />
               </div>
               <div>
-                <p className="font-display text-base font-semibold text-[color:var(--color-ink)]">{it.title}</p>
-                <p className="mt-0.5 text-sm leading-snug text-[color:var(--color-mute)]">{it.text}</p>
+                <p className="text-[15px] font-bold tracking-tight text-[color:var(--color-ink)]">{it.title}</p>
+                <p className="mt-0.5 text-[13px] leading-snug text-[color:var(--color-mute)]">{it.text}</p>
               </div>
             </div>
           </Reveal>
@@ -334,8 +334,9 @@ export function Benefits({ data }: { data: CampaignContent["benefits"] }) {
 export function About({ data, brand, accent }: { data: CampaignContent["about"]; brand: string; accent: string }) {
   if (!data.text && !data.images.length) return null;
   return (
-    <section className="overflow-hidden bg-[color:var(--color-sand)]/85 px-5 py-24">
-      <div className="mx-auto grid max-w-6xl items-center gap-14 lg:grid-cols-2 lg:gap-20">
+    <section className="relative overflow-hidden bg-[color:var(--color-sand)]/85 px-5 py-24">
+      <DMonstera className="floaty-slow absolute -right-4 top-8 size-20 opacity-80 sm:right-6 sm:size-28" />
+      <div className="relative mx-auto grid max-w-6xl items-center gap-14 lg:grid-cols-2 lg:gap-20">
         <Reveal>
           {data.images[0] && (
             <div className="relative -mx-5 lg:mx-0">
@@ -455,8 +456,9 @@ export function Accommodations({ data, brand }: { data: CampaignContent["accommo
 export function Destination({ data, brand, accent }: { data: CampaignContent["destination"]; brand: string; accent: string }) {
   if (!data.text && !data.images.length) return null;
   return (
-    <section className="overflow-hidden px-5 py-24">
-      <div className="mx-auto grid max-w-6xl items-center gap-14 lg:grid-cols-2 lg:gap-20">
+    <section className="relative overflow-hidden px-5 py-24">
+      <DLeaves className="floaty absolute -left-3 top-10 size-20 opacity-80 sm:left-6 sm:size-28" />
+      <div className="relative mx-auto grid max-w-6xl items-center gap-14 lg:grid-cols-2 lg:gap-20">
         <Reveal delay={0.1} className="order-2 lg:order-1">
           {data.images[0] && (
             <div className="relative -mx-5 lg:mx-0">
