@@ -6,6 +6,7 @@ import {
   Bath, BedDouble, Trees, Eye, Maximize2, Bell, BadgePercent, CalendarCheck, type LucideIcon,
 } from "lucide-react";
 import type { CampaignContent, FormConfig } from "@/app/lib/content";
+import { centsToBRL } from "@/app/lib/reservation";
 import { Reveal } from "@/app/components/Reveal";
 import { Countdown } from "@/app/components/Countdown";
 import { LeadForm } from "@/app/components/LeadForm";
@@ -217,10 +218,8 @@ export function TrustBadges({ brand }: { brand: string }) {
       <div className="mx-auto grid max-w-6xl gap-5 sm:grid-cols-2 lg:grid-cols-4">
         {items.map((it) => (
           <Reveal key={it.title}>
-            <div className="flex h-full items-start gap-3 rounded-2xl border border-[color:var(--color-line)] bg-[color:var(--color-sand)]/60 p-4 ring-1 ring-black/5">
-              <div className="flex size-11 shrink-0 items-center justify-center rounded-xl text-white shadow-sm" style={{ backgroundColor: brand }}>
-                <it.icon className="size-5" strokeWidth={1.9} />
-              </div>
+            <div className="flex h-full items-start gap-3">
+              <it.icon className="size-7 shrink-0" style={{ color: brand }} strokeWidth={1.75} />
               <div>
                 <p className="text-[15px] font-bold tracking-tight text-[color:var(--color-ink)]">{it.title}</p>
                 <p className="mt-0.5 text-[13px] leading-snug text-[color:var(--color-mute)]">{it.text}</p>
@@ -399,7 +398,7 @@ export function GallerySection({ data, brand }: { data: CampaignContent["gallery
 }
 
 // ── Acomodações ────────────────────────────────────────────────────────────────
-export function Accommodations({ data, brand }: { data: CampaignContent["accommodations"]; brand: string }) {
+export function Accommodations({ data, brand, priceMap }: { data: CampaignContent["accommodations"]; brand: string; priceMap?: Record<string, { originalCents: number; promoCents: number; discount: number }> }) {
   if (!data.items.length) return null;
   return (
     <section className="bg-[color:var(--color-sand)]/85 px-5 py-20">
@@ -408,7 +407,9 @@ export function Accommodations({ data, brand }: { data: CampaignContent["accommo
           <SectionTitle title={data.title} brand={brand} />
         </Reveal>
         <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-          {data.items.map((a, i) => (
+          {data.items.map((a, i) => {
+            const p = priceMap?.[a.name.trim().toLowerCase()];
+            return (
             <Reveal key={i} delay={i * 0.05}>
               <article className="group flex h-full flex-col overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-black/5 transition duration-300 hover:shadow-xl">
                 {a.image && (
@@ -432,14 +433,24 @@ export function Accommodations({ data, brand }: { data: CampaignContent["accommo
                       })}
                     </ul>
                   )}
-                  {a.price && (
+                  {p && p.discount > 0 ? (
+                    <div className="mt-4">
+                      <p className="text-xs uppercase tracking-wide text-[color:var(--color-mute)]">Diária a partir de</p>
+                      <div className="mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-1">
+                        <span className="text-xl font-bold" style={{ color: brand }}>{centsToBRL(p.promoCents)}</span>
+                        <span className="text-sm text-slate-400 line-through">{centsToBRL(p.originalCents)}</span>
+                        <span className="rounded-full px-2 py-0.5 text-xs font-bold text-white" style={{ backgroundColor: brand }}>{p.discount}% OFF</span>
+                      </div>
+                      <span className="text-xs text-[color:var(--color-mute)]">por noite</span>
+                    </div>
+                  ) : p || a.price ? (
                     <p className="mt-4 text-xs uppercase tracking-wide text-[color:var(--color-mute)]">
                       Diária a partir de
                       <span className="mt-0.5 block text-xl font-bold normal-case tracking-normal" style={{ color: brand }}>
-                        {a.price} <span className="font-normal text-[color:var(--color-mute)]">/ noite</span>
+                        {p ? centsToBRL(p.promoCents) : a.price} <span className="font-normal text-[color:var(--color-mute)]">/ noite</span>
                       </span>
                     </p>
-                  )}
+                  ) : null}
                   {a.ctaLabel && a.ctaHref && (
                     <a href={a.ctaHref} className="mt-auto pt-4 font-medium" style={{ color: brand }}>
                       {a.ctaLabel} →
@@ -448,7 +459,8 @@ export function Accommodations({ data, brand }: { data: CampaignContent["accommo
                 </div>
               </article>
             </Reveal>
-          ))}
+            );
+          })}
         </div>
       </div>
     </section>

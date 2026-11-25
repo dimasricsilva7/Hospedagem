@@ -164,11 +164,11 @@ async function main() {
     where: { hotelId_slug: { hotelId: hotel.id, slug: "black-friday" } },
     // Campanha DEMO: mantida pelo seed (conteúdo atualizado a cada deploy). Campanhas reais que
     // você criar no painel nunca são tocadas pelo seed. Config de reserva fica preservada.
-    update: { content, status: "PUBLISHED" },
+    update: { content, status: "PUBLISHED", name: "Black Friday" },
 
     create: {
       hotelId: hotel.id,
-      name: "Black Friday — Demonstração",
+      name: "Black Friday",
       slug: "black-friday",
       status: "PUBLISHED",
       endsAt: new Date(Date.now() + 10 * 86400_000),

@@ -6,7 +6,7 @@ import { normalizeContent, normalizeForm, normalizeTracking, normalizeReservatio
 import { Tracking } from "@/app/components/Tracking";
 import { VideoSection } from "@/app/components/VideoSection";
 import { listActiveRooms } from "@/app/server/reservations";
-import { discountPercent } from "@/app/lib/reservation";
+import { applyDiscount, discountPercent } from "@/app/lib/reservation";
 import { ReservaFlow, type RoomDTO } from "./reservar/ReservaFlow";
 import * as S from "./sections";
 
@@ -65,21 +65,27 @@ export default async function LandingPage({ params, searchParams }: { params: Pr
   const cfg = normalizeReservation(c.reservationConfig);
   const whatsappSet = Boolean((cfg.whatsapp || c.hotel.whatsapp || "").trim());
   const rooms = await listActiveRooms(c.hotelId).catch(() => []);
-  const roomDTOs: RoomDTO[] = rooms.map((r) => ({
-    id: r.id,
-    name: r.name,
-    description: r.description || "",
-    mainImage: r.mainImage || "",
-    images: Array.isArray(r.images) ? (r.images as string[]) : [],
-    amenities: Array.isArray(r.amenities) ? (r.amenities as string[]) : [],
-    beds: r.beds || "",
-    maxAdults: r.maxAdults,
-    maxChildren: r.maxChildren,
-    priceOriginalCents: r.priceOriginalCents,
-    pricePromoCents: r.pricePromoCents,
-    discountPercent: discountPercent(r.priceOriginalCents, r.pricePromoCents),
-    badgeCount: r.badgeCount ?? null,
-  }));
+  const roomDTOs: RoomDTO[] = rooms.map((r) => {
+    const promo = applyDiscount(r.priceOriginalCents, r.pricePromoCents, cfg.discountPercent);
+    return {
+      id: r.id,
+      name: r.name,
+      description: r.description || "",
+      mainImage: r.mainImage || "",
+      images: Array.isArray(r.images) ? (r.images as string[]) : [],
+      amenities: Array.isArray(r.amenities) ? (r.amenities as string[]) : [],
+      beds: r.beds || "",
+      maxAdults: r.maxAdults,
+      maxChildren: r.maxChildren,
+      priceOriginalCents: r.priceOriginalCents,
+      pricePromoCents: promo,
+      discountPercent: discountPercent(r.priceOriginalCents, promo),
+      badgeCount: r.badgeCount ?? null,
+    };
+  });
+  // Mapa nome→preços (com desconto global) p/ os cards do Refúgio refletirem o mesmo desconto.
+  const priceByName: Record<string, { originalCents: number; promoCents: number; discount: number }> = {};
+  for (const r of roomDTOs) priceByName[r.name.trim().toLowerCase()] = { originalCents: r.priceOriginalCents, promoCents: r.pricePromoCents, discount: r.discountPercent };
   const canReserve = cfg.enabled && whatsappSet && roomDTOs.length > 0;
   const reservarFull = `/${hotel}/${campaign}/reservar`;
   const reserveHref = canReserve ? "#reservar" : reservarFull; // CTAs rolam até a seção embutida
@@ -129,7 +135,7 @@ export default async function LandingPage({ params, searchParams }: { params: Pr
       case "gallery":
         return <S.GallerySection key={k} data={content.gallery} brand={brand} />;
       case "accommodations":
-        return [<S.Accommodations key={k} data={content.accommodations} brand={brand} />, reservaSection];
+        return [<S.Accommodations key={k} data={content.accommodations} brand={brand} priceMap={priceByName} />, reservaSection];
       case "destination":
         return <S.Destination key={k} data={content.destination} brand={brand} accent={accent} />;
       case "testimonials":

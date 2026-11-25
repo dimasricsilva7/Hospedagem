@@ -26,6 +26,7 @@ export async function saveReservationConfig(_prev: ReservaConfigState, formData:
     maxGuests: formData.get("maxGuests"),
     buttonLabel: formData.get("buttonLabel"),
     rules: formData.get("rules"),
+    discountPercent: formData.get("discountPercent"),
   });
   if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? "Dados inválidos." };
 

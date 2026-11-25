@@ -97,6 +97,7 @@ export const reservationConfigSchema = z.object({
   maxGuests: z.coerce.number().int().min(1).max(50).default(10),
   buttonLabel: z.string().trim().min(2).max(80).default("Solicitar reserva pelo WhatsApp"),
   rules: z.string().trim().max(3000).optional().or(z.literal("")),
+  discountPercent: z.coerce.number().int().min(0).max(95).default(0),
 });
 
 // Solicitação de reserva (público). SEM preços — o servidor recalcula a partir do quarto no banco.

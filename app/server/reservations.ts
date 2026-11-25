@@ -4,6 +4,7 @@ import type { Prisma, ReservationStatus } from "@prisma/client";
 import type { ReservationInput, RoomInput } from "@/app/lib/validators";
 import { normalizeReservation } from "@/app/lib/content";
 import {
+  applyDiscount,
   buildWhatsappMessage,
   computeTotals,
   generateReservationCode,
@@ -50,7 +51,7 @@ export async function createReservation(input: ReservationInput): Promise<Create
 
   const totals = computeTotals({
     priceOriginalCents: room.priceOriginalCents,
-    pricePromoCents: room.pricePromoCents,
+    pricePromoCents: applyDiscount(room.priceOriginalCents, room.pricePromoCents, cfg.discountPercent),
     nights,
     rooms: input.rooms,
   });

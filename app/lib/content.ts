@@ -97,6 +97,7 @@ export type ReservationConfig = {
   maxGuests: number;
   buttonLabel: string;
   rules: string; // regras/observações da hospedagem
+  discountPercent: number; // desconto global (%) aplicado a TODOS os quartos; 0 = usa o promo de cada quarto
 };
 
 // ── Defaults ────────────────────────────────────────────────────────────────
@@ -165,6 +166,7 @@ export function defaultReservation(): ReservationConfig {
     maxGuests: 10,
     buttonLabel: "Solicitar reserva pelo WhatsApp",
     rules: "",
+    discountPercent: 36,
   };
 }
 
@@ -226,5 +228,6 @@ export function normalizeReservation(raw: unknown): ReservationConfig {
     maxGuests: Number(c.maxGuests) > 0 ? Number(c.maxGuests) : d.maxGuests,
     buttonLabel: c.buttonLabel || d.buttonLabel,
     rules: c.rules ?? d.rules,
+    discountPercent: Number.isFinite(Number(c.discountPercent)) ? Math.min(95, Math.max(0, Math.round(Number(c.discountPercent)))) : d.discountPercent,
   };
 }

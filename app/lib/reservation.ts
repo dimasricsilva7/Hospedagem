@@ -35,6 +35,14 @@ export function discountPercent(originalCents: number, promoCents: number): numb
   return Math.round((1 - promoCents / originalCents) * 100);
 }
 
+/** Preço promocional a exibir: se houver desconto global (%), deriva do preço cheio; senão mantém o promo do quarto. */
+export function applyDiscount(originalCents: number, pricePromoCents: number, discountPercent: number): number {
+  if (discountPercent > 0 && discountPercent < 100 && originalCents > 0) {
+    return Math.round((originalCents * (100 - discountPercent)) / 100);
+  }
+  return pricePromoCents;
+}
+
 export type Totals = {
   nights: number;
   rooms: number;

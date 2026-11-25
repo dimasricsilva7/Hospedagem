@@ -4,7 +4,7 @@ import Link from "next/link";
 import { db } from "@/app/lib/db";
 import { normalizeContent, normalizeReservation } from "@/app/lib/content";
 import { listActiveRooms } from "@/app/server/reservations";
-import { discountPercent } from "@/app/lib/reservation";
+import { applyDiscount, discountPercent } from "@/app/lib/reservation";
 import { ReservaFlow, type RoomDTO } from "./ReservaFlow";
 
 export const dynamic = "force-dynamic";
@@ -34,21 +34,24 @@ export default async function ReservarPage({
   const whatsappSet = Boolean((cfg.whatsapp || c.hotel.whatsapp || "").trim());
 
   const rooms = await listActiveRooms(c.hotelId);
-  const roomDTOs: RoomDTO[] = rooms.map((r) => ({
-    id: r.id,
-    name: r.name,
-    description: r.description || "",
-    mainImage: r.mainImage || "",
-    images: Array.isArray(r.images) ? (r.images as string[]) : [],
-    amenities: Array.isArray(r.amenities) ? (r.amenities as string[]) : [],
-    beds: r.beds || "",
-    maxAdults: r.maxAdults,
-    maxChildren: r.maxChildren,
-    priceOriginalCents: r.priceOriginalCents,
-    pricePromoCents: r.pricePromoCents,
-    discountPercent: discountPercent(r.priceOriginalCents, r.pricePromoCents),
-    badgeCount: r.badgeCount ?? null,
-  }));
+  const roomDTOs: RoomDTO[] = rooms.map((r) => {
+    const promo = applyDiscount(r.priceOriginalCents, r.pricePromoCents, cfg.discountPercent);
+    return {
+      id: r.id,
+      name: r.name,
+      description: r.description || "",
+      mainImage: r.mainImage || "",
+      images: Array.isArray(r.images) ? (r.images as string[]) : [],
+      amenities: Array.isArray(r.amenities) ? (r.amenities as string[]) : [],
+      beds: r.beds || "",
+      maxAdults: r.maxAdults,
+      maxChildren: r.maxChildren,
+      priceOriginalCents: r.priceOriginalCents,
+      pricePromoCents: promo,
+      discountPercent: discountPercent(r.priceOriginalCents, promo),
+      badgeCount: r.badgeCount ?? null,
+    };
+  });
 
   const lead = leadId
     ? await db.lead.findUnique({ where: { id: leadId }, select: { id: true, name: true, phone: true, email: true } }).catch(() => null)

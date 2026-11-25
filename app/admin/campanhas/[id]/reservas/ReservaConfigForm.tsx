@@ -40,6 +40,12 @@ export function ReservaConfigForm({ id, values, hotelWhatsapp, saved }: { id: st
       </div>
 
       <label className="block">
+        <span className={label}>Desconto global (%) — aplicado a TODOS os quartos</span>
+        <input name="discountPercent" type="number" min={0} max={95} defaultValue={v.discountPercent} className={input} />
+        <span className="mt-1 block text-xs text-slate-500">Ex.: 36. Vale para todas as acomodações (cards do site e funil de reserva). 0 = usa o preço promocional cadastrado em cada quarto.</span>
+      </label>
+
+      <label className="block">
         <span className={label}>Texto do botão de reserva</span>
         <input name="buttonLabel" defaultValue={v.buttonLabel} className={input} />
       </label>
