@@ -26,27 +26,31 @@ async function main() {
   const content: CampaignContent = {
     ...defaultContent(),
     theme: { brand: "#0e7490", accent: "#f59e0b" },
-    promo: { text: "BLACK FRIDAY — condições exclusivas por tempo limitado (demonstração).", cta: "Garantir acesso", ctaHref: "#form" },
+    promo: { text: "A BLACK FRIDAY JÁ COMEÇOU — garanta antes que as melhores datas esgotem.", cta: "Garantir acesso", ctaHref: "#form" },
     hero: {
-      kicker: "Black Friday · Demonstração",
-      title: "Sua viagem dos sonhos com o melhor preço do ano",
-      subtitle: "Experiência all-inclusive à beira-mar. Entre na lista VIP e receba as condições antes de todo mundo.",
-      offer: "Conteúdo fictício — apenas para demonstração",
-      bgDesktop: img("1507525428034-b723cf961d3e"),
-      bgMobile: img("1507525428034-b723cf961d3e", 900),
+      kicker: "A Black Friday já começou",
+      title: "BLACK FRIDAY",
+      subtitle: "Garanta sua reserva com as melhores condições do ano, antes que as datas esgotem.",
+      offer: "O menor preço do ano",
+      bgDesktop: img("1540541338287-41700207dee6"),
+      bgMobile: img("1540541338287-41700207dee6", 900),
       overlay: 0.5,
       align: "center",
       height: "full",
-      ctaLabel: "Quero entrar na lista VIP",
+      ctaLabel: "Quero as ofertas",
     },
-    countdown: { endsAt: new Date(Date.now() + 10 * 86400_000).toISOString(), finishedMessage: "As inscrições para esta oferta foram encerradas." },
+    // Black Friday até 10/12 (23:59, horário de Brasília). Editável no painel → Contagem regressiva.
+    countdown: { endsAt: new Date("2026-12-10T23:59:00-03:00").toISOString(), finishedMessage: "As ofertas desta Black Friday foram encerradas." },
     benefits: {
-      title: "Vantagens da campanha",
+      title: "Motivos para não perder",
       items: [
-        { title: "Descontos exclusivos", text: "Condições especiais liberadas somente para a lista VIP." },
-        { title: "Parcelamento facilitado", text: "Divida sua estadia em várias vezes." },
-        { title: "Crianças com condição especial", text: "Pacotes pensados para a família toda." },
-        { title: "Acesso antecipado", text: "Garanta sua reserva antes da abertura ao público." },
+        { icon: "mar", title: "De frente pro mar", text: "Pé na areia, com vista para o oceano." },
+        { icon: "estrutura", title: "Estrutura completa", text: "Piscinas, lazer e conforto premium." },
+        { icon: "all inclusive", title: "All inclusive premium", text: "Gastronomia e bebidas inclusas." },
+        { icon: "melhor", title: "Entre os melhores", text: "Experiência reconhecida pelos hóspedes." },
+        { icon: "destino", title: "Destino paradisíaco", text: "Praias de águas cristalinas." },
+        { icon: "parcelamento", title: "Até 10x sem juros", text: "Parcele a sua viagem com facilidade." },
+        { icon: "cancelamento", title: "Cancelamento flexível", text: "Condições de cancelamento flexíveis." },
       ],
     },
     about: {
@@ -108,7 +112,9 @@ async function main() {
 
   await db.campaign.upsert({
     where: { hotelId_slug: { hotelId: hotel.id, slug: "black-friday" } },
-    update: {}, // não sobrescreve edições feitas no painel quando o build roda o seed de novo
+    // Campanha DEMO: mantida pelo seed (conteúdo atualizado a cada deploy). Campanhas reais que
+    // você criar no painel nunca são tocadas pelo seed. Config de reserva fica preservada.
+    update: { content, status: "PUBLISHED" },
 
     create: {
       hotelId: hotel.id,

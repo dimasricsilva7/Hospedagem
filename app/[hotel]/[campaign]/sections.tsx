@@ -1,6 +1,9 @@
 import Image from "next/image";
 import Link from "next/link";
-import { Star, Check, Plane, Building2, ChevronRight, CalendarDays, ShieldCheck, MessageCircle, Lock, BadgePercent } from "lucide-react";
+import {
+  Star, Check, Plane, Building2, ChevronRight, CalendarDays, ShieldCheck, MessageCircle, Lock, BadgePercent,
+  Martini, ChevronsDown, Palmtree, Waves, Award, Sun, CreditCard, DoorOpen, Utensils, Sparkles, type LucideIcon,
+} from "lucide-react";
 import type { CampaignContent, FormConfig } from "@/app/lib/content";
 import { Reveal } from "@/app/components/Reveal";
 import { Countdown } from "@/app/components/Countdown";
@@ -57,7 +60,6 @@ export function Hero({
   countdown,
   showCountdown,
   hotel,
-  brand,
   accent,
   trust,
   reservarPath,
@@ -66,16 +68,14 @@ export function Hero({
   countdown: CampaignContent["countdown"];
   showCountdown: boolean;
   hotel: HotelInfo;
-  brand: string;
   accent: string;
   trust: string[];
   reservarPath?: string;
 }) {
-  const h = data.height === "full" ? "min-h-[92vh]" : data.height === "tall" ? "min-h-[80vh]" : "min-h-[62vh]";
-  const alignSelf = data.align === "left" ? "flex-start" : "center";
-  const align = data.align === "left" ? "items-start text-left" : "items-center text-center";
+  const words = data.title.trim().split(/\s+/);
+  const endLabel = countdown.endsAt ? shortDate(countdown.endsAt) : "";
   return (
-    <section className={`relative flex ${h} flex-col justify-center overflow-hidden`}>
+    <section className="relative flex min-h-[94vh] flex-col overflow-hidden text-white">
       <div className="absolute inset-0 kenburns">
         {data.videoUrl ? (
           <video autoPlay muted loop playsInline poster={data.bgDesktop} className="size-full object-cover">
@@ -90,80 +90,91 @@ export function Hero({
           <div className="size-full bg-[color:var(--color-night)]" />
         )}
       </div>
-      {/* Overlay cinematográfico: escurece embaixo p/ leitura + tint geral configurável. */}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/35 to-black/55" />
-      <div className="absolute inset-0 bg-black" style={{ opacity: data.overlay * 0.5 }} />
+      <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/30 to-black/80" />
+      <div className="absolute inset-0 bg-black" style={{ opacity: data.overlay * 0.4 }} />
 
-      {/* Selo circular "Black Friday" (decorativo, canto superior) */}
-      <div className="pointer-events-none absolute right-5 top-8 hidden md:block lg:right-10">
-        <div className="flex size-28 rotate-[-8deg] flex-col items-center justify-center rounded-full text-center ring-1 ring-white/25" style={{ background: `color-mix(in srgb, ${accent} 90%, #000)` }}>
-          <span className="text-[10px] font-semibold uppercase tracking-[0.2em] text-black/70">Oferta</span>
-          <span className="font-display text-base font-bold leading-tight text-black">Black<br />Friday</span>
-        </div>
+      {/* Barra superior: logo + CADASTRE-SE */}
+      <div className="relative z-10 flex items-center justify-between px-5 py-5 sm:px-8">
+        {hotel.logoUrl ? (
+          <Image src={hotel.logoUrl} alt={hotel.name} width={150} height={48} className="h-9 w-auto object-contain drop-shadow sm:h-11" />
+        ) : (
+          <span className="font-display text-lg font-semibold tracking-tight drop-shadow sm:text-xl">{hotel.name}</span>
+        )}
+        <a href="#form" className="rounded-md px-4 py-2 text-sm font-bold uppercase tracking-wide text-black shadow-lg transition hover:brightness-110" style={{ backgroundColor: accent }}>
+          Cadastre-se
+        </a>
       </div>
 
-      <Reveal>
-        <div className={`relative mx-auto flex w-full max-w-4xl flex-col gap-5 px-5 py-24 ${align}`}>
-          {hotel.logoUrl && (
-            <Image src={hotel.logoUrl} alt={hotel.name} width={170} height={56} className="h-12 w-auto object-contain drop-shadow" style={{ alignSelf }} />
-          )}
-          {data.kicker && (
-            <p className="flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.35em] text-white/80" style={{ alignSelf }}>
-              <span className="hidden h-px w-8 sm:inline-block" style={{ backgroundColor: brand }} />
-              {data.kicker}
-            </p>
-          )}
-          <h1 className="font-display text-5xl font-bold leading-[1.05] text-white drop-shadow-sm sm:text-7xl">{data.title}</h1>
-          {data.subtitle && <p className="max-w-2xl text-lg leading-relaxed text-white/85 sm:text-xl">{data.subtitle}</p>}
-          {data.offer && (
-            <p
-              className="inline-flex w-fit items-center gap-2 rounded-full px-5 py-2 text-sm font-semibold text-white shadow-lg ring-1 ring-white/30 backdrop-blur"
-              style={{ alignSelf, background: `color-mix(in srgb, ${brand} 85%, transparent)` }}
-            >
-              <Star className="size-4 fill-current" /> {data.offer}
-            </p>
-          )}
-          {showCountdown && countdown.endsAt && (
-            <div className={`mt-2 ${data.align === "center" ? "flex justify-center" : ""}`}>
-              <Countdown endsAt={countdown.endsAt} finishedMessage={countdown.finishedMessage} accent={accent} />
-            </div>
-          )}
-          <div className="mt-4 flex flex-col gap-3 sm:flex-row" style={{ alignSelf }}>
-            <a
-              href="#form"
-              className="inline-flex items-center justify-center rounded-full px-8 py-4 text-base font-semibold text-white shadow-xl transition hover:-translate-y-0.5 hover:brightness-110"
-              style={{ backgroundColor: brand }}
-            >
-              {data.ctaLabel}
-            </a>
-            {reservarPath && (
-              <a
-                href={reservarPath}
-                className="inline-flex items-center justify-center gap-2 rounded-full border border-white/40 bg-white/5 px-7 py-4 text-base font-semibold text-white backdrop-blur transition hover:bg-white/15"
-              >
-                <CalendarDays className="size-5" /> Reservar agora
-              </a>
-            )}
-          </div>
-          {trust.length > 0 && (
-            <ul className={`mt-6 flex flex-wrap gap-x-5 gap-y-2 text-sm text-white/80 ${data.align === "center" ? "justify-center" : ""}`} style={{ alignSelf }}>
-              {trust.map((t) => (
-                <li key={t} className="flex items-center gap-1.5">
-                  <Check className="size-4" style={{ color: accent }} /> {t}
-                </li>
+      {/* Centro: lockup Black Friday + selos */}
+      <div className="relative z-10 flex flex-1 flex-col items-center justify-center px-5 pb-8 text-center">
+        <Reveal>
+          <div className="flex flex-col items-center gap-4">
+            <Martini className="size-8 drop-shadow" style={{ color: accent }} />
+            <h1 className="font-display text-6xl font-black uppercase leading-[0.9] drop-shadow-lg sm:text-8xl">
+              {words.map((w, i) => (
+                <span key={i} className="block" style={i === words.length - 1 && words.length > 1 ? { color: accent } : undefined}>
+                  {w}
+                </span>
               ))}
-            </ul>
+            </h1>
+            <p className="text-xs font-semibold uppercase tracking-[0.4em] text-white/85 sm:text-sm">{hotel.name}</p>
+
+            {/* selos laterais: data + oferta */}
+            <div className="mt-2 flex flex-wrap items-center justify-center gap-3">
+              {endLabel && (
+                <span className="inline-flex items-center gap-2 rounded-lg border px-4 py-2 text-sm font-bold uppercase tracking-wide backdrop-blur" style={{ borderColor: `${accent}80`, backgroundColor: "rgba(0,0,0,.35)" }}>
+                  <CalendarDays className="size-4" style={{ color: accent }} /> Até {endLabel}
+                </span>
+              )}
+              {data.offer && (
+                <span className="inline-flex items-center gap-2 rounded-lg border px-4 py-2 text-sm font-bold uppercase tracking-wide backdrop-blur" style={{ borderColor: `${accent}80`, backgroundColor: "rgba(0,0,0,.35)" }}>
+                  <ChevronsDown className="size-4" style={{ color: accent }} /> {data.offer}
+                </span>
+              )}
+            </div>
+
+            {data.subtitle && <p className="mt-2 max-w-2xl text-base text-white/90 sm:text-lg">{data.subtitle}</p>}
+          </div>
+        </Reveal>
+
+        {/* contador grande */}
+        {showCountdown && countdown.endsAt && (
+          <div className="mt-8 flex flex-col items-center gap-3">
+            <span className="text-xs font-bold uppercase tracking-[0.4em] text-white/80">Faltam</span>
+            <Countdown endsAt={countdown.endsAt} finishedMessage={countdown.finishedMessage} accent={accent} />
+          </div>
+        )}
+
+        {/* CTAs */}
+        <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+          <a href="#form" className="inline-flex items-center justify-center rounded-full px-8 py-4 text-base font-semibold text-black shadow-xl transition hover:-translate-y-0.5 hover:brightness-110" style={{ backgroundColor: accent }}>
+            {data.ctaLabel}
+          </a>
+          {reservarPath && (
+            <a href={reservarPath} className="inline-flex items-center justify-center gap-2 rounded-full border border-white/50 bg-white/5 px-7 py-4 text-base font-semibold text-white backdrop-blur transition hover:bg-white/15">
+              <CalendarDays className="size-5" /> Reservar agora
+            </a>
           )}
         </div>
-      </Reveal>
-
-      <div className="pointer-events-none absolute inset-x-0 bottom-6 flex justify-center">
-        <span className="h-9 w-5 rounded-full border border-white/40">
-          <span className="mx-auto mt-1.5 block size-1 animate-bounce rounded-full bg-white/70" />
-        </span>
+        {trust.length > 0 && (
+          <ul className="mt-6 flex flex-wrap justify-center gap-x-5 gap-y-2 text-sm text-white/85">
+            {trust.map((t) => (
+              <li key={t} className="flex items-center gap-1.5">
+                <Check className="size-4" style={{ color: accent }} /> {t}
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
     </section>
   );
+}
+
+/** "2026-12-10T..." → "10 DEZ" (sem drift, fuso Brasil). */
+function shortDate(iso: string): string {
+  const d = new Date(iso);
+  if (!Number.isFinite(d.getTime())) return "";
+  return new Intl.DateTimeFormat("pt-BR", { day: "2-digit", month: "short", timeZone: "America/Sao_Paulo" }).format(d).replace(".", "").toUpperCase();
 }
 
 // ── Formulário / Lista VIP ──────────────────────────────────────────────────────
@@ -189,30 +200,51 @@ export function FormSection({ form, campaignId, brand, hero, reservarPath }: { f
 }
 
 // ── Benefícios ──────────────────────────────────────────────────────────────────
-export function Benefits({ data, brand, accent }: { data: CampaignContent["benefits"]; brand: string; accent: string }) {
+const HEX = "polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%)";
+
+// Mapeia a palavra-chave do benefício (campo icon) ou o título para um ícone original.
+function emblemIcon(keyword: string | undefined, title: string): LucideIcon {
+  const s = `${keyword ?? ""} ${title}`.toLowerCase();
+  if (/mar|praia|beira|frente/.test(s)) return Palmtree;
+  if (/estrutura|piscina|lazer|completa/.test(s)) return Waves;
+  if (/all.?inclusive|bebida|drink|premium/.test(s)) return Martini;
+  if (/gastronom|refei|restaurante/.test(s)) return Utensils;
+  if (/melhor|premi|resort|n.?1|número 1|estrela/.test(s)) return Award;
+  if (/destino|para[íi]|paisag|sol|natureza/.test(s)) return Sun;
+  if (/parcel|juros|10x|pagamento|cart[ãa]o/.test(s)) return CreditCard;
+  if (/cancel|flex[íi]vel|gr[áa]tis/.test(s)) return DoorOpen;
+  return Sparkles;
+}
+
+// Seção "Motivos" como faixa de emblemas hexagonais (editável no painel via Benefícios).
+export function Benefits({ data, accent }: { data: CampaignContent["benefits"]; accent: string }) {
   if (!data.items.length) return null;
+  const mid = Math.floor(data.items.length / 2);
   return (
-    <section className="bg-[color:var(--color-sand)] px-5 py-24">
+    <section className="bg-[#0a0b0d] px-5 py-20 text-white">
       <div className="mx-auto max-w-6xl">
         <Reveal>
-          <SectionTitle kicker="Motivos para não perder" title={data.title} brand={brand} />
+          <SectionTitle kicker="Por que escolher" title={data.title} brand={accent} light />
         </Reveal>
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {data.items.map((b, i) => (
-            <Reveal key={i} delay={i * 0.05}>
-              <div className="group relative h-full overflow-hidden rounded-2xl border border-[color:var(--color-line)] bg-white p-8 transition duration-300 hover:-translate-y-1 hover:border-transparent hover:shadow-2xl">
-                <span className="absolute -right-2 -top-4 font-display text-7xl font-bold opacity-[0.06] transition group-hover:opacity-10" style={{ color: brand }}>
-                  {String(i + 1).padStart(2, "0")}
-                </span>
-                <div className="mb-5 flex size-12 items-center justify-center rounded-xl ring-1" style={{ backgroundColor: `${brand}10`, color: brand, borderColor: `${accent}` }}>
-                  <Check className="size-6" />
-                </div>
-                <h3 className="font-display text-xl font-semibold">{b.title}</h3>
-                {b.text && <p className="mt-2 leading-relaxed text-[color:var(--color-mute)]">{b.text}</p>}
-                <span className="mt-5 block h-0.5 w-10 origin-left scale-x-0 transition duration-300 group-hover:scale-x-100" style={{ backgroundColor: accent }} />
-              </div>
-            </Reveal>
-          ))}
+        <div className="flex flex-wrap items-start justify-center gap-x-4 gap-y-8 sm:gap-x-8">
+          {data.items.map((b, i) => {
+            const Icon = emblemIcon(b.icon, b.title);
+            const big = i === mid;
+            const size = big ? "size-36 sm:size-40" : "size-28 sm:size-32";
+            return (
+              <Reveal key={i} delay={i * 0.04}>
+                <figure className="flex w-28 flex-col items-center text-center sm:w-36">
+                  <div className={`relative ${size}`} style={{ clipPath: HEX, background: accent }}>
+                    <div className="absolute inset-[2px] flex flex-col items-center justify-center gap-2 px-3" style={{ clipPath: HEX, background: big ? `color-mix(in srgb, ${accent} 16%, #0a0b0d)` : "#0a0b0d" }}>
+                      <Icon className={big ? "size-9" : "size-7"} style={{ color: accent }} strokeWidth={1.5} />
+                      <figcaption className="text-[10px] font-bold uppercase leading-tight tracking-wide text-white sm:text-[11px]">{b.title}</figcaption>
+                    </div>
+                  </div>
+                  {b.text && <p className="mt-3 max-w-[11rem] text-xs text-white/55">{b.text}</p>}
+                </figure>
+              </Reveal>
+            );
+          })}
         </div>
       </div>
     </section>
