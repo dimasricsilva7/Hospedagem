@@ -111,6 +111,9 @@ export function CampaignEditor({ meta, hotels, content: c0, form: f0, tracking: 
           <label><span className={lbl}>Imagem de fundo (desktop) — URL</span><input value={c.hero.bgDesktop ?? ""} onChange={(e) => setC((p) => ({ ...p, hero: { ...p.hero, bgDesktop: e.target.value } }))} className={input} /></label>
           <label><span className={lbl}>Imagem de fundo (mobile) — URL</span><input value={c.hero.bgMobile ?? ""} onChange={(e) => setC((p) => ({ ...p, hero: { ...p.hero, bgMobile: e.target.value } }))} className={input} /></label>
           <label><span className={lbl}>Vídeo de fundo (URL, opcional)</span><input value={c.hero.videoUrl ?? ""} onChange={(e) => setC((p) => ({ ...p, hero: { ...p.hero, videoUrl: e.target.value } }))} className={input} /></label>
+          <div className="sm:col-span-2"><span className={lbl}>Imagens rotativas do hero (troca a cada 3s; tem prioridade sobre a imagem de fundo)</span>
+            <StrRepeater items={c.hero.images ?? []} placeholder="https://..." addLabel="Adicionar imagem do hero" onChange={(v) => setC((p) => ({ ...p, hero: { ...p.hero, images: v } }))} />
+          </div>
           <label><span className={lbl}>Rótulo do botão</span><input value={c.hero.ctaLabel} onChange={(e) => setC((p) => ({ ...p, hero: { ...p.hero, ctaLabel: e.target.value } }))} className={input} /></label>
           <label><span className={lbl}>Altura</span>
             <select value={c.hero.height} onChange={(e) => setC((p) => ({ ...p, hero: { ...p.hero, height: e.target.value as CampaignContent["hero"]["height"] } }))} className={input}>
@@ -205,6 +208,11 @@ export function CampaignEditor({ meta, hotels, content: c0, form: f0, tracking: 
 
       <Panel title="Perguntas frequentes">
         <ObjRepeater items={c.faq.items} fields={[{ key: "q", label: "Pergunta" }, { key: "a", label: "Resposta", type: "textarea" }]} newItem={() => ({ q: "", a: "" })} addLabel="Adicionar pergunta" onChange={(v) => setC((p) => ({ ...p, faq: { ...p.faq, items: v as CampaignContent["faq"]["items"] } }))} />
+      </Panel>
+
+      <Panel title="Vídeos">
+        <p className="mb-3 text-xs text-slate-400">Cole links do Instagram (reel/post) ou YouTube. Cada link vira um vídeo incorporado na seção “O NANNAI em movimento”.</p>
+        <StrRepeater items={c.videos} placeholder="https://www.instagram.com/reel/..." addLabel="Adicionar vídeo" onChange={(v) => setC((p) => ({ ...p, videos: v }))} />
       </Panel>
 
       <Panel title="CTA final">

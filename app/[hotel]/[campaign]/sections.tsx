@@ -10,6 +10,7 @@ import { Countdown } from "@/app/components/Countdown";
 import { LeadForm } from "@/app/components/LeadForm";
 import { Gallery } from "@/app/components/Gallery";
 import { TestimonialRotator } from "@/app/components/TestimonialRotator";
+import { HeroBg } from "@/app/components/HeroBg";
 import { Faq } from "@/app/components/Faq";
 
 export type HotelInfo = {
@@ -74,19 +75,8 @@ export function Hero({
   const endLabel = countdown.endsAt ? shortDate(countdown.endsAt) : "";
   return (
     <section className="relative flex min-h-[94vh] flex-col overflow-hidden text-white">
-      <div className="absolute inset-0 kenburns">
-        {data.videoUrl ? (
-          <video autoPlay muted loop playsInline poster={data.bgDesktop} className="size-full object-cover">
-            <source src={data.videoUrl} />
-          </video>
-        ) : data.bgDesktop ? (
-          <>
-            <Image src={data.bgDesktop} alt="" fill priority sizes="100vw" className={`object-cover ${data.bgMobile ? "hidden sm:block" : ""}`} />
-            {data.bgMobile && <Image src={data.bgMobile} alt="" fill priority sizes="100vw" className="object-cover sm:hidden" />}
-          </>
-        ) : (
-          <div className="size-full bg-[color:var(--color-night)]" />
-        )}
+      <div className="absolute inset-0">
+        <HeroBg images={data.images ?? []} bgDesktop={data.bgDesktop} bgMobile={data.bgMobile} videoUrl={data.videoUrl} />
       </div>
       <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/30 to-black/80" />
       <div className="absolute inset-0 bg-black" style={{ opacity: data.overlay * 0.4 }} />

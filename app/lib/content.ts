@@ -51,6 +51,7 @@ export type CampaignContent = {
     offer?: string;
     bgDesktop?: string;
     bgMobile?: string;
+    images?: string[]; // fundos rotativos (troca a cada 3s); tem prioridade sobre bgDesktop
     videoUrl?: string;
     overlay: number; // 0..1
     align: "left" | "center";
@@ -66,6 +67,7 @@ export type CampaignContent = {
   testimonials: { title?: string; items: Testimonial[] };
   faq: { title?: string; items: Faq[] };
   finalCta: { title: string; subtitle?: string; bg?: string; ctaLabel: string };
+  videos: string[]; // URLs de vídeos (Instagram/YouTube) para a seção de vídeos
 };
 
 export type FormField = { key: string; label: string; type: "text" | "email" | "tel" | "cpf" | "number"; enabled: boolean; required: boolean };
@@ -123,6 +125,7 @@ export function defaultContent(): CampaignContent {
     testimonials: { title: "O que dizem os hóspedes", items: [] },
     faq: { title: "Perguntas frequentes", items: [] },
     finalCta: { title: "Não perca esta oportunidade", ctaLabel: "Quero garantir meu acesso" },
+    videos: [],
   };
 }
 
@@ -174,7 +177,7 @@ export function normalizeContent(raw: unknown): CampaignContent {
     order,
     hidden: Array.isArray(c.hidden) ? c.hidden.filter((k): k is SectionKey => (SECTION_KEYS as readonly string[]).includes(k)) : [],
     promo: { ...d.promo, ...c.promo },
-    hero: { ...d.hero, ...c.hero },
+    hero: { ...d.hero, ...c.hero, images: Array.isArray(c.hero?.images) ? c.hero.images.filter(Boolean) : [] },
     countdown: { ...d.countdown, ...c.countdown },
     benefits: { ...d.benefits, ...c.benefits, items: c.benefits?.items ?? [] },
     about: { ...d.about, ...c.about, images: c.about?.images ?? [], highlights: c.about?.highlights ?? [] },
@@ -184,6 +187,7 @@ export function normalizeContent(raw: unknown): CampaignContent {
     testimonials: { ...d.testimonials, ...c.testimonials, items: c.testimonials?.items ?? [] },
     faq: { ...d.faq, ...c.faq, items: c.faq?.items ?? [] },
     finalCta: { ...d.finalCta, ...c.finalCta },
+    videos: Array.isArray(c.videos) ? c.videos.filter(Boolean) : [],
   };
 }
 

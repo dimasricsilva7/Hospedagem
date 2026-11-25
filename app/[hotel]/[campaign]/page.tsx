@@ -4,6 +4,7 @@ import { db } from "@/app/lib/db";
 import { getSession } from "@/app/server/auth";
 import { normalizeContent, normalizeForm, normalizeTracking, type SectionKey } from "@/app/lib/content";
 import { Tracking } from "@/app/components/Tracking";
+import { VideoSection } from "@/app/components/VideoSection";
 import * as S from "./sections";
 
 export const dynamic = "force-dynamic";
@@ -98,6 +99,7 @@ export default async function LandingPage({ params, searchParams }: { params: Pr
       )}
       {visible("promo") && <S.PromoBar data={content.promo} brand={brand} />}
       {content.order.map((k) => render(k))}
+      <VideoSection videos={content.videos} brand={brand} />
       <S.TrustStrip brand={brand} accent={accent} />
       <S.Footer hotel={hotelInfo} />
       <Tracking tracking={tracking} />

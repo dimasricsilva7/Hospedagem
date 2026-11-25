@@ -7,16 +7,28 @@ const db = new PrismaClient();
 // Substituir TODAS por fotos reais do resort no painel (Hotéis/Campanhas/Quartos).
 const img = (id: string, w = 1600) => `https://images.unsplash.com/photo-${id}?auto=format&fit=crop&w=${w}&q=80`;
 
+// Logo oficial e imagens/vídeos fornecidos pelo responsável (editáveis no painel).
+const LOGO = "https://static.pmweb.com.br/G89eYnF2MbTqw_3q31tfmOcju20=/https://letsimage.s3.amazonaws.com/editor/nannai/imgs/1744220222242-logo_nannai.png";
+const HERO_IMAGES = [
+  "https://nannai-resort-spa.hotelempernambuco.com/data/Images/OriginalPhoto/17188/1718870/1718870030/image-porto-de-galinhas-nannai-muro-alto-94.JPEG",
+  "https://content.r9cdn.net/rimg/himg/8e/d5/01/ice-470279-01ccb9-973804.jpg?width=1200&height=630&crop=true",
+  "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEj7s9bSnI_kZqlPkZhVFsLMnnD2TODlLRMMPKUgq2vy_wudYAlquURf4szx5zGllvYQdRjDk784d7NdDIF1AtGHRmDfxXfFgifVnRC8wUK-rqREW4iunsn8mbSOo8LwkMGRrTc-h60DEXiq/s1600/Nannai+Resort+%2526+SPA+Bangalo%25CC%2582+Beira+Mar+12.jpg",
+  "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTk5nTGjlmwq31JBEA4ToBSCWWDZ-BNSXOq5OeTAlSsmloJqx0NFrPe-Z4&s=10",
+  "https://letsimage.s3.amazonaws.com/editor/nannai/imgs/1744208690918-geral_1.jpg",
+];
+const HERO_VIDEOS = ["https://www.instagram.com/reel/DYkDzGBmd0Z/", "https://www.instagram.com/p/DFpzQqBIIUz/"];
+
 async function main() {
   // slug mantido como "resort-exemplo" para preservar a URL já publicada.
   // WhatsApp/e-mail ficam vazios de propósito: configure no painel (não inventar contato do NANNAI).
   const hotel = await db.hotel.upsert({
     where: { slug: "resort-exemplo" },
-    update: { name: "NANNAI Muro Alto", primaryColor: "#173e38", secondaryColor: "#a58a64", city: "Muro Alto · Ipojuca — Pernambuco" },
+    update: { name: "NANNAI Muro Alto", primaryColor: "#173e38", secondaryColor: "#a58a64", city: "Muro Alto · Ipojuca — Pernambuco", logoUrl: LOGO },
     create: {
       name: "NANNAI Muro Alto",
       slug: "resort-exemplo",
       description: "Luxo tropical à beira-mar na Praia de Muro Alto, Pernambuco.",
+      logoUrl: LOGO,
       primaryColor: "#173e38",
       secondaryColor: "#a58a64",
       whatsapp: "5511999999999", // PLACEHOLDER — trocar pelo número de atendimento no painel
@@ -38,8 +50,9 @@ async function main() {
       subtitle:
         "Descubra o privilégio de viver Muro Alto. Bangalôs exclusivos, piscinas privativas, experiências gastronômicas e momentos inesquecíveis em um dos cenários mais especiais de Pernambuco.",
       offer: "Condições especiais de hospedagem",
-      bgDesktop: img("1505228395891-9a51e7e86bf6"), // PLACEHOLDER — trocar por aérea oficial do NANNAI
-      bgMobile: img("1505228395891-9a51e7e86bf6", 900),
+      images: HERO_IMAGES, // rotativas a cada 3s (editáveis no painel → Hero)
+      bgDesktop: HERO_IMAGES[0], // fallback
+      bgMobile: HERO_IMAGES[0],
       overlay: 0.45,
       align: "center",
       height: "full",
@@ -124,6 +137,7 @@ async function main() {
       bg: img("1519046904884-53103b34b206"), // PLACEHOLDER
       ctaLabel: "Quero conhecer as condições",
     },
+    videos: HERO_VIDEOS,
   };
 
   await db.campaign.upsert({
