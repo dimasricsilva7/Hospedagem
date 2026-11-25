@@ -50,6 +50,8 @@ export default async function LandingPage({ params, searchParams }: { params: Pr
   const form = normalizeForm(c.formConfig);
   const tracking = normalizeTracking(c.trackingConfig);
   const brand = content.theme.brand;
+  const accent = content.theme.accent;
+  const trust = content.benefits.items.map((b) => b.title).filter(Boolean).slice(0, 4);
   const hotelInfo: S.HotelInfo = c.hotel;
 
   const visible = (k: SectionKey) => content.order.includes(k) && !content.hidden.includes(k);
@@ -62,11 +64,11 @@ export default async function LandingPage({ params, searchParams }: { params: Pr
       case "countdown":
         return null; // consumida pelo hero
       case "hero":
-        return <S.Hero key={k} data={content.hero} countdown={content.countdown} showCountdown={showCountdown} hotel={hotelInfo} brand={brand} reservarPath={`/${hotel}/${campaign}/reservar`} />;
+        return <S.Hero key={k} data={content.hero} countdown={content.countdown} showCountdown={showCountdown} hotel={hotelInfo} brand={brand} accent={accent} trust={trust} reservarPath={`/${hotel}/${campaign}/reservar`} />;
       case "form":
         return <S.FormSection key={k} form={form} campaignId={c.id} brand={brand} hero={content.hero} reservarPath={`/${hotel}/${campaign}/reservar`} />;
       case "benefits":
-        return <S.Benefits key={k} data={content.benefits} brand={brand} />;
+        return <S.Benefits key={k} data={content.benefits} brand={brand} accent={accent} />;
       case "about":
         return <S.About key={k} data={content.about} brand={brand} />;
       case "gallery":
@@ -93,6 +95,7 @@ export default async function LandingPage({ params, searchParams }: { params: Pr
       )}
       {visible("promo") && <S.PromoBar data={content.promo} brand={brand} />}
       {content.order.map((k) => render(k))}
+      <S.TrustStrip brand={brand} accent={accent} />
       <S.Footer hotel={hotelInfo} />
       <Tracking tracking={tracking} />
     </main>

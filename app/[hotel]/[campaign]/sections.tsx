@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { Star, Check, Plane, Building2, ChevronRight, CalendarDays } from "lucide-react";
+import { Star, Check, Plane, Building2, ChevronRight, CalendarDays, ShieldCheck, MessageCircle, Lock, BadgePercent } from "lucide-react";
 import type { CampaignContent, FormConfig } from "@/app/lib/content";
 import { Reveal } from "@/app/components/Reveal";
 import { Countdown } from "@/app/components/Countdown";
@@ -18,13 +18,15 @@ export type HotelInfo = {
 };
 
 const SectionTitle = ({ kicker, title, brand, light }: { kicker?: string; title?: string; brand: string; light?: boolean }) => (
-  <div className="mb-10 text-center">
-    {kicker && (
-      <p className="mb-3 text-xs font-semibold uppercase tracking-[0.2em]" style={{ color: brand }}>
-        {kicker}
+  <div className="mb-12 text-center">
+    <div className="mb-4 flex items-center justify-center gap-3">
+      <span className="h-px w-8" style={{ backgroundColor: brand }} />
+      <p className="text-xs font-semibold uppercase tracking-[0.3em]" style={{ color: brand }}>
+        {kicker || "Black Friday"}
       </p>
-    )}
-    {title && <h2 className={`font-display text-3xl font-semibold sm:text-4xl ${light ? "text-white" : "text-[color:var(--color-ink)]"}`}>{title}</h2>}
+      <span className="h-px w-8" style={{ backgroundColor: brand }} />
+    </div>
+    {title && <h2 className={`font-display text-3xl font-semibold tracking-tight sm:text-5xl ${light ? "text-white" : "text-[color:var(--color-ink)]"}`}>{title}</h2>}
   </div>
 );
 
@@ -56,6 +58,8 @@ export function Hero({
   showCountdown,
   hotel,
   brand,
+  accent,
+  trust,
   reservarPath,
 }: {
   data: CampaignContent["hero"];
@@ -63,6 +67,8 @@ export function Hero({
   showCountdown: boolean;
   hotel: HotelInfo;
   brand: string;
+  accent: string;
+  trust: string[];
   reservarPath?: string;
 }) {
   const h = data.height === "full" ? "min-h-[92vh]" : data.height === "tall" ? "min-h-[80vh]" : "min-h-[62vh]";
@@ -88,6 +94,14 @@ export function Hero({
       <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/35 to-black/55" />
       <div className="absolute inset-0 bg-black" style={{ opacity: data.overlay * 0.5 }} />
 
+      {/* Selo circular "Black Friday" (decorativo, canto superior) */}
+      <div className="pointer-events-none absolute right-5 top-8 hidden md:block lg:right-10">
+        <div className="flex size-28 rotate-[-8deg] flex-col items-center justify-center rounded-full text-center ring-1 ring-white/25" style={{ background: `color-mix(in srgb, ${accent} 90%, #000)` }}>
+          <span className="text-[10px] font-semibold uppercase tracking-[0.2em] text-black/70">Oferta</span>
+          <span className="font-display text-base font-bold leading-tight text-black">Black<br />Friday</span>
+        </div>
+      </div>
+
       <Reveal>
         <div className={`relative mx-auto flex w-full max-w-4xl flex-col gap-5 px-5 py-24 ${align}`}>
           {hotel.logoUrl && (
@@ -111,7 +125,7 @@ export function Hero({
           )}
           {showCountdown && countdown.endsAt && (
             <div className={`mt-2 ${data.align === "center" ? "flex justify-center" : ""}`}>
-              <Countdown endsAt={countdown.endsAt} finishedMessage={countdown.finishedMessage} />
+              <Countdown endsAt={countdown.endsAt} finishedMessage={countdown.finishedMessage} accent={accent} />
             </div>
           )}
           <div className="mt-4 flex flex-col gap-3 sm:flex-row" style={{ alignSelf }}>
@@ -131,6 +145,15 @@ export function Hero({
               </a>
             )}
           </div>
+          {trust.length > 0 && (
+            <ul className={`mt-6 flex flex-wrap gap-x-5 gap-y-2 text-sm text-white/80 ${data.align === "center" ? "justify-center" : ""}`} style={{ alignSelf }}>
+              {trust.map((t) => (
+                <li key={t} className="flex items-center gap-1.5">
+                  <Check className="size-4" style={{ color: accent }} /> {t}
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
       </Reveal>
 
@@ -166,23 +189,27 @@ export function FormSection({ form, campaignId, brand, hero, reservarPath }: { f
 }
 
 // ── Benefícios ──────────────────────────────────────────────────────────────────
-export function Benefits({ data, brand }: { data: CampaignContent["benefits"]; brand: string }) {
+export function Benefits({ data, brand, accent }: { data: CampaignContent["benefits"]; brand: string; accent: string }) {
   if (!data.items.length) return null;
   return (
-    <section className="px-5 py-20">
+    <section className="bg-[color:var(--color-sand)] px-5 py-24">
       <div className="mx-auto max-w-6xl">
         <Reveal>
-          <SectionTitle title={data.title} brand={brand} />
+          <SectionTitle kicker="Motivos para não perder" title={data.title} brand={brand} />
         </Reveal>
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {data.items.map((b, i) => (
             <Reveal key={i} delay={i * 0.05}>
-              <div className="h-full rounded-2xl border border-[color:var(--color-line)] bg-white p-7 transition duration-300 hover:-translate-y-1 hover:border-transparent hover:shadow-xl">
-                <div className="mb-4 flex size-12 items-center justify-center rounded-xl" style={{ backgroundColor: `${brand}14`, color: brand }}>
+              <div className="group relative h-full overflow-hidden rounded-2xl border border-[color:var(--color-line)] bg-white p-8 transition duration-300 hover:-translate-y-1 hover:border-transparent hover:shadow-2xl">
+                <span className="absolute -right-2 -top-4 font-display text-7xl font-bold opacity-[0.06] transition group-hover:opacity-10" style={{ color: brand }}>
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+                <div className="mb-5 flex size-12 items-center justify-center rounded-xl ring-1" style={{ backgroundColor: `${brand}10`, color: brand, borderColor: `${accent}` }}>
                   <Check className="size-6" />
                 </div>
-                <h3 className="font-display text-lg font-semibold">{b.title}</h3>
-                {b.text && <p className="mt-2 text-[color:var(--color-mute)]">{b.text}</p>}
+                <h3 className="font-display text-xl font-semibold">{b.title}</h3>
+                {b.text && <p className="mt-2 leading-relaxed text-[color:var(--color-mute)]">{b.text}</p>}
+                <span className="mt-5 block h-0.5 w-10 origin-left scale-x-0 transition duration-300 group-hover:scale-x-100" style={{ backgroundColor: accent }} />
               </div>
             </Reveal>
           ))}
@@ -397,6 +424,35 @@ export function FinalCta({ data, brand, reservarPath }: { data: CampaignContent[
           </div>
         </div>
       </Reveal>
+    </section>
+  );
+}
+
+// ── Faixa de confiança ────────────────────────────────────────────────────────
+export function TrustStrip({ brand, accent }: { brand: string; accent: string }) {
+  const items = [
+    { icon: ShieldCheck, title: "Reserva sem risco", text: "Nada é cobrado aqui — você confirma tudo direto com o hotel." },
+    { icon: MessageCircle, title: "Atendimento oficial", text: "Sua solicitação chega pelo WhatsApp oficial do hotel." },
+    { icon: Lock, title: "Dados protegidos", text: "Tratamos suas informações conforme a LGPD." },
+    { icon: BadgePercent, title: "Melhores condições", text: "Acesso às ofertas exclusivas desta campanha." },
+  ];
+  return (
+    <section className="border-y border-[color:var(--color-line)] bg-white px-5 py-14">
+      <div className="mx-auto grid max-w-6xl gap-8 sm:grid-cols-2 lg:grid-cols-4">
+        {items.map((it) => (
+          <Reveal key={it.title}>
+            <div className="flex items-start gap-3">
+              <div className="flex size-11 shrink-0 items-center justify-center rounded-xl ring-1" style={{ backgroundColor: `${brand}10`, color: brand, borderColor: `${accent}55` }}>
+                <it.icon className="size-5" />
+              </div>
+              <div>
+                <p className="font-semibold text-[color:var(--color-ink)]">{it.title}</p>
+                <p className="mt-0.5 text-sm text-[color:var(--color-mute)]">{it.text}</p>
+              </div>
+            </div>
+          </Reveal>
+        ))}
+      </div>
     </section>
   );
 }
