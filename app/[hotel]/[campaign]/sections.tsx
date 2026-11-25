@@ -174,8 +174,9 @@ export function UrgencyBand({ brand, accent, reservarPath, image }: { brand: str
           <div className="absolute inset-0" style={{ background: `linear-gradient(120deg, color-mix(in srgb, ${brand} 85%, transparent), rgba(0,0,0,.7))` }} />
         </>
       )}
-      <DHibiscus className="floaty absolute right-4 top-6 z-10 size-14 opacity-95 sm:right-12 sm:size-20" />
-      <DStar className="floaty-slow absolute bottom-6 left-5 z-10 hidden size-14 opacity-90 sm:block sm:size-16" />
+      <DHibiscus className="sway absolute right-3 top-5 z-10 size-12 opacity-95 sm:right-16 sm:size-20" />
+      <DStar className="pulse-soft absolute left-4 top-1/3 z-10 hidden size-11 opacity-90 sm:block sm:left-14 sm:size-14" />
+      <DShell className="bob absolute bottom-8 left-1/2 z-10 hidden size-12 -translate-x-1/2 opacity-80 sm:block" />
       <Reveal>
         <div className="relative z-10 mx-auto max-w-3xl">
           <p className="mb-3 inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-1.5 text-xs font-bold uppercase tracking-[0.2em] ring-1 ring-white/20">
@@ -335,13 +336,14 @@ export function About({ data, brand, accent }: { data: CampaignContent["about"];
   if (!data.text && !data.images.length) return null;
   return (
     <section className="relative overflow-hidden bg-[color:var(--color-sand)]/85 px-5 py-24">
-      <DMonstera className="floaty-slow absolute -right-4 top-8 size-20 opacity-80 sm:right-6 sm:size-28" />
+      <DMonstera className="sway absolute right-2 top-1/4 z-10 hidden size-16 opacity-70 sm:block sm:right-10 sm:size-24" />
+      <DStar className="pulse-soft absolute bottom-16 left-6 z-10 hidden size-12 opacity-70 sm:block sm:size-16" />
       <div className="relative mx-auto grid max-w-6xl items-center gap-14 lg:grid-cols-2 lg:gap-20">
         <Reveal>
           {data.images[0] && (
-            <div className="relative -mx-5 lg:mx-0">
+            <div className="relative">
               <span className="pointer-events-none absolute -bottom-5 -right-5 hidden h-full w-full border lg:block" style={{ borderColor: accent }} />
-              <div className="relative aspect-[3/4] overflow-hidden shadow-2xl ring-1 ring-black/5 sm:aspect-4/5 sm:rounded-2xl lg:rounded-none">
+              <div className="relative aspect-[4/5] overflow-hidden rounded-2xl shadow-2xl ring-1 ring-black/5 lg:rounded-none">
                 <Image src={data.images[0]} alt={data.title} fill sizes="(max-width:1024px) 100vw, 50vw" className="object-cover" />
               </div>
             </div>
@@ -381,10 +383,11 @@ export function GallerySection({ data, brand }: { data: CampaignContent["gallery
   return (
     <section className="relative overflow-hidden bg-[color:var(--color-sand)]/85 px-5 py-24">
       {/* acentos tropicais (decorativos) */}
-      <DSun className="floaty pointer-events-none absolute left-3 top-16 size-10 opacity-80 sm:left-10 sm:size-14" />
-      <DPalm className="floaty-slow pointer-events-none absolute right-3 top-10 size-12 opacity-80 sm:right-12 sm:size-16" />
-      <DShell className="floaty-slow pointer-events-none absolute bottom-14 left-4 size-9 opacity-70 sm:left-14 sm:size-12" />
-      <DWave className="floaty pointer-events-none absolute bottom-20 right-5 h-8 w-12 opacity-70 sm:right-16 sm:h-12 sm:w-20" />
+      <DSun className="spin-slow absolute left-3 top-5 size-10 opacity-80 sm:left-10 sm:top-20 sm:size-14" />
+      <DPalm className="sway absolute right-4 top-1/3 hidden size-12 opacity-80 sm:block sm:right-14 sm:size-16" />
+      <DWave className="floaty absolute left-1/4 top-1/2 hidden h-8 w-12 opacity-70 sm:block sm:h-12 sm:w-20" />
+      <DShell className="bob absolute bottom-8 right-4 size-9 opacity-75 sm:bottom-16 sm:right-20 sm:size-12" />
+      <DHibiscus className="pulse-soft absolute bottom-10 left-6 hidden size-11 opacity-80 sm:block sm:size-14" />
       <div className="relative mx-auto max-w-6xl">
         <Reveal>
           <SectionTitle kicker="Momentos" title={data.title} brand={brand} />
@@ -432,8 +435,8 @@ export function Accommodations({ data, brand }: { data: CampaignContent["accommo
                   {a.price && (
                     <p className="mt-4 text-xs uppercase tracking-wide text-[color:var(--color-mute)]">
                       Diária a partir de
-                      <span className="mt-0.5 block font-display text-2xl font-bold normal-case tracking-normal" style={{ color: brand }}>
-                        {a.price}<span className="text-sm font-normal text-[color:var(--color-mute)]"> / noite</span>
+                      <span className="mt-0.5 block text-xl font-bold normal-case tracking-normal" style={{ color: brand }}>
+                        {a.price} <span className="font-normal text-[color:var(--color-mute)]">/ noite</span>
                       </span>
                     </p>
                   )}
@@ -457,13 +460,14 @@ export function Destination({ data, brand, accent }: { data: CampaignContent["de
   if (!data.text && !data.images.length) return null;
   return (
     <section className="relative overflow-hidden px-5 py-24">
-      <DLeaves className="floaty absolute -left-3 top-10 size-20 opacity-80 sm:left-6 sm:size-28" />
+      <DLeaves className="bob absolute left-2 top-1/4 z-10 hidden size-16 opacity-70 sm:block sm:left-10 sm:size-24" />
+      <DShell className="floaty absolute right-6 top-1/2 z-10 hidden size-12 opacity-70 sm:block sm:size-16" />
       <div className="relative mx-auto grid max-w-6xl items-center gap-14 lg:grid-cols-2 lg:gap-20">
         <Reveal delay={0.1} className="order-2 lg:order-1">
           {data.images[0] && (
-            <div className="relative -mx-5 lg:mx-0">
+            <div className="relative">
               <span className="pointer-events-none absolute -bottom-5 -left-5 hidden h-full w-full border lg:block" style={{ borderColor: accent }} />
-              <div className="relative aspect-[3/4] overflow-hidden shadow-2xl ring-1 ring-black/5 sm:aspect-4/5 sm:rounded-2xl lg:rounded-none">
+              <div className="relative aspect-[4/5] overflow-hidden rounded-2xl shadow-2xl ring-1 ring-black/5 lg:rounded-none">
                 <Image src={data.images[0]} alt={data.title} fill sizes="(max-width:1024px) 100vw, 50vw" className="object-cover" />
               </div>
             </div>
@@ -504,8 +508,11 @@ export function Testimonials({ data, brand, accent }: { data: CampaignContent["t
   if (!data.items.length) return null;
   const anyDemo = data.items.some((t) => t.demo);
   return (
-    <section className="bg-[color:var(--color-night)] px-5 py-24">
-      <div className="mx-auto max-w-6xl">
+    <section className="relative overflow-hidden bg-[color:var(--color-night)] px-5 py-24">
+      <DWave className="floaty absolute left-6 top-1/4 hidden h-8 w-12 opacity-70 sm:block sm:h-12 sm:w-20" />
+      <DStar className="pulse-soft absolute right-3 top-5 size-11 opacity-85 sm:right-16 sm:top-16 sm:size-16" />
+      <DShell className="bob absolute bottom-12 left-1/4 hidden size-12 opacity-70 sm:block" />
+      <div className="relative mx-auto max-w-6xl">
         <Reveal>
           <SectionTitle kicker="Avaliações" title={data.title} brand={brand} light />
         </Reveal>
@@ -537,8 +544,11 @@ export function FinalCta({ data, brand, reservarPath }: { data: CampaignContent[
     <section className="relative overflow-hidden px-5 py-28 text-center">
       {data.bg ? <Image src={data.bg} alt="" fill sizes="100vw" className="object-cover" /> : <div className="absolute inset-0" style={{ backgroundColor: brand }} />}
       <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/55 to-black/60" />
+      <DPalm className="sway absolute left-5 top-10 z-10 hidden size-14 opacity-85 sm:block sm:left-16 sm:size-20" />
+      <DHibiscus className="pulse-soft absolute bottom-6 right-3 z-10 size-11 opacity-90 sm:right-16 sm:top-1/3 sm:size-16" />
+      <DSun className="spin-slow absolute bottom-10 left-1/4 z-10 hidden size-12 opacity-80 sm:block sm:size-16" />
       <Reveal>
-        <div className="relative mx-auto max-w-2xl">
+        <div className="relative z-10 mx-auto max-w-2xl">
           <h2 className="font-display text-4xl font-bold text-white sm:text-5xl">{data.title}</h2>
           {data.subtitle && <p className="mt-4 text-lg text-white/85">{data.subtitle}</p>}
           <div className="mt-9 flex flex-col justify-center gap-3 sm:flex-row">

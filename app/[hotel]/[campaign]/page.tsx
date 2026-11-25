@@ -2,9 +2,12 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { db } from "@/app/lib/db";
 import { getSession } from "@/app/server/auth";
-import { normalizeContent, normalizeForm, normalizeTracking, type SectionKey } from "@/app/lib/content";
+import { normalizeContent, normalizeForm, normalizeTracking, normalizeReservation, type SectionKey } from "@/app/lib/content";
 import { Tracking } from "@/app/components/Tracking";
 import { VideoSection } from "@/app/components/VideoSection";
+import { listActiveRooms } from "@/app/server/reservations";
+import { discountPercent } from "@/app/lib/reservation";
+import { ReservaFlow, type RoomDTO } from "./reservar/ReservaFlow";
 import * as S from "./sections";
 
 export const dynamic = "force-dynamic";
@@ -58,6 +61,53 @@ export default async function LandingPage({ params, searchParams }: { params: Pr
   const visible = (k: SectionKey) => content.order.includes(k) && !content.hidden.includes(k);
   const showCountdown = visible("countdown") && Boolean(content.countdown.endsAt);
 
+  // Reserva rápida embutida na landing (mesmo fluxo da página /reservar).
+  const cfg = normalizeReservation(c.reservationConfig);
+  const whatsappSet = Boolean((cfg.whatsapp || c.hotel.whatsapp || "").trim());
+  const rooms = await listActiveRooms(c.hotelId).catch(() => []);
+  const roomDTOs: RoomDTO[] = rooms.map((r) => ({
+    id: r.id,
+    name: r.name,
+    description: r.description || "",
+    mainImage: r.mainImage || "",
+    images: Array.isArray(r.images) ? (r.images as string[]) : [],
+    amenities: Array.isArray(r.amenities) ? (r.amenities as string[]) : [],
+    beds: r.beds || "",
+    maxAdults: r.maxAdults,
+    maxChildren: r.maxChildren,
+    priceOriginalCents: r.priceOriginalCents,
+    pricePromoCents: r.pricePromoCents,
+    discountPercent: discountPercent(r.priceOriginalCents, r.pricePromoCents),
+    badgeCount: r.badgeCount ?? null,
+  }));
+  const canReserve = cfg.enabled && whatsappSet && roomDTOs.length > 0;
+  const reservarFull = `/${hotel}/${campaign}/reservar`;
+  const reserveHref = canReserve ? "#reservar" : reservarFull; // CTAs rolam até a seção embutida
+
+  const reservaSection = canReserve ? (
+    <section key="reservar" id="reservar" className="scroll-mt-16 border-y border-[color:var(--color-line)] bg-[color:var(--color-sand)]/85 px-5 py-16">
+      <div className="mx-auto mb-8 max-w-6xl text-center">
+        <div className="mb-4 flex items-center justify-center gap-3">
+          <span className="h-px w-8" style={{ backgroundColor: brand }} />
+          <p className="text-xs font-semibold uppercase tracking-[0.3em]" style={{ color: brand }}>Reserve agora</p>
+          <span className="h-px w-8" style={{ backgroundColor: brand }} />
+        </div>
+        <h2 className="font-display text-3xl font-semibold sm:text-4xl">Faça sua reserva em poucos passos</h2>
+        <p className="mt-3 text-[color:var(--color-mute)]">Escolha as datas, os hóspedes e a acomodação — enviamos tudo pronto para o WhatsApp do resort.</p>
+      </div>
+      <ReservaFlow
+        embedded
+        brand={brand}
+        hotelName={c.hotel.name}
+        campaignId={c.id}
+        campaignName={c.name}
+        rooms={roomDTOs}
+        config={{ checkInMin: cfg.checkInMin, checkInMax: cfg.checkInMax, checkOutMax: cfg.checkOutMax, checkOutDefault: cfg.checkOutDefault, timeStepMin: cfg.timeStepMin, minNights: cfg.minNights, maxNights: cfg.maxNights, maxGuests: cfg.maxGuests, buttonLabel: cfg.buttonLabel, rules: cfg.rules }}
+        lead={null}
+      />
+    </section>
+  ) : null;
+
   const render = (k: SectionKey) => {
     switch (k) {
       case "promo":
@@ -66,12 +116,12 @@ export default async function LandingPage({ params, searchParams }: { params: Pr
         return null; // consumida pelo hero
       case "hero":
         return [
-          <S.Hero key="hero" data={content.hero} countdown={content.countdown} showCountdown={showCountdown} hotel={hotelInfo} accent={accent} trust={trust} reservarPath={`/${hotel}/${campaign}/reservar`} />,
+          <S.Hero key="hero" data={content.hero} countdown={content.countdown} showCountdown={showCountdown} hotel={hotelInfo} accent={accent} trust={trust} reservarPath={reserveHref} />,
           <S.TrustBadges key="badges" brand={brand} />,
-          <S.UrgencyBand key="urgency" brand={brand} accent={accent} reservarPath={`/${hotel}/${campaign}/reservar`} image={content.offerBg} />,
+          <S.UrgencyBand key="urgency" brand={brand} accent={accent} reservarPath={reserveHref} image={content.offerBg} />,
         ];
       case "form":
-        return <S.FormSection key={k} form={form} campaignId={c.id} brand={brand} hero={content.hero} reservarPath={`/${hotel}/${campaign}/reservar`} />;
+        return <S.FormSection key={k} form={form} campaignId={c.id} brand={brand} hero={content.hero} reservarPath={reservarFull} />;
       case "benefits":
         return <S.Benefits key={k} data={content.benefits} />;
       case "about":
@@ -79,7 +129,7 @@ export default async function LandingPage({ params, searchParams }: { params: Pr
       case "gallery":
         return <S.GallerySection key={k} data={content.gallery} brand={brand} />;
       case "accommodations":
-        return <S.Accommodations key={k} data={content.accommodations} brand={brand} />;
+        return [<S.Accommodations key={k} data={content.accommodations} brand={brand} />, reservaSection];
       case "destination":
         return <S.Destination key={k} data={content.destination} brand={brand} accent={accent} />;
       case "testimonials":
@@ -87,7 +137,7 @@ export default async function LandingPage({ params, searchParams }: { params: Pr
       case "faq":
         return <S.FaqSection key={k} data={content.faq} brand={brand} />;
       case "finalCta":
-        return <S.FinalCta key={k} data={content.finalCta} brand={brand} reservarPath={`/${hotel}/${campaign}/reservar`} />;
+        return <S.FinalCta key={k} data={content.finalCta} brand={brand} reservarPath={reserveHref} />;
     }
   };
 

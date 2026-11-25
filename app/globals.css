@@ -99,6 +99,53 @@ h3 {
   }
 }
 
+/* Variações de movimento dos desenhos, para dar "vida" (cada um mexe de um jeito). */
+.sway {
+  animation: sway 7s ease-in-out infinite;
+  transform-origin: bottom center;
+}
+@keyframes sway {
+  0%,
+  100% {
+    transform: rotate(-7deg);
+  }
+  50% {
+    transform: rotate(7deg);
+  }
+}
+.bob {
+  animation: bob 5.5s ease-in-out infinite;
+}
+@keyframes bob {
+  0%,
+  100% {
+    transform: translateY(0) rotate(-4deg);
+  }
+  50% {
+    transform: translateY(-13px) rotate(4deg);
+  }
+}
+.spin-slow {
+  animation: spin-slow 22s linear infinite;
+}
+@keyframes spin-slow {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.pulse-soft {
+  animation: pulse-soft 4.5s ease-in-out infinite;
+}
+@keyframes pulse-soft {
+  0%,
+  100% {
+    transform: scale(1) rotate(-3deg);
+  }
+  50% {
+    transform: scale(1.12) rotate(3deg);
+  }
+}
+
 /* Movimento sutil do fundo do hero (Ken Burns). Desligado por prefers-reduced-motion acima. */
 .kenburns {
   animation: kenburns 26s ease-out both;

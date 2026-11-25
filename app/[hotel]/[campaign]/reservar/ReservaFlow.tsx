@@ -71,6 +71,7 @@ export function ReservaFlow({
   rooms,
   config,
   lead,
+  embedded = false,
 }: {
   brand: string;
   hotelName: string;
@@ -79,6 +80,7 @@ export function ReservaFlow({
   rooms: RoomDTO[];
   config: Config;
   lead: Lead | null;
+  embedded?: boolean;
 }) {
   const reduce = useReducedMotion();
   const [step, setStep] = useState(0);
@@ -266,7 +268,7 @@ export function ReservaFlow({
           </div>
         </div>
 
-        <Summary brand={brand} hotelName={hotelName} campaignName={campaignName} room={room} roomsQty={roomsQty} checkIn={checkIn} checkOut={checkOut} checkInTime={checkInTime} checkOutTime={checkOutTime} nights={nights} adults={adults} kids={children} totals={totals} />
+        <Summary brand={brand} hotelName={hotelName} campaignName={campaignName} room={room} roomsQty={roomsQty} checkIn={checkIn} checkOut={checkOut} checkInTime={checkInTime} checkOutTime={checkOutTime} nights={nights} adults={adults} kids={children} totals={totals} embedded={embedded} />
       </div>
 
       {lightbox && <Lightbox state={lightbox} onClose={() => setLightbox(null)} onNav={(d) => setLightbox((l) => (l ? { ...l, index: (l.index + d + l.images.length) % l.images.length } : l))} />}
@@ -356,7 +358,9 @@ function Field({ label, value, active, brand }: { label: string; value: string; 
 }
 
 function MonthCalendar({ brand, checkIn, checkOut, onPick }: { brand: string; checkIn: string; checkOut: string; onPick: (iso: string) => void }) {
-  const today = todayISO();
+  // Corte do mesmo dia: após as 15h (horário local), hoje fica indisponível — check-in só a partir de amanhã.
+  const now = new Date();
+  const minISO = now.getHours() >= 15 ? toISO(new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1)) : todayISO();
   const [cursor, setCursor] = useState(() => {
     const d = checkIn ? new Date(`${checkIn}T00:00:00`) : new Date();
     return new Date(d.getFullYear(), d.getMonth(), 1);
@@ -370,7 +374,7 @@ function MonthCalendar({ brand, checkIn, checkOut, onPick }: { brand: string; ch
   for (let d = 1; d <= daysInMonth; d++) cells.push(toISO(new Date(year, month, d)));
 
   const monthLabel = new Intl.DateTimeFormat("pt-BR", { month: "long", year: "numeric" }).format(cursor);
-  const canPrev = toISO(new Date(year, month, 1)) > today;
+  const canPrev = toISO(new Date(year, month, 1)) > minISO;
 
   return (
     <div className="mx-auto max-w-[320px]">
@@ -389,7 +393,7 @@ function MonthCalendar({ brand, checkIn, checkOut, onPick }: { brand: string; ch
       <div className="grid grid-cols-7 gap-0.5">
         {cells.map((iso, i) => {
           if (!iso) return <div key={i} />;
-          const past = iso < today;
+          const past = iso < minISO;
           const selected = iso === checkIn || iso === checkOut;
           const inRange = checkIn && checkOut && iso > checkIn && iso < checkOut;
           return (
@@ -633,6 +637,7 @@ function Summary({
   adults,
   kids,
   totals,
+  embedded,
 }: {
   brand: string;
   hotelName: string;
@@ -647,6 +652,7 @@ function Summary({
   adults: number;
   kids: number;
   totals: ReturnType<typeof computeTotals> | null;
+  embedded?: boolean;
 }) {
   const [open, setOpen] = useState(false);
   const body = (
@@ -682,14 +688,23 @@ function Summary({
         </div>
       </aside>
 
-      <div className="fixed inset-x-0 bottom-0 z-40 border-t border-[color:var(--color-line)] bg-white/95 p-4 backdrop-blur lg:hidden">
-        <button type="button" onClick={() => setOpen((o) => !o)} className="flex w-full items-center justify-between">
-          <span className="text-sm text-[color:var(--color-mute)]">Resumo da reserva</span>
-          <span className="text-lg font-bold" style={{ color: brand }}>{totals ? centsToBRL(totals.totalPromoCents) : "—"}</span>
-        </button>
-        {open && <div className="mt-4">{body}</div>}
-      </div>
-      <div className="h-16 lg:hidden" />
+      {embedded ? (
+        <div className="rounded-2xl border border-[color:var(--color-line)] bg-white p-5 shadow-sm lg:hidden">
+          <h3 className="mb-4 font-display text-lg font-semibold">Resumo da reserva</h3>
+          {body}
+        </div>
+      ) : (
+        <>
+          <div className="fixed inset-x-0 bottom-0 z-40 border-t border-[color:var(--color-line)] bg-white/95 p-4 backdrop-blur lg:hidden">
+            <button type="button" onClick={() => setOpen((o) => !o)} className="flex w-full items-center justify-between">
+              <span className="text-sm text-[color:var(--color-mute)]">Resumo da reserva</span>
+              <span className="text-lg font-bold" style={{ color: brand }}>{totals ? centsToBRL(totals.totalPromoCents) : "—"}</span>
+            </button>
+            {open && <div className="mt-4">{body}</div>}
+          </div>
+          <div className="h-16 lg:hidden" />
+        </>
+      )}
     </>
   );
 }
