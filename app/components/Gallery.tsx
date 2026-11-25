@@ -31,7 +31,7 @@ export function Gallery({ images }: { images: GalleryImage[] }) {
             key={i}
             type="button"
             onClick={() => setLight(i)}
-            className={`group relative overflow-hidden ${SPAN[i % SPAN.length]}`}
+            className={`group relative overflow-hidden rounded-xl ring-1 ring-black/5 ${SPAN[i % SPAN.length]}`}
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={im.url} alt={im.caption || "Foto do resort"} className="absolute inset-0 size-full object-cover transition duration-700 group-hover:scale-105" />

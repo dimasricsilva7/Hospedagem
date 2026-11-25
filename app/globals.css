@@ -21,7 +21,13 @@ body {
   max-width: 100%;
 }
 body {
-  background: #ffffff;
+  /* Fundo de água cristalina com peixinhos — bem esbranquiçado/esmaecido via overlay,
+     para dar vida sem atrapalhar a leitura. Fixo. As seções claras ficam translúcidas (/85)
+     para ele aparecer sutilmente; as escuras cobrem por cima. */
+  background:
+    linear-gradient(rgba(249, 250, 249, 0.93), rgba(244, 240, 232, 0.95)),
+    url("https://images.unsplash.com/photo-1544551763-46a013bb70d5?auto=format&fit=crop&w=1400&q=55") center top / cover fixed,
+    #f4f0e8;
   color: var(--color-ink);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;

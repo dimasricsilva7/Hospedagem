@@ -2,7 +2,8 @@ import Image from "next/image";
 import Link from "next/link";
 import {
   Check, Plane, Building2, ChevronRight, CalendarDays, ShieldCheck, MessageCircle, Lock,
-  Martini, ChevronsDown, Palmtree, Waves, Award, Sun, CreditCard, DoorOpen, Utensils, Sparkles, type LucideIcon,
+  Martini, ChevronsDown, Palmtree, Waves, Award, Sun, CreditCard, DoorOpen, Utensils, Sparkles,
+  Bath, BedDouble, Trees, Eye, Maximize2, Bell, BadgePercent, CalendarCheck, type LucideIcon,
 } from "lucide-react";
 import type { CampaignContent, FormConfig } from "@/app/lib/content";
 import { Reveal } from "@/app/components/Reveal";
@@ -202,10 +203,42 @@ export function UrgencyBand({ brand, accent, reservarPath, image }: { brand: str
   );
 }
 
+// ── Selos de confiança (logo abaixo do hero) ──────────────────────────────────
+export function TrustBadges({ brand }: { brand: string }) {
+  const items = [
+    { icon: CreditCard, title: "10x sem juros", text: "Parcele no cartão em até 10x sem juros." },
+    { icon: BadgePercent, title: "5% de desconto no Pix", text: "Pague à vista no Pix e economize 5%." },
+    { icon: Utensils, title: "All inclusive", text: "Gastronomia e experiências em regime all inclusive." },
+    { icon: CalendarCheck, title: "Cancelamento grátis", text: "Flexibilidade para remarcar ou cancelar conforme as regras." },
+  ];
+  return (
+    <section className="border-b border-[color:var(--color-line)] bg-white px-5 py-10">
+      <div className="mx-auto grid max-w-6xl gap-5 sm:grid-cols-2 lg:grid-cols-4">
+        {items.map((it) => (
+          <Reveal key={it.title}>
+            <div className="flex h-full items-start gap-3 rounded-2xl border border-[color:var(--color-line)] bg-[color:var(--color-sand)]/60 p-4 ring-1 ring-black/5">
+              <div className="flex size-11 shrink-0 items-center justify-center rounded-xl text-white shadow-sm" style={{ backgroundColor: brand }}>
+                <it.icon className="size-5" strokeWidth={1.9} />
+              </div>
+              <div>
+                <p className="font-display text-base font-semibold text-[color:var(--color-ink)]">{it.title}</p>
+                <p className="mt-0.5 text-sm leading-snug text-[color:var(--color-mute)]">{it.text}</p>
+              </div>
+            </div>
+          </Reveal>
+        ))}
+      </div>
+      <p className="mx-auto mt-5 max-w-6xl text-center text-xs text-[color:var(--color-mute)]">
+        Condições sujeitas à categoria de acomodação e à tarifa. Confirme as regras com o atendimento ao solicitar sua reserva.
+      </p>
+    </section>
+  );
+}
+
 // ── Formulário / Lista VIP ──────────────────────────────────────────────────────
 export function FormSection({ form, campaignId, brand, hero, reservarPath }: { form: FormConfig; campaignId: string; brand: string; hero: CampaignContent["hero"]; reservarPath?: string }) {
   return (
-    <section id="form" className="bg-[color:var(--color-sand)] px-5 py-20">
+    <section id="form" className="bg-[color:var(--color-sand)]/85 px-5 py-20">
       <div className="mx-auto grid max-w-5xl items-center gap-10 lg:grid-cols-2">
         <Reveal>
           <p className="mb-3 text-xs font-semibold uppercase tracking-[0.2em]" style={{ color: brand }}>
@@ -216,7 +249,7 @@ export function FormSection({ form, campaignId, brand, hero, reservarPath }: { f
             Preencha seus dados e seja o primeiro a receber as condições especiais desta campanha, direto no seu WhatsApp.
           </p>
           <p className="mt-3 text-sm text-[color:var(--color-mute)]">
-            <strong className="text-[color:var(--color-ink)]">A reserva é realizada diretamente com o hotel.</strong> O envio do formulário é uma solicitação e não confirma a reserva.
+            <strong className="text-[color:var(--color-ink)]">A reserva é realizada e confirmada diretamente pelo WhatsApp do resort</strong>, com a validação da reserva e o pagamento. O envio do formulário é apenas uma solicitação.
           </p>
         </Reveal>
         <Reveal delay={0.1}>
@@ -244,11 +277,24 @@ function emblemIcon(keyword: string | undefined, title: string): LucideIcon {
   return Sparkles;
 }
 
+// Ícone por comodidade (substitui o "check" genérico por algo coerente com a frase).
+function featureIcon(text: string): LucideIcon {
+  const s = text.toLowerCase();
+  if (/piscina|hidro|espelho|climatizada/.test(s)) return Waves;
+  if (/vista|mar|praia|paisag|muro alto/.test(s)) return Eye;
+  if (/varanda|gazebo|jardim|ajardinada/.test(s)) return Trees;
+  if (/banheira|imersão/.test(s)) return Bath;
+  if (/cama|king|duplex|super/.test(s)) return BedDouble;
+  if (/mordomia|serviço|atend/.test(s)) return Bell;
+  if (/m²|área|unidade/.test(s)) return Maximize2;
+  return Check;
+}
+
 // Seção "Motivos" como faixa de emblemas hexagonais (editável no painel via Benefícios).
 export function Benefits({ data }: { data: CampaignContent["benefits"] }) {
   if (!data.items.length) return null;
   const mid = Math.floor(data.items.length / 2);
-  const line = "#2dd4bf"; // teal vivo (estilo do print)
+  const line = "#2ecc71"; // verde natureza vivo (estilo do print)
   return (
     <section className="bg-black px-5 py-20 text-white">
       <div className="mx-auto max-w-5xl">
@@ -264,7 +310,7 @@ export function Benefits({ data }: { data: CampaignContent["benefits"] }) {
               <Reveal key={i} delay={i * 0.04}>
                 <figure className="flex w-36 flex-col items-center text-center sm:w-40">
                   {/* contorno duplo teal com brilho, sobre preto (estilo do print) */}
-                  <div className={`relative ${size} drop-shadow-[0_0_10px_rgba(45,212,191,0.5)]`} style={{ clipPath: HEX, background: line }}>
+                  <div className={`relative ${size} drop-shadow-[0_0_12px_rgba(46,204,113,0.55)]`} style={{ clipPath: HEX, background: line }}>
                     <div className="absolute inset-[3px]" style={{ clipPath: HEX, background: "#000" }}>
                       <div className="absolute inset-[6px]" style={{ clipPath: HEX, background: line }}>
                         <div className="absolute inset-[2px] flex flex-col items-center justify-center gap-2" style={{ clipPath: HEX, background: big ? "#06201d" : "#000" }}>
@@ -288,13 +334,13 @@ export function Benefits({ data }: { data: CampaignContent["benefits"] }) {
 export function About({ data, brand, accent }: { data: CampaignContent["about"]; brand: string; accent: string }) {
   if (!data.text && !data.images.length) return null;
   return (
-    <section className="overflow-hidden bg-[color:var(--color-sand)] px-5 py-24">
+    <section className="overflow-hidden bg-[color:var(--color-sand)]/85 px-5 py-24">
       <div className="mx-auto grid max-w-6xl items-center gap-14 lg:grid-cols-2 lg:gap-20">
         <Reveal>
           {data.images[0] && (
-            <div className="relative">
+            <div className="relative -mx-5 lg:mx-0">
               <span className="pointer-events-none absolute -bottom-5 -right-5 hidden h-full w-full border lg:block" style={{ borderColor: accent }} />
-              <div className="relative aspect-4/5 overflow-hidden rounded-2xl shadow-2xl ring-1 ring-black/5 lg:rounded-none">
+              <div className="relative aspect-[3/4] overflow-hidden shadow-2xl ring-1 ring-black/5 sm:aspect-4/5 sm:rounded-2xl lg:rounded-none">
                 <Image src={data.images[0]} alt={data.title} fill sizes="(max-width:1024px) 100vw, 50vw" className="object-cover" />
               </div>
             </div>
@@ -332,7 +378,7 @@ export function About({ data, brand, accent }: { data: CampaignContent["about"];
 export function GallerySection({ data, brand }: { data: CampaignContent["gallery"]; brand: string }) {
   if (!data.images.length) return null;
   return (
-    <section className="relative overflow-hidden bg-[color:var(--color-sand)] px-5 py-24">
+    <section className="relative overflow-hidden bg-[color:var(--color-sand)]/85 px-5 py-24">
       {/* acentos tropicais (decorativos) */}
       <DSun className="floaty pointer-events-none absolute left-3 top-16 size-10 opacity-80 sm:left-10 sm:size-14" />
       <DPalm className="floaty-slow pointer-events-none absolute right-3 top-10 size-12 opacity-80 sm:right-12 sm:size-16" />
@@ -352,7 +398,7 @@ export function GallerySection({ data, brand }: { data: CampaignContent["gallery
 export function Accommodations({ data, brand }: { data: CampaignContent["accommodations"]; brand: string }) {
   if (!data.items.length) return null;
   return (
-    <section className="bg-[color:var(--color-sand)] px-5 py-20">
+    <section className="bg-[color:var(--color-sand)]/85 px-5 py-20">
       <div className="mx-auto max-w-6xl">
         <Reveal>
           <SectionTitle title={data.title} brand={brand} />
@@ -368,16 +414,27 @@ export function Accommodations({ data, brand }: { data: CampaignContent["accommo
                 )}
                 <div className="flex flex-1 flex-col p-6">
                   <h3 className="font-display text-xl font-semibold">{a.name}</h3>
-                  {a.capacity && <p className="mt-1 text-sm" style={{ color: brand }}>{a.capacity}</p>}
+                  {a.capacity && <p className="mt-1 text-sm text-[color:var(--color-mute)]">{a.capacity}</p>}
                   {a.description && <p className="mt-2 text-[color:var(--color-mute)]">{a.description}</p>}
                   {a.features && a.features.length > 0 && (
                     <ul className="mt-3 space-y-1 text-sm text-[color:var(--color-mute)]">
-                      {a.features.map((f, j) => (
-                        <li key={j} className="flex items-center gap-2">
-                          <Check className="size-4" style={{ color: brand }} /> {f}
-                        </li>
-                      ))}
+                      {a.features.map((f, j) => {
+                        const FIcon = featureIcon(f);
+                        return (
+                          <li key={j} className="flex items-center gap-2">
+                            <FIcon className="size-4 shrink-0" style={{ color: brand }} strokeWidth={1.75} /> {f}
+                          </li>
+                        );
+                      })}
                     </ul>
+                  )}
+                  {a.price && (
+                    <p className="mt-4 text-xs uppercase tracking-wide text-[color:var(--color-mute)]">
+                      Diária a partir de
+                      <span className="mt-0.5 block font-display text-2xl font-bold normal-case tracking-normal" style={{ color: brand }}>
+                        {a.price}<span className="text-sm font-normal text-[color:var(--color-mute)]"> / noite</span>
+                      </span>
+                    </p>
                   )}
                   {a.ctaLabel && a.ctaHref && (
                     <a href={a.ctaHref} className="mt-auto pt-4 font-medium" style={{ color: brand }}>
@@ -402,9 +459,9 @@ export function Destination({ data, brand, accent }: { data: CampaignContent["de
       <div className="mx-auto grid max-w-6xl items-center gap-14 lg:grid-cols-2 lg:gap-20">
         <Reveal delay={0.1} className="order-2 lg:order-1">
           {data.images[0] && (
-            <div className="relative">
+            <div className="relative -mx-5 lg:mx-0">
               <span className="pointer-events-none absolute -bottom-5 -left-5 hidden h-full w-full border lg:block" style={{ borderColor: accent }} />
-              <div className="relative aspect-4/5 overflow-hidden rounded-2xl shadow-2xl ring-1 ring-black/5 lg:rounded-none">
+              <div className="relative aspect-[3/4] overflow-hidden shadow-2xl ring-1 ring-black/5 sm:aspect-4/5 sm:rounded-2xl lg:rounded-none">
                 <Image src={data.images[0]} alt={data.title} fill sizes="(max-width:1024px) 100vw, 50vw" className="object-cover" />
               </div>
             </div>

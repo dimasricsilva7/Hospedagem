@@ -609,7 +609,10 @@ function StepReview({
       </div>
       {rules && <div className="mt-5 rounded-xl border border-[color:var(--color-line)] bg-white p-4 text-sm text-[color:var(--color-mute)]"><strong className="text-[color:var(--color-ink)]">Regras da hospedagem:</strong> {rules}</div>}
       <p className="mt-5 flex items-start gap-2 text-xs text-[color:var(--color-mute)]">
-        <ShieldCheck className="mt-0.5 size-4 shrink-0" style={{ color: brand }} /> Esta é uma solicitação — não confirma a reserva. <strong className="text-[color:var(--color-ink)]">A reserva é realizada diretamente com o hotel</strong>, que valida a disponibilidade, o preço e as condições com você.
+        <ShieldCheck className="mt-0.5 size-4 shrink-0" style={{ color: brand }} />
+        <span>
+          <strong className="text-[color:var(--color-ink)]">A reserva é realizada e confirmada diretamente pelo WhatsApp do resort</strong>, onde fazemos a confirmação e a validação da reserva juntamente com o pagamento. O envio deste formulário é uma solicitação e não confirma a reserva.
+        </span>
       </p>
     </section>
   );

@@ -35,7 +35,7 @@ export const SECTION_LABELS: Record<SectionKey, string> = {
 
 export type Benefit = { icon?: string; title: string; text?: string };
 export type GalleryImage = { url: string; caption?: string };
-export type Accommodation = { name: string; description?: string; image?: string; capacity?: string; features?: string[]; ctaLabel?: string; ctaHref?: string };
+export type Accommodation = { name: string; description?: string; image?: string; capacity?: string; price?: string; features?: string[]; ctaLabel?: string; ctaHref?: string };
 export type Testimonial = { name: string; text: string; rating?: number; source?: string; date?: string; photo?: string; demo?: boolean };
 export type Faq = { q: string; a: string };
 
