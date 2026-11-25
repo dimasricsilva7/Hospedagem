@@ -315,7 +315,7 @@ function StepDates({
         <Field label="Check-out" value={checkOut ? fmtBR(checkOut) : "Data de saída"} active={Boolean(checkOut)} brand={brand} />
       </div>
 
-      <div className="mt-6 rounded-2xl border border-[color:var(--color-line)] bg-white p-4">
+      <div className="mt-6">
         <MonthCalendar brand={brand} checkIn={checkIn} checkOut={checkOut} onPick={pick} />
       </div>
 

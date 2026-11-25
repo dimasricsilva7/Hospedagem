@@ -4,11 +4,12 @@
   --font-sans: var(--font-sans), ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
   --font-display: var(--font-display), ui-serif, Georgia, "Times New Roman", serif;
 
-  --color-ink: #0f172a;
-  --color-mute: #64748b;
-  --color-line: #e5e7eb;
-  --color-sand: #faf8f4; /* fundo editorial quente */
-  --color-night: #0b1220; /* seções escuras */
+  /* Paleta NANNAI — luxo tropical: verde profundo + areia + dourado */
+  --color-ink: #1b2d27; /* verde quase-preto p/ títulos e texto */
+  --color-mute: #77766f; /* cinza quente */
+  --color-line: #e7e1d4; /* linha suave (areia clara) */
+  --color-sand: #f4f0e8; /* off-white quente */
+  --color-night: #173e38; /* verde profundo (seções escuras) */
 }
 
 html {

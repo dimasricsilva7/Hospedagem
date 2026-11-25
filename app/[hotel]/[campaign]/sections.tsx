@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import {
-  Check, Plane, Building2, ChevronRight, CalendarDays, ShieldCheck, MessageCircle, Lock, BadgePercent,
+  Check, Plane, Building2, ChevronRight, CalendarDays, ShieldCheck, MessageCircle, Lock,
   Martini, ChevronsDown, Palmtree, Waves, Award, Sun, CreditCard, DoorOpen, Utensils, Sparkles, type LucideIcon,
 } from "lucide-react";
 import type { CampaignContent, FormConfig } from "@/app/lib/content";
@@ -178,7 +178,7 @@ function shortDate(iso: string): string {
 // ── Aviso de urgência (abaixo do hero) ────────────────────────────────────────
 export function UrgencyBand({ brand, accent, reservarPath }: { brand: string; accent: string; reservarPath?: string }) {
   return (
-    <section className="relative overflow-hidden px-5 py-16 text-center text-white" style={{ background: `linear-gradient(120deg, #000, ${brand})` }}>
+    <section className="relative overflow-hidden px-5 py-16 text-center text-white" style={{ background: `linear-gradient(120deg, color-mix(in srgb, ${brand} 80%, #000), ${brand})` }}>
       <Reveal>
         <div className="mx-auto max-w-3xl">
           <p className="mb-3 inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-1.5 text-xs font-bold uppercase tracking-[0.2em] ring-1 ring-white/20">
@@ -246,14 +246,16 @@ function emblemIcon(keyword: string | undefined, title: string): LucideIcon {
 }
 
 // Seção "Motivos" como faixa de emblemas hexagonais (editável no painel via Benefícios).
-export function Benefits({ data, brand, accent }: { data: CampaignContent["benefits"]; brand: string; accent: string }) {
+export function Benefits({ data, accent }: { data: CampaignContent["benefits"]; accent: string }) {
   if (!data.items.length) return null;
   const mid = Math.floor(data.items.length / 2);
+  const deep = "#173e38";
+  const deeper = "#102b27";
   return (
-    <section className="bg-black px-5 py-20 text-white">
+    <section className="px-5 py-20 text-white" style={{ backgroundColor: deep }}>
       <div className="mx-auto max-w-5xl">
         <Reveal>
-          <SectionTitle kicker="Por que escolher" title={data.title} brand={brand} light />
+          <SectionTitle kicker="Por que escolher" title={data.title} brand={accent} light />
         </Reveal>
         <div className="flex flex-wrap items-start justify-center gap-x-5 gap-y-10 sm:gap-x-8">
           {data.items.map((b, i) => {
@@ -264,11 +266,11 @@ export function Benefits({ data, brand, accent }: { data: CampaignContent["benef
             return (
               <Reveal key={i} delay={i * 0.04}>
                 <figure className="flex w-32 flex-col items-center text-center sm:w-36">
-                  {/* contorno duplo: brand → preto → brand → preto (conteúdo) */}
-                  <div className={`relative ${size} drop-shadow-[0_0_12px_rgba(0,0,0,0.6)]`} style={{ clipPath: HEX, background: brand }}>
-                    <div className="absolute inset-[3px]" style={{ clipPath: HEX, background: "#000" }}>
-                      <div className="absolute inset-[6px]" style={{ clipPath: HEX, background: brand }}>
-                        <div className="absolute inset-[2px] flex flex-col items-center justify-center gap-2 px-3" style={{ clipPath: HEX, background: big ? `color-mix(in srgb, ${brand} 22%, #000)` : "#000" }}>
+                  {/* contorno duplo dourado sobre verde profundo */}
+                  <div className={`relative ${size}`} style={{ clipPath: HEX, background: accent }}>
+                    <div className="absolute inset-[3px]" style={{ clipPath: HEX, background: deep }}>
+                      <div className="absolute inset-[6px]" style={{ clipPath: HEX, background: accent }}>
+                        <div className="absolute inset-[2px] flex flex-col items-center justify-center gap-2 px-3" style={{ clipPath: HEX, background: big ? deeper : deep }}>
                           <Icon className={big ? "size-10" : "size-8"} style={{ color: iconColor }} strokeWidth={1.75} />
                           <figcaption className="text-[11px] font-bold uppercase leading-tight tracking-wide text-white">{b.title}</figcaption>
                         </div>
@@ -483,10 +485,10 @@ export function FinalCta({ data, brand, reservarPath }: { data: CampaignContent[
 // ── Faixa de confiança ────────────────────────────────────────────────────────
 export function TrustStrip({ brand, accent }: { brand: string; accent: string }) {
   const items = [
-    { icon: ShieldCheck, title: "Reserva sem risco", text: "Nada é cobrado aqui — você confirma tudo direto com o hotel." },
-    { icon: MessageCircle, title: "Atendimento oficial", text: "Sua solicitação chega pelo WhatsApp oficial do hotel." },
-    { icon: Lock, title: "Dados protegidos", text: "Tratamos suas informações conforme a LGPD." },
-    { icon: BadgePercent, title: "Melhores condições", text: "Acesso às ofertas exclusivas desta campanha." },
+    { icon: MessageCircle, title: "Atendimento personalizado", text: "Receba orientação sobre acomodações e condições de hospedagem." },
+    { icon: CalendarDays, title: "Consulta de disponibilidade", text: "Sua solicitação é analisada conforme as datas e a acomodação escolhida." },
+    { icon: ShieldCheck, title: "Informações transparentes", text: "Conheça inclusões e condições antes de concluir a contratação." },
+    { icon: Lock, title: "Proteção de dados", text: "Seus dados são tratados conforme a Política de Privacidade aplicável." },
   ];
   return (
     <section className="border-y border-[color:var(--color-line)] bg-white px-5 py-14">
