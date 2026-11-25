@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import {
-  Star, Check, Plane, Building2, ChevronRight, CalendarDays, ShieldCheck, MessageCircle, Lock, BadgePercent,
+  Check, Plane, Building2, ChevronRight, CalendarDays, ShieldCheck, MessageCircle, Lock, BadgePercent,
   Martini, ChevronsDown, Palmtree, Waves, Award, Sun, CreditCard, DoorOpen, Utensils, Sparkles, type LucideIcon,
 } from "lucide-react";
 import type { CampaignContent, FormConfig } from "@/app/lib/content";
@@ -9,6 +9,7 @@ import { Reveal } from "@/app/components/Reveal";
 import { Countdown } from "@/app/components/Countdown";
 import { LeadForm } from "@/app/components/LeadForm";
 import { Gallery } from "@/app/components/Gallery";
+import { TestimonialRotator } from "@/app/components/TestimonialRotator";
 import { Faq } from "@/app/components/Faq";
 
 export type HotelInfo = {
@@ -34,18 +35,15 @@ const SectionTitle = ({ kicker, title, brand, light }: { kicker?: string; title?
 );
 
 // ── Barra promocional ─────────────────────────────────────────────────────────
-export function PromoBar({ data, brand }: { data: CampaignContent["promo"]; brand: string }) {
+export function PromoBar({ data }: { data: CampaignContent["promo"]; brand: string }) {
   if (!data.text) return null;
   return (
-    <div
-      className="sticky top-0 z-40 px-4 py-2.5 text-center text-[13px] font-medium tracking-wide text-white"
-      style={{ background: `linear-gradient(90deg, ${brand}, color-mix(in srgb, ${brand} 70%, #000))` }}
-    >
+    <div className="sticky top-0 z-40 bg-black px-4 py-2.5 text-center text-[13px] font-medium tracking-wide text-white">
       <div className="mx-auto flex max-w-5xl items-center justify-center gap-2">
-        <span className="inline-block size-1.5 rounded-full bg-white/80" />
+        <span className="inline-block size-1.5 rounded-full bg-[#facc15]" />
         <span>{data.text}</span>
         {data.cta && data.ctaHref && (
-          <a href={data.ctaHref} className="ml-1 inline-flex items-center gap-0.5 font-semibold underline-offset-2 hover:underline">
+          <a href={data.ctaHref} className="ml-1 inline-flex items-center gap-0.5 font-bold text-[#facc15] underline-offset-2 hover:underline">
             {data.cta} <ChevronRight className="size-3.5" />
           </a>
         )}
@@ -177,6 +175,37 @@ function shortDate(iso: string): string {
   return new Intl.DateTimeFormat("pt-BR", { day: "2-digit", month: "short", timeZone: "America/Sao_Paulo" }).format(d).replace(".", "").toUpperCase();
 }
 
+// ── Aviso de urgência (abaixo do hero) ────────────────────────────────────────
+export function UrgencyBand({ brand, accent, reservarPath }: { brand: string; accent: string; reservarPath?: string }) {
+  return (
+    <section className="relative overflow-hidden px-5 py-16 text-center text-white" style={{ background: `linear-gradient(120deg, #000, ${brand})` }}>
+      <Reveal>
+        <div className="mx-auto max-w-3xl">
+          <p className="mb-3 inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-1.5 text-xs font-bold uppercase tracking-[0.2em] ring-1 ring-white/20">
+            <Sparkles className="size-4" style={{ color: accent }} /> Ofertas no ar
+          </p>
+          <h2 className="font-display text-3xl font-bold sm:text-4xl">
+            A Black Friday já começou — <span style={{ color: accent }}>aproveite</span> antes que as reservas se esgotem
+          </h2>
+          <p className="mx-auto mt-4 max-w-2xl text-lg text-white/80">
+            As melhores datas e acomodações saem primeiro. Garanta as condições especiais enquanto ainda há disponibilidade.
+          </p>
+          <div className="mt-7 flex flex-col justify-center gap-3 sm:flex-row">
+            <a href="#form" className="inline-flex items-center justify-center rounded-full px-8 py-4 text-base font-semibold text-black shadow-xl transition hover:-translate-y-0.5 hover:brightness-110" style={{ backgroundColor: accent }}>
+              Quero as ofertas
+            </a>
+            {reservarPath && (
+              <a href={reservarPath} className="inline-flex items-center justify-center gap-2 rounded-full border border-white/40 px-7 py-4 text-base font-semibold text-white transition hover:bg-white/10">
+                <CalendarDays className="size-5" /> Montar minha reserva
+              </a>
+            )}
+          </div>
+        </div>
+      </Reveal>
+    </section>
+  );
+}
+
 // ── Formulário / Lista VIP ──────────────────────────────────────────────────────
 export function FormSection({ form, campaignId, brand, hero, reservarPath }: { form: FormConfig; campaignId: string; brand: string; hero: CampaignContent["hero"]; reservarPath?: string }) {
   return (
@@ -217,30 +246,35 @@ function emblemIcon(keyword: string | undefined, title: string): LucideIcon {
 }
 
 // Seção "Motivos" como faixa de emblemas hexagonais (editável no painel via Benefícios).
-export function Benefits({ data, accent }: { data: CampaignContent["benefits"]; accent: string }) {
+export function Benefits({ data, brand, accent }: { data: CampaignContent["benefits"]; brand: string; accent: string }) {
   if (!data.items.length) return null;
   const mid = Math.floor(data.items.length / 2);
   return (
-    <section className="bg-[#0a0b0d] px-5 py-20 text-white">
-      <div className="mx-auto max-w-6xl">
+    <section className="bg-black px-5 py-20 text-white">
+      <div className="mx-auto max-w-5xl">
         <Reveal>
-          <SectionTitle kicker="Por que escolher" title={data.title} brand={accent} light />
+          <SectionTitle kicker="Por que escolher" title={data.title} brand={brand} light />
         </Reveal>
-        <div className="flex flex-wrap items-start justify-center gap-x-4 gap-y-8 sm:gap-x-8">
+        <div className="flex flex-wrap items-start justify-center gap-x-5 gap-y-10 sm:gap-x-8">
           {data.items.map((b, i) => {
             const Icon = emblemIcon(b.icon, b.title);
             const big = i === mid;
-            const size = big ? "size-36 sm:size-40" : "size-28 sm:size-32";
+            const size = big ? "size-36 sm:size-44" : "size-32 sm:size-36";
+            const iconColor = big ? accent : "#ffffff";
             return (
               <Reveal key={i} delay={i * 0.04}>
-                <figure className="flex w-28 flex-col items-center text-center sm:w-36">
-                  <div className={`relative ${size}`} style={{ clipPath: HEX, background: accent }}>
-                    <div className="absolute inset-[2px] flex flex-col items-center justify-center gap-2 px-3" style={{ clipPath: HEX, background: big ? `color-mix(in srgb, ${accent} 16%, #0a0b0d)` : "#0a0b0d" }}>
-                      <Icon className={big ? "size-9" : "size-7"} style={{ color: accent }} strokeWidth={1.5} />
-                      <figcaption className="text-[10px] font-bold uppercase leading-tight tracking-wide text-white sm:text-[11px]">{b.title}</figcaption>
+                <figure className="flex w-32 flex-col items-center text-center sm:w-36">
+                  {/* contorno duplo: brand → preto → brand → preto (conteúdo) */}
+                  <div className={`relative ${size} drop-shadow-[0_0_12px_rgba(0,0,0,0.6)]`} style={{ clipPath: HEX, background: brand }}>
+                    <div className="absolute inset-[3px]" style={{ clipPath: HEX, background: "#000" }}>
+                      <div className="absolute inset-[6px]" style={{ clipPath: HEX, background: brand }}>
+                        <div className="absolute inset-[2px] flex flex-col items-center justify-center gap-2 px-3" style={{ clipPath: HEX, background: big ? `color-mix(in srgb, ${brand} 22%, #000)` : "#000" }}>
+                          <Icon className={big ? "size-10" : "size-8"} style={{ color: iconColor }} strokeWidth={1.75} />
+                          <figcaption className="text-[11px] font-bold uppercase leading-tight tracking-wide text-white">{b.title}</figcaption>
+                        </div>
+                      </div>
                     </div>
                   </div>
-                  {b.text && <p className="mt-3 max-w-[11rem] text-xs text-white/55">{b.text}</p>}
                 </figure>
               </Reveal>
             );
@@ -268,12 +302,18 @@ export function About({ data, brand }: { data: CampaignContent["about"]; brand: 
           <h2 className="font-display text-3xl font-semibold sm:text-4xl">{data.title}</h2>
           {data.text && <p className="mt-5 whitespace-pre-line text-lg leading-relaxed text-[color:var(--color-mute)]">{data.text}</p>}
           {data.highlights.length > 0 && (
-            <ul className="mt-6 grid gap-3 sm:grid-cols-2">
-              {data.highlights.map((h, i) => (
-                <li key={i} className="flex items-center gap-2 text-[color:var(--color-ink)]">
-                  <Check className="size-5 shrink-0" style={{ color: brand }} /> {h}
-                </li>
-              ))}
+            <ul className="mt-6 grid gap-4 sm:grid-cols-2">
+              {data.highlights.map((h, i) => {
+                const Icon = emblemIcon(undefined, h);
+                return (
+                  <li key={i} className="flex items-center gap-3 text-[color:var(--color-ink)]">
+                    <span className="flex size-9 shrink-0 items-center justify-center rounded-lg" style={{ backgroundColor: `${brand}12`, color: brand }}>
+                      <Icon className="size-5" strokeWidth={1.75} />
+                    </span>
+                    {h}
+                  </li>
+                );
+              })}
             </ul>
           )}
         </Reveal>
@@ -286,10 +326,10 @@ export function About({ data, brand }: { data: CampaignContent["about"]; brand: 
 export function GallerySection({ data, brand }: { data: CampaignContent["gallery"]; brand: string }) {
   if (!data.images.length) return null;
   return (
-    <section className="overflow-hidden px-5 py-20">
+    <section className="bg-[color:var(--color-sand)] px-5 py-24">
       <div className="mx-auto max-w-6xl">
         <Reveal>
-          <SectionTitle title={data.title} brand={brand} />
+          <SectionTitle kicker="Momentos" title={data.title} brand={brand} />
         </Reveal>
         <Gallery images={data.images} />
       </div>
@@ -383,37 +423,17 @@ export function Destination({ data, brand }: { data: CampaignContent["destinatio
 }
 
 // ── Depoimentos ────────────────────────────────────────────────────────────────
-export function Testimonials({ data, brand }: { data: CampaignContent["testimonials"]; brand: string }) {
+export function Testimonials({ data, brand, accent }: { data: CampaignContent["testimonials"]; brand: string; accent: string }) {
   if (!data.items.length) return null;
   const anyDemo = data.items.some((t) => t.demo);
   return (
-    <section className="bg-[color:var(--color-night)] px-5 py-20">
+    <section className="bg-[color:var(--color-night)] px-5 py-24">
       <div className="mx-auto max-w-6xl">
         <Reveal>
-          <SectionTitle title={data.title} brand={brand} light />
+          <SectionTitle kicker="Avaliações" title={data.title} brand={brand} light />
         </Reveal>
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {data.items.map((t, i) => (
-            <Reveal key={i} delay={i * 0.05}>
-              <figure className="flex h-full flex-col rounded-2xl bg-white/5 p-7 ring-1 ring-white/10">
-                {typeof t.rating === "number" && (
-                  <div className="mb-3 flex gap-0.5" style={{ color: brand }}>
-                    {Array.from({ length: 5 }).map((_, s) => (
-                      <Star key={s} className={`size-4 ${s < t.rating! ? "fill-current" : "opacity-30"}`} />
-                    ))}
-                  </div>
-                )}
-                <blockquote className="flex-1 text-white/90">“{t.text}”</blockquote>
-                <figcaption className="mt-4 text-sm text-white/70">
-                  <span className="font-medium text-white">{t.name}</span>
-                  {t.source && <span> · {t.source}</span>}
-                  {t.date && <span> · {t.date}</span>}
-                </figcaption>
-              </figure>
-            </Reveal>
-          ))}
-        </div>
-        {anyDemo && <p className="mt-6 text-center text-xs text-white/40">Depoimentos marcados como demonstrativos — substituir por avaliações reais no painel.</p>}
+        <TestimonialRotator items={data.items} accent={accent} />
+        {anyDemo && <p className="mt-8 text-center text-xs text-white/40">Depoimentos demonstrativos — substituir por avaliações reais no painel.</p>}
       </div>
     </section>
   );

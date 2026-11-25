@@ -57,20 +57,20 @@ export default async function ReservarPage({
   const canReserve = cfg.enabled && whatsappSet && roomDTOs.length > 0;
 
   return (
-    <main className="min-h-screen bg-[#0b0c10] text-white" style={{ ["--color-brand" as string]: brand }}>
-      <header className="border-b border-white/10">
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4">
-          <Link href={`/${hotel}/${campaign}`} className="text-sm text-white/70 transition hover:text-white">
-            ← Voltar para a campanha
+    <main className="min-h-screen bg-[color:var(--color-sand)] text-[color:var(--color-ink)]" style={{ ["--color-brand" as string]: brand }}>
+      <header className="sticky top-0 z-30 border-b border-[color:var(--color-line)] bg-white/90 backdrop-blur">
+        <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3.5">
+          <Link href={`/${hotel}/${campaign}`} className="text-sm text-[color:var(--color-mute)] transition hover:text-[color:var(--color-ink)]">
+            ← Voltar
           </Link>
-          <span className="font-display text-lg font-semibold tracking-tight">{c.hotel.name}</span>
+          <span className="font-display text-base font-semibold tracking-tight">{c.hotel.name}</span>
         </div>
       </header>
 
       {!canReserve ? (
         <div className="mx-auto max-w-2xl px-4 py-24 text-center">
           <h1 className="font-display text-3xl font-semibold">Reservas indisponíveis</h1>
-          <p className="mt-3 text-white/60">
+          <p className="mt-3 text-[color:var(--color-mute)]">
             {roomDTOs.length === 0
               ? "As acomodações desta campanha ainda não foram configuradas."
               : "O canal de reservas está temporariamente indisponível."}

@@ -64,11 +64,14 @@ export default async function LandingPage({ params, searchParams }: { params: Pr
       case "countdown":
         return null; // consumida pelo hero
       case "hero":
-        return <S.Hero key={k} data={content.hero} countdown={content.countdown} showCountdown={showCountdown} hotel={hotelInfo} accent={accent} trust={trust} reservarPath={`/${hotel}/${campaign}/reservar`} />;
+        return [
+          <S.Hero key="hero" data={content.hero} countdown={content.countdown} showCountdown={showCountdown} hotel={hotelInfo} accent={accent} trust={trust} reservarPath={`/${hotel}/${campaign}/reservar`} />,
+          <S.UrgencyBand key="urgency" brand={brand} accent={accent} reservarPath={`/${hotel}/${campaign}/reservar`} />,
+        ];
       case "form":
         return <S.FormSection key={k} form={form} campaignId={c.id} brand={brand} hero={content.hero} reservarPath={`/${hotel}/${campaign}/reservar`} />;
       case "benefits":
-        return <S.Benefits key={k} data={content.benefits} accent={accent} />;
+        return <S.Benefits key={k} data={content.benefits} brand={brand} accent={accent} />;
       case "about":
         return <S.About key={k} data={content.about} brand={brand} />;
       case "gallery":
@@ -78,7 +81,7 @@ export default async function LandingPage({ params, searchParams }: { params: Pr
       case "destination":
         return <S.Destination key={k} data={content.destination} brand={brand} />;
       case "testimonials":
-        return <S.Testimonials key={k} data={content.testimonials} brand={brand} />;
+        return <S.Testimonials key={k} data={content.testimonials} brand={brand} accent={accent} />;
       case "faq":
         return <S.FaqSection key={k} data={content.faq} brand={brand} />;
       case "finalCta":
