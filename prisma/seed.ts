@@ -53,10 +53,11 @@ async function main() {
   // WhatsApp/e-mail ficam vazios de propósito: configure no painel (não inventar contato do NANNAI).
   const hotel = await db.hotel.upsert({
     where: { slug: "resort-exemplo" },
-    update: { name: "NANNAI Muro Alto", primaryColor: "#173e38", secondaryColor: "#a58a64", city: "Muro Alto · Ipojuca — Pernambuco", logoUrl: LOGO },
+    update: { name: "NANNAI Muro Alto", shortCode: "NANNAI", primaryColor: "#173e38", secondaryColor: "#a58a64", city: "Muro Alto · Ipojuca — Pernambuco", logoUrl: LOGO },
     create: {
       name: "NANNAI Muro Alto",
       slug: "resort-exemplo",
+      shortCode: "NANNAI",
       description: "Luxo tropical à beira-mar na Praia de Muro Alto, Pernambuco.",
       logoUrl: LOGO,
       primaryColor: "#173e38",

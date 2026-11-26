@@ -7,6 +7,7 @@ import {
 } from "lucide-react";
 import type { CampaignContent, FormConfig } from "@/app/lib/content";
 import { centsToBRL } from "@/app/lib/reservation";
+import type { RoomDTO } from "./reservar/ReservaFlow";
 import { Reveal } from "@/app/components/Reveal";
 import { Countdown } from "@/app/components/Countdown";
 import { LeadForm } from "@/app/components/LeadForm";
@@ -398,8 +399,43 @@ export function GallerySection({ data, brand }: { data: CampaignContent["gallery
 }
 
 // ── Acomodações ────────────────────────────────────────────────────────────────
-export function Accommodations({ data, brand, priceMap }: { data: CampaignContent["accommodations"]; brand: string; priceMap?: Record<string, { originalCents: number; promoCents: number; discount: number }> }) {
-  if (!data.items.length) return null;
+type AccCard = {
+  name: string;
+  image?: string;
+  capacity?: string;
+  description?: string;
+  features: string[];
+  originalCents?: number;
+  promoCents?: number;
+  discount?: number;
+  priceText?: string;
+  badge?: number | null;
+};
+
+// Prioriza os quartos do painel (rooms) para refletir imagem/preço/infos editados no admin;
+// cai para os itens de conteúdo (content) quando não há quartos cadastrados.
+export function Accommodations({ data, brand, rooms }: { data: CampaignContent["accommodations"]; brand: string; rooms?: RoomDTO[] }) {
+  const cards: AccCard[] = rooms && rooms.length
+    ? rooms.map((r) => ({
+        name: r.name,
+        image: r.mainImage || undefined,
+        capacity: `${r.beds ? `${r.beds} · ` : ""}até ${r.maxAdults + r.maxChildren} hóspedes`,
+        description: r.description || undefined,
+        features: r.amenities,
+        originalCents: r.priceOriginalCents,
+        promoCents: r.pricePromoCents,
+        discount: r.discountPercent,
+        badge: r.badgeCount,
+      }))
+    : data.items.map((a) => ({
+        name: a.name,
+        image: a.image,
+        capacity: a.capacity,
+        description: a.description,
+        features: a.features ?? [],
+        priceText: a.price,
+      }));
+  if (!cards.length) return null;
   return (
     <section className="bg-[color:var(--color-sand)]/85 px-5 py-20">
       <div className="mx-auto max-w-6xl">
@@ -407,58 +443,56 @@ export function Accommodations({ data, brand, priceMap }: { data: CampaignConten
           <SectionTitle title={data.title} brand={brand} />
         </Reveal>
         <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-          {data.items.map((a, i) => {
-            const p = priceMap?.[a.name.trim().toLowerCase()];
+          {cards.map((c, i) => {
+            const hasDiscount = c.originalCents != null && c.promoCents != null && (c.discount ?? 0) > 0 && c.originalCents > c.promoCents;
             return (
-            <Reveal key={i} delay={i * 0.05}>
-              <article className="group flex h-full flex-col overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-black/5 transition duration-300 hover:shadow-xl">
-                {a.image && (
-                  <div className="relative aspect-4/3 overflow-hidden">
-                    <Image src={a.image} alt={a.name} fill sizes="(max-width:768px) 100vw, 33vw" className="object-cover transition duration-500 group-hover:scale-105" />
-                  </div>
-                )}
-                <div className="flex flex-1 flex-col p-6">
-                  <h3 className="font-display text-xl font-semibold">{a.name}</h3>
-                  {a.capacity && <p className="mt-1 text-sm text-[color:var(--color-mute)]">{a.capacity}</p>}
-                  {a.description && <p className="mt-2 text-[color:var(--color-mute)]">{a.description}</p>}
-                  {a.features && a.features.length > 0 && (
-                    <ul className="mt-3 space-y-1 text-sm text-[color:var(--color-mute)]">
-                      {a.features.map((f, j) => {
-                        const FIcon = featureIcon(f);
-                        return (
-                          <li key={j} className="flex items-center gap-2">
-                            <FIcon className="size-4 shrink-0" style={{ color: brand }} strokeWidth={1.75} /> {f}
-                          </li>
-                        );
-                      })}
-                    </ul>
-                  )}
-                  {p && p.discount > 0 ? (
-                    <div className="mt-4">
-                      <p className="text-xs uppercase tracking-wide text-[color:var(--color-mute)]">Diária a partir de</p>
-                      <div className="mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-1">
-                        <span className="text-xl font-bold" style={{ color: brand }}>{centsToBRL(p.promoCents)}</span>
-                        <span className="text-sm text-slate-400 line-through">{centsToBRL(p.originalCents)}</span>
-                        <span className="rounded-full px-2 py-0.5 text-xs font-bold text-white" style={{ backgroundColor: brand }}>{p.discount}% OFF</span>
-                      </div>
-                      <span className="text-xs text-[color:var(--color-mute)]">por noite</span>
+              <Reveal key={i} delay={i * 0.05}>
+                <article className="group flex h-full flex-col overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-black/5 transition duration-300 hover:shadow-xl">
+                  {c.image && (
+                    <div className="relative aspect-4/3 overflow-hidden">
+                      <Image src={c.image} alt={c.name} fill sizes="(max-width:768px) 100vw, 33vw" className="object-cover transition duration-500 group-hover:scale-105" />
+                      {c.badge && c.badge > 0 ? (
+                        <span className="absolute left-3 top-3 rounded-full bg-black/70 px-2.5 py-1 text-xs font-semibold text-white">Restam apenas {c.badge}</span>
+                      ) : null}
                     </div>
-                  ) : p || a.price ? (
-                    <p className="mt-4 text-xs uppercase tracking-wide text-[color:var(--color-mute)]">
-                      Diária a partir de
-                      <span className="mt-0.5 block text-xl font-bold normal-case tracking-normal" style={{ color: brand }}>
-                        {p ? centsToBRL(p.promoCents) : a.price} <span className="font-normal text-[color:var(--color-mute)]">/ noite</span>
-                      </span>
-                    </p>
-                  ) : null}
-                  {a.ctaLabel && a.ctaHref && (
-                    <a href={a.ctaHref} className="mt-auto pt-4 font-medium" style={{ color: brand }}>
-                      {a.ctaLabel} →
-                    </a>
                   )}
-                </div>
-              </article>
-            </Reveal>
+                  <div className="flex flex-1 flex-col p-6">
+                    <h3 className="font-display text-xl font-semibold">{c.name}</h3>
+                    {c.capacity && <p className="mt-1 text-sm text-[color:var(--color-mute)]">{c.capacity}</p>}
+                    {c.description && <p className="mt-2 text-[color:var(--color-mute)]">{c.description}</p>}
+                    {c.features.length > 0 && (
+                      <ul className="mt-3 space-y-1 text-sm text-[color:var(--color-mute)]">
+                        {c.features.slice(0, 5).map((f, j) => {
+                          const FIcon = featureIcon(f);
+                          return (
+                            <li key={j} className="flex items-center gap-2">
+                              <FIcon className="size-4 shrink-0" style={{ color: brand }} strokeWidth={1.75} /> {f}
+                            </li>
+                          );
+                        })}
+                      </ul>
+                    )}
+                    {hasDiscount ? (
+                      <div className="mt-4">
+                        <p className="text-xs uppercase tracking-wide text-[color:var(--color-mute)]">Diária a partir de</p>
+                        <div className="mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-1">
+                          <span className="text-xl font-bold" style={{ color: brand }}>{centsToBRL(c.promoCents!)}</span>
+                          <span className="text-sm text-slate-400 line-through">{centsToBRL(c.originalCents!)}</span>
+                          <span className="rounded-full px-2 py-0.5 text-xs font-bold text-white" style={{ backgroundColor: brand }}>{c.discount}% OFF</span>
+                        </div>
+                        <span className="text-xs text-[color:var(--color-mute)]">por noite</span>
+                      </div>
+                    ) : c.promoCents || c.priceText ? (
+                      <p className="mt-4 text-xs uppercase tracking-wide text-[color:var(--color-mute)]">
+                        Diária a partir de
+                        <span className="mt-0.5 block text-xl font-bold normal-case tracking-normal" style={{ color: brand }}>
+                          {c.promoCents ? centsToBRL(c.promoCents) : c.priceText} <span className="font-normal text-[color:var(--color-mute)]">/ noite</span>
+                        </span>
+                      </p>
+                    ) : null}
+                  </div>
+                </article>
+              </Reveal>
             );
           })}
         </div>

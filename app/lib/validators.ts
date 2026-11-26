@@ -23,6 +23,7 @@ export const changePasswordSchema = z
 export const hotelSchema = z.object({
   name: z.string().trim().min(2, "Informe o nome do hotel").max(120),
   slug,
+  shortCode: z.string().trim().max(16).optional().or(z.literal("")),
   description: z.string().trim().max(2000).optional().or(z.literal("")),
   logoUrl: z.string().trim().url("URL inválida").optional().or(z.literal("")),
   primaryColor: z.string().regex(/^#[0-9a-fA-F]{6}$/, "Cor inválida").default("#0e7490"),

@@ -83,9 +83,6 @@ export default async function LandingPage({ params, searchParams }: { params: Pr
       badgeCount: r.badgeCount ?? null,
     };
   });
-  // Mapa nome→preços (com desconto global) p/ os cards do Refúgio refletirem o mesmo desconto.
-  const priceByName: Record<string, { originalCents: number; promoCents: number; discount: number }> = {};
-  for (const r of roomDTOs) priceByName[r.name.trim().toLowerCase()] = { originalCents: r.priceOriginalCents, promoCents: r.pricePromoCents, discount: r.discountPercent };
   const canReserve = cfg.enabled && whatsappSet && roomDTOs.length > 0;
   const reservarFull = `/${hotel}/${campaign}/reservar`;
   const reserveHref = canReserve ? "#reservar" : reservarFull; // CTAs rolam até a seção embutida
@@ -135,7 +132,7 @@ export default async function LandingPage({ params, searchParams }: { params: Pr
       case "gallery":
         return <S.GallerySection key={k} data={content.gallery} brand={brand} />;
       case "accommodations":
-        return [<S.Accommodations key={k} data={content.accommodations} brand={brand} priceMap={priceByName} />, reservaSection];
+        return [<S.Accommodations key={k} data={content.accommodations} brand={brand} rooms={roomDTOs} />, reservaSection];
       case "destination":
         return <S.Destination key={k} data={content.destination} brand={brand} accent={accent} />;
       case "testimonials":

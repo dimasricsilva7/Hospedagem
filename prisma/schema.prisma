@@ -72,6 +72,7 @@ model Hotel {
   id             String       @id @default(cuid())
   name           String
   slug           String       @unique
+  shortCode      String?      // prefixo do número de reserva (ex.: "NANNAI" → NANNAI-482916)
   description    String?
   logoUrl        String?
   primaryColor   String       @default("#0e7490")

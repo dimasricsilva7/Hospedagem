@@ -7,6 +7,7 @@ type Values = Partial<{
   id: string;
   name: string;
   slug: string;
+  shortCode: string;
   description: string;
   logoUrl: string;
   primaryColor: string;
@@ -38,6 +39,11 @@ export function HotelForm({ values = {} }: { values?: Values }) {
           <input name="slug" required defaultValue={v.slug} placeholder="resort-exemplo" className={input} />
         </label>
       </div>
+      <label className="block">
+        <span className={label}>Código do resort (prefixo do número de reserva)</span>
+        <input name="shortCode" defaultValue={v.shortCode} placeholder="NANNAI" maxLength={16} className={`${input} uppercase`} />
+        <span className="mt-1 block text-xs text-slate-500">Vira o prefixo do nº da reserva, ex.: <strong>NANNAI</strong> → NANNAI-482916. Vazio usa o nome do hotel.</span>
+      </label>
       <label className="block">
         <span className={label}>Descrição</span>
         <textarea name="description" rows={3} defaultValue={v.description} className={input} />

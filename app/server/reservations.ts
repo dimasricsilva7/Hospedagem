@@ -1,4 +1,5 @@
 import "server-only";
+import crypto from "crypto";
 import { db } from "@/app/lib/db";
 import type { Prisma, ReservationStatus } from "@prisma/client";
 import type { ReservationInput, RoomInput } from "@/app/lib/validators";
@@ -7,12 +8,23 @@ import {
   applyDiscount,
   buildWhatsappMessage,
   computeTotals,
-  generateReservationCode,
   nightsBetween,
   reaisToCents,
+  sanitizePrefix,
   whatsappUrl,
   type Ticket,
 } from "@/app/lib/reservation";
+
+/** Gera PREFIXO-NNNNNN (6 dígitos) único no banco. Tenta de novo em colisão; não reutiliza cancelados. */
+async function generateUniqueReservationNumber(prefix: string): Promise<string | null> {
+  for (let i = 0; i < 12; i++) {
+    const n = crypto.randomInt(100000, 1000000); // 100000..999999
+    const candidate = `${prefix}-${n}`;
+    const exists = await db.reservationRequest.findUnique({ where: { code: candidate }, select: { id: true } });
+    if (!exists) return candidate;
+  }
+  return null;
+}
 import { toCsv } from "@/app/lib/csv";
 import { formatDateTime, formatIsoDate } from "@/app/lib/format";
 
@@ -26,7 +38,7 @@ type CreateResult = { ok: true; code: string; whatsappUrl: string } | { ok: fals
 export async function createReservation(input: ReservationInput): Promise<CreateResult> {
   const campaign = await db.campaign.findUnique({
     where: { id: input.campaignId },
-    select: { id: true, name: true, hotelId: true, status: true, reservationConfig: true, hotel: { select: { name: true, whatsapp: true } } },
+    select: { id: true, name: true, hotelId: true, status: true, reservationConfig: true, hotel: { select: { name: true, whatsapp: true, shortCode: true } } },
   });
   if (!campaign || campaign.status !== "PUBLISHED") return { ok: false, error: "Campanha indisponível." };
 
@@ -56,7 +68,10 @@ export async function createReservation(input: ReservationInput): Promise<Create
     rooms: input.rooms,
   });
 
-  const code = generateReservationCode();
+  const prefix = sanitizePrefix(campaign.hotel.shortCode || campaign.hotel.name);
+  const code = await generateUniqueReservationNumber(prefix);
+  if (!code) return { ok: false, error: "Não foi possível gerar o número da reserva. Tente novamente." };
+
   await db.reservationRequest.create({
     data: {
       code,

@@ -3,8 +3,11 @@ import { Download } from "lucide-react";
 import { requireAdmin } from "@/app/server/auth";
 import { db } from "@/app/lib/db";
 import { listReservations, type ReservationFilters } from "@/app/server/reservations";
-import { centsToBRL } from "@/app/lib/reservation";
+import { centsToBRL, normalizePhoneIntl } from "@/app/lib/reservation";
 import { formatDateTime, formatIsoDate } from "@/app/lib/format";
+import { DeleteButton } from "@/app/admin/DeleteButton";
+import { deleteReservationAction } from "./actions";
+import { MessageCircle } from "lucide-react";
 import type { ReservationStatus } from "@prisma/client";
 
 export const dynamic = "force-dynamic";
@@ -93,6 +96,7 @@ export default async function SolicitacoesPage({ searchParams }: { searchParams:
                   <th className="px-4 py-3 font-medium">Total</th>
                   <th className="px-4 py-3 font-medium">Data</th>
                   <th className="px-4 py-3 font-medium">Status</th>
+                  <th className="px-4 py-3 font-medium">Ações</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
@@ -106,6 +110,16 @@ export default async function SolicitacoesPage({ searchParams }: { searchParams:
                     <td className="px-4 py-3 font-medium tabular-nums">{centsToBRL(r.totalPromoCents)}</td>
                     <td className="px-4 py-3 text-slate-500">{formatDateTime(r.createdAt)}</td>
                     <td className="px-4 py-3"><span className={`whitespace-nowrap rounded-full px-2 py-0.5 text-xs ${STATUS_STYLE[r.status]}`}>{STATUS_LABEL[r.status]}</span></td>
+                    <td className="px-4 py-3">
+                      <div className="flex items-center gap-1">
+                        {r.guestPhone ? (
+                          <a href={`https://wa.me/${normalizePhoneIntl(r.guestPhone)}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 rounded-lg px-2 py-1 text-xs font-medium text-green-700 transition hover:bg-green-50" aria-label="Abrir WhatsApp do cliente">
+                            <MessageCircle className="size-3.5" /> WhatsApp
+                          </a>
+                        ) : null}
+                        <DeleteButton id={r.id} action={deleteReservationAction} confirmText={`Excluir a solicitação ${r.code} de ${r.guestName}? Esta ação não pode ser desfeita.`} />
+                      </div>
+                    </td>
                   </tr>
                 ))}
               </tbody>

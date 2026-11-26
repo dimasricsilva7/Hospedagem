@@ -93,6 +93,18 @@ export function generateReservationCode(): string {
   return `RES-${time}${rand}`;
 }
 
+/** Prefixo do número de reserva a partir do código curto do resort (ou do nome como fallback). Ex.: "NANNAI". */
+export function sanitizePrefix(raw: string, fallback = "RES"): string {
+  const p = (raw || "")
+    .normalize("NFD").replace(/[̀-ͯ]/g, "") // remove acentos
+    .toUpperCase()
+    .replace(/[^A-Z0-9-]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .replace(/-{2,}/g, "-")
+    .slice(0, 16);
+  return p || fallback;
+}
+
 export type Ticket = {
   code: string;
   hotelName: string;

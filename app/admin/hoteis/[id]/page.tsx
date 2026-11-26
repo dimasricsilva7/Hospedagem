@@ -19,6 +19,7 @@ export default async function EditarHotel({ params }: { params: Promise<{ id: st
           id: hotel.id,
           name: hotel.name,
           slug: hotel.slug,
+          shortCode: hotel.shortCode ?? "",
           description: hotel.description ?? "",
           logoUrl: hotel.logoUrl ?? "",
           primaryColor: hotel.primaryColor,

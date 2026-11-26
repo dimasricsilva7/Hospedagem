@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { hotelSchema } from "@/app/lib/validators";
 import { requireAdmin } from "@/app/server/auth";
+import { sanitizePrefix } from "@/app/lib/reservation";
 import { db } from "@/app/lib/db";
 
 export type HotelState = { error?: string };
@@ -18,6 +19,7 @@ export async function saveHotel(_prev: HotelState, formData: FormData): Promise<
   const parsed = hotelSchema.safeParse({
     name: formData.get("name"),
     slug: formData.get("slug"),
+    shortCode: formData.get("shortCode"),
     description: formData.get("description"),
     logoUrl: formData.get("logoUrl"),
     primaryColor: formData.get("primaryColor") || "#0e7490",
@@ -34,6 +36,7 @@ export async function saveHotel(_prev: HotelState, formData: FormData): Promise<
   const data = {
     name: d.name,
     slug: d.slug,
+    shortCode: d.shortCode ? sanitizePrefix(d.shortCode) : null,
     description: orNull(d.description),
     logoUrl: orNull(d.logoUrl),
     primaryColor: d.primaryColor,
