@@ -29,6 +29,12 @@ export default async function VoucherPage({ params }: { params: Promise<{ id: st
   });
   if (!r) notFound();
 
+  // Fallback: se a reserva perdeu o vínculo do quarto (roomId nulo), recupera a imagem/descrição por nome.
+  if (!r.room?.mainImage) {
+    const alt = await db.room.findFirst({ where: { hotelId: r.hotelId, name: r.roomName }, select: { mainImage: true, description: true, beds: true, maxAdults: true, maxChildren: true, amenities: true } });
+    if (alt) r.room = alt;
+  }
+
   const confirmed = r.status === "CONFIRMADA";
   const base = await getPublicBaseUrl();
   // Pré-reserva: QR leva à consulta de status. Validado: QR leva ao comprovante do cliente (com o nome na URL).

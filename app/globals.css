@@ -170,8 +170,8 @@ h3 {
 }
 
 /* Selo de autenticidade holográfico (estilo etiqueta de segurança: SECURE/GENUINE + nº de série + brilho). */
-.holo-seal { position: relative; width: 190px; height: 124px; flex: 0 0 auto; border-radius: 12px; overflow: hidden;
-  box-shadow: 0 10px 24px rgba(0,0,0,.3), inset 0 0 0 1px rgba(255,255,255,.45); }
+.holo-seal { position: relative; width: 148px; height: 94px; flex: 0 0 auto; border-radius: 10px; overflow: hidden;
+  box-shadow: 0 8px 18px rgba(0,0,0,.28), inset 0 0 0 1px rgba(255,255,255,.45); }
 .holo-seal__bg { position: absolute; inset: 0;
   background:
     radial-gradient(120% 90% at 20% 15%, rgba(255,255,255,.35), transparent 45%),
@@ -183,8 +183,8 @@ h3 {
 .holo-seal__face { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; text-align: center; }
 .holo-seal__face::before { content: ""; position: absolute; inset: 24% 14%; border-radius: 50%;
   background: radial-gradient(ellipse, rgba(0,0,0,.22), transparent 70%); }
-.holo-seal__mini { position: relative; font-family: ui-sans-serif, system-ui, sans-serif; font-size: 8px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,.95); text-shadow: 0 1px 1px rgba(0,0,0,.4); }
-.holo-seal__num { position: relative; font-family: ui-monospace, "SFMono-Regular", monospace; font-size: 34px; font-weight: 800; letter-spacing: 3px; color: #f8f4ea;
+.holo-seal__mini { position: relative; font-family: ui-sans-serif, system-ui, sans-serif; font-size: 7px; font-weight: 800; letter-spacing: 2px; color: rgba(255,255,255,.95); text-shadow: 0 1px 1px rgba(0,0,0,.4); }
+.holo-seal__num { position: relative; font-family: ui-monospace, "SFMono-Regular", monospace; font-size: 26px; font-weight: 800; letter-spacing: 2px; color: #f8f4ea;
   text-shadow: 0 1px 0 rgba(255,255,255,.75), 0 -1px 0 rgba(0,0,0,.5), 0 2px 5px rgba(0,0,0,.45); }
 .holo-seal__sheen { position: absolute; inset: 0;
   background: linear-gradient(118deg, transparent 36%, rgba(255,255,255,.85) 49%, transparent 62%);

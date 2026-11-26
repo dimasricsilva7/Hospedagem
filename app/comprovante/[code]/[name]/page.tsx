@@ -52,6 +52,12 @@ export default async function ComprovantePage({ params }: { params: Promise<{ co
     );
   }
 
+  // Fallback: recupera imagem/descrição do quarto por nome quando o roomId foi perdido.
+  if (!r.room?.mainImage) {
+    const alt = await db.room.findFirst({ where: { hotelId: r.hotelId, name: r.roomName }, select: { mainImage: true, description: true, beds: true, maxAdults: true, maxChildren: true, amenities: true } });
+    if (alt) r.room = alt;
+  }
+
   const base = await getPublicBaseUrl();
   const selfUrl = `${base}/comprovante/${encodeURIComponent(r.code)}/${slugify(r.guestName)}`;
   const qr = await QRCode.toDataURL(selfUrl, { margin: 1, width: 200 });
