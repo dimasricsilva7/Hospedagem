@@ -1,5 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import { defaultContent, defaultFormConfig, defaultReservation, defaultTracking, type CampaignContent } from "../app/lib/content";
+import { hashPassword } from "../app/lib/crypto";
 
 const db = new PrismaClient();
 
@@ -197,6 +198,21 @@ async function main() {
       { hotelId: hotel.id, name: "Bangalô Master", description: "Duplex, piscina interna com hidromassagem, banheira e chuveiro externo. Apenas duas unidades.", mainImage: img("1591088398332-8a7791972843"), beds: "130 m²", maxAdults: 3, maxChildren: 3, priceOriginalCents: 520000, pricePromoCents: 390000, badgeCount: 2, sortOrder: 8, amenities: ["Duplex", "Piscina com hidromassagem", "Banheira", "Apenas 2 unidades"] },
     ],
   });
+
+  // Admin inicial a partir das envs (idempotente). Cria se não existir; reseta a senha só com ADMIN_RESET=1.
+  // Não commitar senha: ADMIN_EMAIL/ADMIN_INITIAL_PASSWORD ficam nas variáveis de ambiente do Vercel.
+  const adminEmail = (process.env.ADMIN_EMAIL || "").toLowerCase().trim();
+  const adminPass = process.env.ADMIN_INITIAL_PASSWORD || "";
+  if (adminEmail && adminPass) {
+    const existing = await db.user.findUnique({ where: { email: adminEmail } });
+    if (!existing) {
+      await db.user.create({ data: { email: adminEmail, passwordHash: hashPassword(adminPass), role: "ADMIN", passwordChangeRequired: false } });
+      console.log(`Admin criado: ${adminEmail}`);
+    } else if (process.env.ADMIN_RESET === "1") {
+      await db.user.update({ where: { email: adminEmail }, data: { passwordHash: hashPassword(adminPass), role: "ADMIN", passwordChangeRequired: false } });
+      console.log(`Admin com senha redefinida: ${adminEmail}`);
+    }
+  }
 
   console.log("Seed concluído: /resort-exemplo/black-friday (NANNAI — landing + 8 acomodações)");
 }
