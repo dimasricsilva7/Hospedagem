@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { requireAdmin } from "@/app/server/auth";
 import { db } from "@/app/lib/db";
+import { getHotelDiscountPercent } from "@/app/server/reservations";
 import { RoomForm } from "../RoomForm";
 
 export const dynamic = "force-dynamic";
@@ -13,6 +14,7 @@ export default async function EditarQuarto({ params }: { params: Promise<{ id: s
   const { id, roomId } = await params;
   const room = await db.room.findFirst({ where: { id: roomId, hotelId: id }, include: { hotel: { select: { name: true } } } });
   if (!room) notFound();
+  const discountPercent = await getHotelDiscountPercent(id);
 
   return (
     <div className="space-y-6">
@@ -20,6 +22,7 @@ export default async function EditarQuarto({ params }: { params: Promise<{ id: s
       <h1 className="font-display text-2xl font-bold">Editar quarto</h1>
       <RoomForm
         hotelId={id}
+        discountPercent={discountPercent}
         values={{
           id: room.id,
           name: room.name,

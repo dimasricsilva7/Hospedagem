@@ -7,7 +7,7 @@ import { centsToBRL, normalizePhoneIntl } from "@/app/lib/reservation";
 import { formatDateTime, formatIsoDate } from "@/app/lib/format";
 import { DeleteButton } from "@/app/admin/DeleteButton";
 import { deleteReservationAction } from "./actions";
-import { MessageCircle } from "lucide-react";
+import { MessageCircle, Pencil } from "lucide-react";
 import type { ReservationStatus } from "@prisma/client";
 
 export const dynamic = "force-dynamic";
@@ -112,6 +112,9 @@ export default async function SolicitacoesPage({ searchParams }: { searchParams:
                     <td className="px-4 py-3"><span className={`whitespace-nowrap rounded-full px-2 py-0.5 text-xs ${STATUS_STYLE[r.status]}`}>{STATUS_LABEL[r.status]}</span></td>
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-1">
+                        <Link href={`/admin/solicitacoes/${r.id}`} className="inline-flex items-center gap-1 rounded-lg px-2 py-1 text-xs font-medium text-slate-700 transition hover:bg-slate-100" aria-label="Abrir e editar status">
+                          <Pencil className="size-3.5" /> Editar
+                        </Link>
                         {r.guestPhone ? (
                           <a href={`https://wa.me/${normalizePhoneIntl(r.guestPhone)}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 rounded-lg px-2 py-1 text-xs font-medium text-green-700 transition hover:bg-green-50" aria-label="Abrir WhatsApp do cliente">
                             <MessageCircle className="size-3.5" /> WhatsApp

@@ -1,7 +1,8 @@
 "use client";
-import { useActionState } from "react";
+import { useActionState, useState } from "react";
 import { Loader2 } from "lucide-react";
 import { saveRoom, type RoomState } from "./actions";
+import { reaisToCents, centsToBRL } from "@/app/lib/reservation";
 
 type Values = Partial<{
   id: string;
@@ -23,9 +24,14 @@ type Values = Partial<{
 const input = "w-full rounded-lg border border-slate-300 px-4 py-2.5 outline-none focus:border-slate-900";
 const label = "mb-1 block text-sm font-medium";
 
-export function RoomForm({ hotelId, values = {} }: { hotelId: string; values?: Values }) {
+export function RoomForm({ hotelId, values = {}, discountPercent = 0 }: { hotelId: string; values?: Values; discountPercent?: number }) {
   const [state, action, pending] = useActionState<RoomState, FormData>(saveRoom, {});
   const v = values;
+  const useGlobal = discountPercent > 0;
+  const [orig, setOrig] = useState(v.priceOriginal ?? "");
+  // Promo derivado do preço cheio × (1 − desconto global), igual ao applyDiscount do servidor.
+  const promoCents = Math.round((reaisToCents(orig) * (100 - discountPercent)) / 100);
+  const autoPromo = useGlobal ? (reaisToCents(orig) > 0 ? centsToBRL(promoCents) : "") : "";
   return (
     <form action={action} className="max-w-2xl space-y-5">
       <input type="hidden" name="hotelId" value={hotelId} />
@@ -71,14 +77,28 @@ export function RoomForm({ hotelId, values = {} }: { hotelId: string; values?: V
       <div className="grid gap-5 sm:grid-cols-2">
         <label>
           <span className={label}>Preço original / diária (R$) *</span>
-          <input name="priceOriginal" required defaultValue={v.priceOriginal} placeholder="950,00" className={input} />
+          <input name="priceOriginal" required value={orig} onChange={(e) => setOrig(e.target.value)} placeholder="950,00" className={input} />
         </label>
         <label>
-          <span className={label}>Preço promocional / diária (R$) *</span>
-          <input name="pricePromo" required defaultValue={v.pricePromo} placeholder="608,00" className={input} />
+          <span className={label}>{useGlobal ? "Preço com desconto / diária" : "Preço promocional / diária (R$) *"}</span>
+          {useGlobal ? (
+            <>
+              <input value={autoPromo} readOnly placeholder="—" className={`${input} bg-slate-50 font-semibold`} />
+              {/* Promo enviado = valor calculado; servidor recalcula com o mesmo desconto global. */}
+              <input type="hidden" name="pricePromo" value={autoPromo || orig} />
+            </>
+          ) : (
+            <input name="pricePromo" required defaultValue={v.pricePromo} placeholder="608,00" className={input} />
+          )}
         </label>
       </div>
-      <p className="-mt-2 text-xs text-slate-500">O desconto (% OFF) é calculado automaticamente a partir dos dois preços.</p>
+      {useGlobal ? (
+        <p className="-mt-2 text-xs text-slate-500">
+          Desconto em massa ativo: <strong>{discountPercent}% OFF</strong> em todos os quartos. O preço com desconto é calculado automaticamente a partir do preço original. Para mudar o percentual, vá em <strong>Campanhas › sua campanha › Reservas › “Desconto global (%)”</strong>.
+        </p>
+      ) : (
+        <p className="-mt-2 text-xs text-slate-500">O desconto (% OFF) é calculado automaticamente a partir dos dois preços. Para aplicar um desconto único a todos os quartos, defina o <strong>“Desconto global (%)”</strong> em Campanhas › Reservas.</p>
+      )}
 
       <div className="grid gap-5 sm:grid-cols-2">
         <label>

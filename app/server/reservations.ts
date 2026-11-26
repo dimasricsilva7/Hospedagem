@@ -229,3 +229,9 @@ export async function listRooms(hotelId: string) {
 export async function listActiveRooms(hotelId: string) {
   return db.room.findMany({ where: { hotelId, active: true }, orderBy: [{ sortOrder: "asc" }, { createdAt: "asc" }] });
 }
+
+/** Desconto global (%) do hotel = o da 1ª campanha. 0 se não houver. Usado no preview de preço dos quartos. */
+export async function getHotelDiscountPercent(hotelId: string): Promise<number> {
+  const c = await db.campaign.findFirst({ where: { hotelId }, orderBy: { createdAt: "asc" }, select: { reservationConfig: true } });
+  return c ? normalizeReservation(c.reservationConfig).discountPercent : 0;
+}
