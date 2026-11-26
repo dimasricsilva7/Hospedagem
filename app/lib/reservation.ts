@@ -105,6 +105,16 @@ export function sanitizePrefix(raw: string, fallback = "RES"): string {
   return p || fallback;
 }
 
+/** Nome → slug para a URL do comprovante do cliente (ex.: "João Silva" → "joao-silva"). Cosmético; a chave é o código. */
+export function slugify(raw: string): string {
+  return (raw || "")
+    .normalize("NFD").replace(/[̀-ͯ]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 40) || "cliente";
+}
+
 export type Ticket = {
   code: string;
   hotelName: string;

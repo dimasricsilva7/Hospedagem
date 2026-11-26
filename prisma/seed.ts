@@ -9,7 +9,7 @@ const db = new PrismaClient();
 const img = (id: string, w = 1600) => `https://images.unsplash.com/photo-${id}?auto=format&fit=crop&w=${w}&q=80`;
 
 // Logo oficial e imagens/vídeos fornecidos pelo responsável (editáveis no painel).
-const LOGO = "https://static.pmweb.com.br/G89eYnF2MbTqw_3q31tfmOcju20=/https://letsimage.s3.amazonaws.com/editor/nannai/imgs/1744220222242-logo_nannai.png";
+const LOGO = "/assets/resorts/nannai-muro-alto/logo-nannai.jpg";
 const HERO_IMAGES = [
   "https://nannai-resort-spa.hotelempernambuco.com/data/Images/OriginalPhoto/17188/1718870/1718870030/image-porto-de-galinhas-nannai-muro-alto-94.JPEG",
   "https://content.r9cdn.net/rimg/himg/8e/d5/01/ice-470279-01ccb9-973804.jpg?width=1200&height=630&crop=true",
@@ -49,14 +49,15 @@ const REVIEWS = [
 ];
 
 async function main() {
-  // slug mantido como "resort-exemplo" para preservar a URL já publicada.
+  // Migra o slug antigo "resort-exemplo" → "nannai-muroalto" preservando o mesmo hotel (id, quartos, reservas).
+  await db.hotel.updateMany({ where: { slug: "resort-exemplo" }, data: { slug: "nannai-muroalto" } });
   // WhatsApp/e-mail ficam vazios de propósito: configure no painel (não inventar contato do NANNAI).
   const hotel = await db.hotel.upsert({
-    where: { slug: "resort-exemplo" },
+    where: { slug: "nannai-muroalto" },
     update: { name: "NANNAI Muro Alto", shortCode: "NANNAI", primaryColor: "#173e38", secondaryColor: "#a58a64", city: "Muro Alto · Ipojuca — Pernambuco", logoUrl: LOGO },
     create: {
       name: "NANNAI Muro Alto",
-      slug: "resort-exemplo",
+      slug: "nannai-muroalto",
       shortCode: "NANNAI",
       description: "Luxo tropical à beira-mar na Praia de Muro Alto, Pernambuco.",
       logoUrl: LOGO,
@@ -185,7 +186,7 @@ async function main() {
   // Catálogo NANNAI (8 categorias). Áreas/capacidades conforme o briefing (CONFERIR com a página
   // oficial antes de publicar). PREÇOS SÃO PLACEHOLDER demonstrativos — configurar no painel; não são
   // valores oficiais. Imagens são placeholder. Demo gerenciada pelo seed → recria a cada deploy.
-  await db.reservationRequest.updateMany({ where: { hotel: { slug: "resort-exemplo" } }, data: { roomId: null } });
+  await db.reservationRequest.updateMany({ where: { hotelId: hotel.id }, data: { roomId: null } });
   await db.room.deleteMany({ where: { hotelId: hotel.id } });
   await db.room.createMany({
     data: [

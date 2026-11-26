@@ -1,8 +1,18 @@
 "use server";
+import { redirect } from "next/navigation";
+import { revalidatePath } from "next/cache";
 import { changePasswordSchema } from "@/app/lib/validators";
 import { changePassword, createSession, requireAdmin } from "@/app/server/auth";
+import { setPublicDomain } from "@/app/server/settings";
 
 export type ConfigState = { error?: string; saved?: boolean };
+
+export async function saveDomainAction(formData: FormData) {
+  await requireAdmin();
+  await setPublicDomain((formData.get("domain") as string) || "");
+  revalidatePath("/admin/configuracoes");
+  redirect("/admin/configuracoes?domain=1");
+}
 
 export async function changeOwnPassword(_prev: ConfigState, formData: FormData): Promise<ConfigState> {
   const user = await requireAdmin();

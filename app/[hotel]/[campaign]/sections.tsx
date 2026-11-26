@@ -87,7 +87,7 @@ export function Hero({
       {/* Barra superior: logo + CADASTRE-SE */}
       <div className="relative z-10 flex items-center justify-between px-5 py-5 sm:px-8">
         {hotel.logoUrl ? (
-          <Image src={hotel.logoUrl} alt={hotel.name} width={150} height={48} className="h-9 w-auto object-contain drop-shadow sm:h-11" />
+          <Image src={hotel.logoUrl} alt={hotel.name} width={150} height={48} className="h-10 w-auto rounded-lg bg-white/95 object-contain p-1.5 shadow-md sm:h-12" />
         ) : (
           <span className="font-display text-lg font-semibold tracking-tight drop-shadow sm:text-xl">{hotel.name}</span>
         )}

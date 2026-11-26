@@ -2,7 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { requireAdmin } from "@/app/server/auth";
 import { db } from "@/app/lib/db";
-import { centsToBRL } from "@/app/lib/reservation";
+import { centsToBRL, slugify } from "@/app/lib/reservation";
 import { formatDateTime, formatIsoDate } from "@/app/lib/format";
 import type { ReservationStatus } from "@prisma/client";
 import { updateReservationAction } from "../actions";
@@ -34,10 +34,18 @@ export default async function ReservationDetail({ params, searchParams }: { para
         <h1 className="font-display text-2xl font-bold">
           Solicitação <span className="font-mono text-lg text-slate-500">{r.code}</span>
         </h1>
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-2">
           <span className="rounded-full bg-slate-100 px-3 py-1 text-sm text-slate-600">{STATUS_LABEL[r.status]}</span>
-          <Link href={`/voucher/${r.id}`} className="inline-flex items-center gap-2 rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white hover:brightness-110">
-            Voucher / PDF
+          <Link href={`/voucher/${r.id}`} className="inline-flex items-center gap-2 rounded-lg border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50">
+            Pré-reserva (PDF)
+          </Link>
+          <Link
+            href={`/comprovante/${encodeURIComponent(r.code)}/${slugify(r.guestName)}`}
+            target="_blank"
+            className={`inline-flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold text-white ${r.status === "CONFIRMADA" ? "bg-green-700 hover:brightness-110" : "bg-slate-400"}`}
+            title={r.status === "CONFIRMADA" ? "Voucher validado do cliente" : "Disponível após marcar como Confirmada"}
+          >
+            Voucher do cliente
           </Link>
         </div>
       </div>
