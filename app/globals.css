@@ -169,40 +169,28 @@ h3 {
   display: none;
 }
 
-/* Selo holográfico de autenticação (voucher validado). Realista: iridescência + guilhochê + brilho. */
-.auth-seal { position: relative; width: 170px; height: 170px; flex: 0 0 auto; }
-.auth-seal__holo, .auth-seal__guilloche, .auth-seal__sheen { position: absolute; inset: 0; border-radius: 50%; }
-.auth-seal__holo {
-  background: conic-gradient(from 0deg, #ff3ca6, #ffd93c, #3cffd0, #3c8bff, #c23cff, #ff8a3c, #ff3ca6);
-  box-shadow: inset 0 0 0 2px rgba(255,255,255,.55), inset 0 0 14px rgba(255,255,255,.35), 0 8px 22px rgba(0,0,0,.28);
-}
-.auth-seal__guilloche {
-  background: repeating-conic-gradient(rgba(255,255,255,.4) 0deg 1.6deg, rgba(0,0,0,0) 1.6deg 3.4deg);
-  mix-blend-mode: overlay;
-  -webkit-mask: radial-gradient(circle, transparent 45%, #000 46% 73%, transparent 74%);
-          mask: radial-gradient(circle, transparent 45%, #000 46% 73%, transparent 74%);
-}
-.auth-seal__ring { position: absolute; inset: 0; animation: holo-rotate 22s linear infinite; }
-.auth-seal__ringtext { font-family: ui-sans-serif, system-ui, sans-serif; font-size: 9.5px; font-weight: 800; letter-spacing: 1.4px; fill: #16281f; }
-.auth-seal__core {
-  position: absolute; inset: 29px; border-radius: 50%;
-  background: radial-gradient(circle at 34% 28%, #28655a, #11302a 72%);
-  color: #ead9b3; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px; text-align: center;
-  box-shadow: inset 0 0 0 2px rgba(234,217,179,.55), inset 0 8px 16px rgba(0,0,0,.45), inset 0 -6px 12px rgba(255,255,255,.08);
-}
-.auth-seal__check { width: 30px; height: 30px; color: #ead9b3; margin-bottom: 1px; }
-.auth-seal__word { font-size: 8px; font-weight: 800; letter-spacing: 2.5px; opacity: .85; }
-.auth-seal__code { font-family: ui-monospace, "SFMono-Regular", monospace; font-size: 12px; font-weight: 700; letter-spacing: .5px; }
-.auth-seal__sheen {
-  background: linear-gradient(118deg, transparent 38%, rgba(255,255,255,.8) 49%, transparent 60%);
-  mix-blend-mode: screen; animation: holo-sheen 3.4s ease-in-out infinite;
-  -webkit-mask: radial-gradient(circle, #000 73%, transparent 74%); mask: radial-gradient(circle, #000 73%, transparent 74%);
-}
-@keyframes holo-rotate { to { transform: rotate(360deg); } }
-@keyframes holo-sheen { 0%, 100% { transform: translateX(-34%); opacity: 0; } 46% { opacity: .95; } 50% { transform: translateX(34%); opacity: .95; } 54% { opacity: 0; } }
+/* Selo de autenticidade holográfico (estilo etiqueta de segurança: SECURE/GENUINE + nº de série + brilho). */
+.holo-seal { position: relative; width: 190px; height: 124px; flex: 0 0 auto; border-radius: 12px; overflow: hidden;
+  box-shadow: 0 10px 24px rgba(0,0,0,.3), inset 0 0 0 1px rgba(255,255,255,.45); }
+.holo-seal__bg { position: absolute; inset: 0;
+  background:
+    radial-gradient(120% 90% at 20% 15%, rgba(255,255,255,.35), transparent 45%),
+    conic-gradient(from 0deg, #ff3ca6, #ffd93c, #3cffd0, #3c8bff, #c23cff, #ff8a3c, #ff3ca6);
+  filter: saturate(1.15) brightness(1.03); }
+.holo-seal__mesh { position: absolute; inset: 0; width: 100%; height: 100%; mix-blend-mode: overlay; }
+.holo-seal__word { font-family: ui-sans-serif, system-ui, sans-serif; font-size: 11px; font-weight: 800; letter-spacing: 1px; fill: rgba(255,255,255,.6); }
+.holo-seal__word--b { fill: rgba(18,40,30,.5); }
+.holo-seal__face { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; text-align: center; }
+.holo-seal__face::before { content: ""; position: absolute; inset: 24% 14%; border-radius: 50%;
+  background: radial-gradient(ellipse, rgba(0,0,0,.22), transparent 70%); }
+.holo-seal__mini { position: relative; font-family: ui-sans-serif, system-ui, sans-serif; font-size: 8px; font-weight: 800; letter-spacing: 2.5px; color: rgba(255,255,255,.95); text-shadow: 0 1px 1px rgba(0,0,0,.4); }
+.holo-seal__num { position: relative; font-family: ui-monospace, "SFMono-Regular", monospace; font-size: 34px; font-weight: 800; letter-spacing: 3px; color: #f8f4ea;
+  text-shadow: 0 1px 0 rgba(255,255,255,.75), 0 -1px 0 rgba(0,0,0,.5), 0 2px 5px rgba(0,0,0,.45); }
+.holo-seal__sheen { position: absolute; inset: 0;
+  background: linear-gradient(118deg, transparent 36%, rgba(255,255,255,.85) 49%, transparent 62%);
+  mix-blend-mode: screen; animation: holo-sheen 3.4s ease-in-out infinite; }
+@keyframes holo-sheen { 0%, 100% { transform: translateX(-36%); opacity: 0; } 46% { opacity: .95; } 50% { transform: translateX(36%); opacity: .95; } 54% { opacity: 0; } }
 @media print {
-  .auth-seal__holo, .auth-seal__guilloche, .auth-seal__core, .auth-seal__sheen, .auth-seal__ringtext {
-    -webkit-print-color-adjust: exact; print-color-adjust: exact;
-  }
-  .auth-seal__ring, .auth-seal__sheen { animation: none; }
+  .holo-seal__bg, .holo-seal__mesh, .holo-seal__num, .holo-seal__mini, .holo-seal__sheen { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .holo-seal__sheen { animation: none; }
 }

@@ -105,6 +105,13 @@ export function sanitizePrefix(raw: string, fallback = "RES"): string {
   return p || fallback;
 }
 
+/** CPF mascarado para o voucher: "12345678900" → "•••.456.789-••". Esconde os 3 primeiros e 2 últimos dígitos. */
+export function maskCpf(raw?: string | null): string {
+  const d = (raw || "").replace(/\D/g, "");
+  if (d.length !== 11) return raw?.trim() || "";
+  return `•••.${d.slice(3, 6)}.${d.slice(6, 9)}-••`;
+}
+
 /** Nome → slug para a URL do comprovante do cliente (ex.: "João Silva" → "joao-silva"). Cosmético; a chave é o código. */
 export function slugify(raw: string): string {
   return (raw || "")

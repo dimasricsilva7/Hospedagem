@@ -63,9 +63,14 @@ export default async function SolicitacoesPage({ searchParams }: { searchParams:
         <h1 className="font-display text-2xl font-bold">
           Solicitações de reserva <span className="text-base font-normal text-slate-400">({total})</span>
         </h1>
-        <a href={`/admin/solicitacoes/export?${qs}`} className="inline-flex items-center gap-2 rounded-lg border border-slate-300 px-4 py-2.5 text-sm font-semibold hover:bg-slate-50">
-          <Download className="size-4" /> Exportar CSV
-        </a>
+        <div className="flex items-center gap-2">
+          <Link href="/admin/solicitacoes/nova" className="inline-flex items-center gap-2 rounded-lg bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white hover:brightness-110">
+            + Nova reserva
+          </Link>
+          <a href={`/admin/solicitacoes/export?${qs}`} className="inline-flex items-center gap-2 rounded-lg border border-slate-300 px-4 py-2.5 text-sm font-semibold hover:bg-slate-50">
+            <Download className="size-4" /> Exportar CSV
+          </a>
+        </div>
       </div>
 
       <form className="flex flex-wrap items-end gap-3 rounded-2xl border border-slate-200 bg-white p-4">

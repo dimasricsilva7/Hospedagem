@@ -120,5 +120,24 @@ export const reservationSchema = z.object({
   website: z.string().optional(), // honeypot
 });
 
+// Reserva criada manualmente pelo admin (dados coletados via WhatsApp). Mais permissivo que a pública.
+export const manualReservationSchema = z.object({
+  hotelId: z.string().min(1, "Selecione o hotel"),
+  roomId: z.string().min(1, "Selecione a acomodação"),
+  guestName: z.string().trim().min(2, "Informe o nome do hóspede").max(120),
+  guestCpf: z.string().trim().max(20).optional().or(z.literal("")),
+  guestPhone: z.string().trim().max(20).optional().or(z.literal("")),
+  guestEmail: z.string().trim().toLowerCase().email().optional().or(z.literal("")),
+  checkIn: isoDate,
+  checkInTime: time,
+  checkOut: isoDate,
+  checkOutTime: time,
+  adults: z.coerce.number().int().min(1).max(50).default(2),
+  children: z.coerce.number().int().min(0).max(50).default(0),
+  rooms: z.coerce.number().int().min(1).max(20).default(1),
+  status: z.enum(["PENDENTE", "EM_ATENDIMENTO", "CONFIRMADA", "CANCELADA"]).default("PENDENTE"),
+});
+
 export type RoomInput = z.infer<typeof roomSchema>;
 export type ReservationInput = z.infer<typeof reservationSchema>;
+export type ManualReservationInput = z.infer<typeof manualReservationSchema>;

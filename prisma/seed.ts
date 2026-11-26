@@ -4,15 +4,8 @@ import { hashPassword } from "../app/lib/crypto";
 
 const db = new PrismaClient();
 
-// Imagens reais das acomodações do NANNAI (nível de categoria, do site oficial / letsbook).
-// As fotos específicas de cada quarto podem ser ajustadas por quarto no painel.
-const RIMG = {
-  apartamento: "https://letsimage.s3.amazonaws.com/editor/nannai/imgs/1754595871526-desktop_4.jpg",
-  bangalo: "https://letsimage.s3.amazonaws.com/editor/nannai/imgs/1754595659559-desktop_3.jpg",
-  bangaloPiscina: "https://letsimage.s3.amazonaws.com/editor/nannai/imgs/1747165054410-nannai-muro-alto-bangalos-piscina-privativa.png",
-  villa: "https://letsimage.s3.amazonaws.com/editor/nannai/imgs/1754595624461-desktop_2.jpg",
-  boutique: "https://letsimage.s3.amazonaws.com/editor/nannai/imgs/1794173810152-nannai_boutique_1245_laravalencan4339.jpg",
-};
+// Fotos reais por quarto (CDN letsbook do Nannai Muro Alto — uma por categoria, distintas).
+const RQ = (id: number) => `https://letsimage.s3.amazonaws.com/letsbook/237/quartos/${id}/1.jpg`;
 
 // Logo oficial e imagens/vídeos fornecidos pelo responsável (editáveis no painel).
 const LOGO = "/assets/resorts/nannai-muro-alto/logo-nannai.jpg";
@@ -128,14 +121,14 @@ async function main() {
     accommodations: {
       title: "Encontre o refúgio perfeito para sua experiência.",
       items: [
-        { name: "Bangalô Jardim", capacity: "64 m² · até 3 adultos (ou 2 + 1 criança)", price: "R$ 1.725", description: "Piscina privativa, varanda e localização em área ajardinada do resort.", image: RIMG.bangalo, features: ["Piscina privativa", "Varanda", "Área ajardinada"] },
-        { name: "Bangalô Piscina", capacity: "64 m² · até 3 adultos (ou 2 + 1 criança)", price: "R$ 1.875", description: "Piscina individual, varanda e integração com jardins e espelhos d'água.", image: RIMG.bangaloPiscina, features: ["Piscina individual", "Varanda", "Jardins"] },
-        { name: "Bangalô Beira Mar", capacity: "64 m² · até 2 adultos", price: "R$ 2.400", description: "Vista para a praia, piscina privativa, varanda, gazebo e serviço de mordomia.", image: HERO_IMAGES[2], features: ["Vista para a praia", "Piscina privativa", "Gazebo", "Mordomia"] },
-        { name: "Bangalô Vista Mar", capacity: "64 m² · até 3 adultos (ou 2 + 1 criança)", price: "R$ 2.062", description: "Vista parcial para o mar, piscina privativa, varanda e gazebo.", image: RIMG.bangalo, features: ["Vista parcial para o mar", "Piscina privativa", "Gazebo"] },
-        { name: "Bangalô Master", capacity: "130 m² · até 3 adultos (ou 2 + 3 crianças)", price: "R$ 3.900", description: "Duplex, piscina interna com hidromassagem, banheira e chuveiro externo. Apenas duas unidades.", image: RIMG.boutique, features: ["Duplex", "Piscina com hidromassagem", "Banheira", "Apenas 2 unidades"] },
-        { name: "Suíte Villa", capacity: "90 m² · até 3 adultos e 2 crianças", price: "R$ 2.700", description: "Piscina particular climatizada, cama super king, banheira de imersão e integração com jardim.", image: RIMG.villa, features: ["Piscina climatizada", "Cama super king", "Banheira de imersão"] },
-        { name: "Apartamento Jardim", capacity: "45 m² · até 2 adultos e 2 crianças", price: "R$ 899", description: "Varanda e vista lateral para os jardins.", image: RIMG.apartamento, features: ["Varanda", "Vista para jardins"] },
-        { name: "Apartamento Vista Mar", capacity: "55 m² · até 2 adultos e 2 crianças", price: "R$ 1.089", description: "Duas varandas e vista para a paisagem de Muro Alto.", image: RIMG.apartamento, features: ["Duas varandas", "Vista para Muro Alto"] },
+        { name: "Bangalô Jardim", capacity: "64 m² · até 3 adultos (ou 2 + 1 criança)", price: "R$ 1.725", description: "Piscina privativa, varanda e localização em área ajardinada do resort.", image: RQ(33), features: ["Piscina privativa", "Varanda", "Área ajardinada"] },
+        { name: "Bangalô Piscina", capacity: "64 m² · até 3 adultos (ou 2 + 1 criança)", price: "R$ 1.875", description: "Piscina individual, varanda e integração com jardins e espelhos d'água.", image: RQ(35), features: ["Piscina individual", "Varanda", "Jardins"] },
+        { name: "Bangalô Beira Mar", capacity: "64 m² · até 2 adultos", price: "R$ 2.400", description: "Vista para a praia, piscina privativa, varanda, gazebo e serviço de mordomia.", image: RQ(36), features: ["Vista para a praia", "Piscina privativa", "Gazebo", "Mordomia"] },
+        { name: "Bangalô Vista Mar", capacity: "64 m² · até 3 adultos (ou 2 + 1 criança)", price: "R$ 2.062", description: "Vista parcial para o mar, piscina privativa, varanda e gazebo.", image: RQ(34), features: ["Vista parcial para o mar", "Piscina privativa", "Gazebo"] },
+        { name: "Bangalô Master", capacity: "130 m² · até 3 adultos (ou 2 + 3 crianças)", price: "R$ 3.900", description: "Duplex, piscina interna com hidromassagem, banheira e chuveiro externo. Apenas duas unidades.", image: RQ(37), features: ["Duplex", "Piscina com hidromassagem", "Banheira", "Apenas 2 unidades"] },
+        { name: "Suíte Villa", capacity: "90 m² · até 3 adultos e 2 crianças", price: "R$ 2.700", description: "Piscina particular climatizada, cama super king, banheira de imersão e integração com jardim.", image: RQ(38), features: ["Piscina climatizada", "Cama super king", "Banheira de imersão"] },
+        { name: "Apartamento Jardim", capacity: "45 m² · até 2 adultos e 2 crianças", price: "R$ 899", description: "Varanda e vista lateral para os jardins.", image: RQ(31), features: ["Varanda", "Vista para jardins"] },
+        { name: "Apartamento Vista Mar", capacity: "55 m² · até 2 adultos e 2 crianças", price: "R$ 1.089", description: "Duas varandas e vista para a paisagem de Muro Alto.", image: RQ(32), features: ["Duas varandas", "Vista para Muro Alto"] },
       ],
     },
     destination: {
@@ -195,25 +188,24 @@ async function main() {
   // PREÇOS SÃO PLACEHOLDER — configurar no painel; não são valores oficiais.
   // IDEMPOTENTE: instala os quartos uma única vez (flag no Setting). Depois disso, as edições feitas no
   // painel (imagens, preços, textos) PERSISTEM entre deploys — o seed não recria mais.
-  const roomsFlag = await db.setting.findUnique({ where: { key: "roomsSeededV3" } }).catch(() => null);
+  const roomsFlag = await db.setting.findUnique({ where: { key: "roomsSeededV4" } }).catch(() => null);
   if (!roomsFlag) {
-    const R_APTO = RIMG.apartamento, R_BANG = RIMG.bangalo, R_VILLA = RIMG.villa;
     await db.reservationRequest.updateMany({ where: { hotelId: hotel.id }, data: { roomId: null } });
     await db.room.deleteMany({ where: { hotelId: hotel.id } });
     await db.room.createMany({
       data: [
-        { hotelId: hotel.id, name: "Apartamento Jardim", description: "Apartamento aconchegante no bloco de apartamentos do hotel, com varanda ampla e vista lateral para os jardins.", mainImage: R_APTO, beds: "45 m²", maxAdults: 2, maxChildren: 2, priceOriginalCents: 120000, pricePromoCents: 89900, badgeCount: 6, sortOrder: 1, amenities: ["45 m²", "Varanda ampla", "Vista para os jardins"] },
-        { hotelId: hotel.id, name: "Apartamento Vista Mar", description: "Apartamento espaçoso com duas varandas, lateral e frontal, para contemplar o mar de Muro Alto.", mainImage: R_APTO, beds: "55 m²", maxAdults: 2, maxChildren: 2, priceOriginalCents: 145000, pricePromoCents: 108900, badgeCount: 5, sortOrder: 2, amenities: ["55 m²", "Duas varandas", "Vista para o mar"] },
-        { hotelId: hotel.id, name: "Bangalô Jardim", description: "Bangalô reservado nas áreas mais tranquilas do hotel. Piscina individual privativa, varanda espaçosa e sala de estar com sofá, mesa e cadeiras integrada ao quarto de casal.", mainImage: R_BANG, beds: "64 m²", maxAdults: 3, maxChildren: 1, priceOriginalCents: 230000, pricePromoCents: 172500, badgeCount: 4, sortOrder: 3, amenities: ["64 m²", "Piscina privativa", "Varanda espaçosa", "Sala de estar"] },
-        { hotelId: hotel.id, name: "Bangalô Piscina", description: "Bangalô independente entre os jardins e os espelhos d'água ligados à piscina principal do hotel. Varanda ampla e sala de estar integrada ao quarto de casal.", mainImage: RIMG.bangaloPiscina, beds: "64 m²", maxAdults: 3, maxChildren: 1, priceOriginalCents: 250000, pricePromoCents: 187500, badgeCount: 4, sortOrder: 4, amenities: ["64 m²", "Piscina privativa", "Jardins e espelhos d'água", "Varanda ampla"] },
-        { hotelId: hotel.id, name: "Bangalô Vista Mar", description: "Bangalô com vista parcial para o mar. Sala de estar integrada ao quarto de casal e, do lado de fora, gazebo ao lado da piscina privativa. Café da manhã e jantar inclusos.", mainImage: R_BANG, beds: "64 m²", maxAdults: 3, maxChildren: 1, priceOriginalCents: 275000, pricePromoCents: 206200, badgeCount: 3, sortOrder: 5, amenities: ["64 m²", "Vista parcial para o mar", "Piscina privativa", "Gazebo", "Café e jantar inclusos"] },
-        { hotelId: hotel.id, name: "Bangalô Beira Mar", description: "Bangalô com vista desimpedida para a praia, a poucos passos da areia. Varanda ampla, gazebo e piscina privativa de profundidade variada. Serviço de mordomia, café da manhã e jantar inclusos.", mainImage: HERO_IMAGES[2], beds: "64 m²", maxAdults: 2, maxChildren: 0, priceOriginalCents: 320000, pricePromoCents: 240000, badgeCount: 3, sortOrder: 6, amenities: ["64 m²", "Vista para a praia", "Piscina privativa", "Gazebo", "Mordomia", "Café e jantar inclusos"] },
-        { hotelId: hotel.id, name: "Suíte Villa", description: "Casa completa integrada ao jardim, com piscina privativa climatizada. Cama super king, banheira de imersão e acessos independentes. Serviço de mordomia, café da manhã e jantar inclusos.", mainImage: R_VILLA, beds: "90 m²", maxAdults: 3, maxChildren: 2, priceOriginalCents: 360000, pricePromoCents: 270000, badgeCount: 2, sortOrder: 7, amenities: ["90 m²", "Piscina climatizada", "Cama super king", "Banheira de imersão", "Mordomia"] },
-        { hotelId: hotel.id, name: "Bangalô Master", description: "Bangalô duplex de frente para o mar. No térreo, sala de estar, suíte com camas de solteiro e piscina interna com hidromassagem; no piso superior, o quarto de casal e banheiro com banheira e chuveiro externos. Serviço de mordomia, café da manhã e jantar inclusos. Apenas duas unidades.", mainImage: RIMG.boutique, beds: "130 m² · duplex", maxAdults: 3, maxChildren: 3, priceOriginalCents: 520000, pricePromoCents: 390000, badgeCount: 2, sortOrder: 8, amenities: ["130 m² duplex", "Piscina com hidromassagem", "Frente para o mar", "Mordomia", "Apenas 2 unidades"] },
+        { hotelId: hotel.id, name: "Apartamento Jardim", description: "Apartamento aconchegante no bloco de apartamentos do hotel, com varanda ampla e vista lateral para os jardins.", mainImage: RQ(31), beds: "45 m²", maxAdults: 2, maxChildren: 2, priceOriginalCents: 120000, pricePromoCents: 89900, badgeCount: 6, sortOrder: 1, amenities: ["45 m²", "Varanda ampla", "Vista para os jardins"] },
+        { hotelId: hotel.id, name: "Apartamento Vista Mar", description: "Apartamento espaçoso com duas varandas, lateral e frontal, para contemplar o mar de Muro Alto.", mainImage: RQ(32), beds: "55 m²", maxAdults: 2, maxChildren: 2, priceOriginalCents: 145000, pricePromoCents: 108900, badgeCount: 5, sortOrder: 2, amenities: ["55 m²", "Duas varandas", "Vista para o mar"] },
+        { hotelId: hotel.id, name: "Bangalô Jardim", description: "Bangalô reservado nas áreas mais tranquilas do hotel. Piscina individual privativa, varanda espaçosa e sala de estar com sofá, mesa e cadeiras integrada ao quarto de casal.", mainImage: RQ(33), beds: "64 m²", maxAdults: 3, maxChildren: 1, priceOriginalCents: 230000, pricePromoCents: 172500, badgeCount: 4, sortOrder: 3, amenities: ["64 m²", "Piscina privativa", "Varanda espaçosa", "Sala de estar"] },
+        { hotelId: hotel.id, name: "Bangalô Piscina", description: "Bangalô independente entre os jardins e os espelhos d'água ligados à piscina principal do hotel. Varanda ampla e sala de estar integrada ao quarto de casal.", mainImage: RQ(35), beds: "64 m²", maxAdults: 3, maxChildren: 1, priceOriginalCents: 250000, pricePromoCents: 187500, badgeCount: 4, sortOrder: 4, amenities: ["64 m²", "Piscina privativa", "Jardins e espelhos d'água", "Varanda ampla"] },
+        { hotelId: hotel.id, name: "Bangalô Vista Mar", description: "Bangalô com vista parcial para o mar. Sala de estar integrada ao quarto de casal e, do lado de fora, gazebo ao lado da piscina privativa. Café da manhã e jantar inclusos.", mainImage: RQ(34), beds: "64 m²", maxAdults: 3, maxChildren: 1, priceOriginalCents: 275000, pricePromoCents: 206200, badgeCount: 3, sortOrder: 5, amenities: ["64 m²", "Vista parcial para o mar", "Piscina privativa", "Gazebo", "Café e jantar inclusos"] },
+        { hotelId: hotel.id, name: "Bangalô Beira Mar", description: "Bangalô com vista desimpedida para a praia, a poucos passos da areia. Varanda ampla, gazebo e piscina privativa de profundidade variada. Serviço de mordomia, café da manhã e jantar inclusos.", mainImage: RQ(36), beds: "64 m²", maxAdults: 2, maxChildren: 0, priceOriginalCents: 320000, pricePromoCents: 240000, badgeCount: 3, sortOrder: 6, amenities: ["64 m²", "Vista para a praia", "Piscina privativa", "Gazebo", "Mordomia", "Café e jantar inclusos"] },
+        { hotelId: hotel.id, name: "Suíte Villa", description: "Casa completa integrada ao jardim, com piscina privativa climatizada. Cama super king, banheira de imersão e acessos independentes. Serviço de mordomia, café da manhã e jantar inclusos.", mainImage: RQ(38), beds: "90 m²", maxAdults: 3, maxChildren: 2, priceOriginalCents: 360000, pricePromoCents: 270000, badgeCount: 2, sortOrder: 7, amenities: ["90 m²", "Piscina climatizada", "Cama super king", "Banheira de imersão", "Mordomia"] },
+        { hotelId: hotel.id, name: "Bangalô Master", description: "Bangalô duplex de frente para o mar. No térreo, sala de estar, suíte com camas de solteiro e piscina interna com hidromassagem; no piso superior, o quarto de casal e banheiro com banheira e chuveiro externos. Serviço de mordomia, café da manhã e jantar inclusos. Apenas duas unidades.", mainImage: RQ(37), beds: "130 m² · duplex", maxAdults: 3, maxChildren: 3, priceOriginalCents: 520000, pricePromoCents: 390000, badgeCount: 2, sortOrder: 8, amenities: ["130 m² duplex", "Piscina com hidromassagem", "Frente para o mar", "Mordomia", "Apenas 2 unidades"] },
       ],
     });
-    await db.setting.upsert({ where: { key: "roomsSeededV3" }, update: {}, create: { key: "roomsSeededV3", value: true } });
-    console.log("Quartos instalados (roomsSeededV3).");
+    await db.setting.upsert({ where: { key: "roomsSeededV4" }, update: {}, create: { key: "roomsSeededV4", value: true } });
+    console.log("Quartos instalados (roomsSeededV4).");
   } else {
     console.log("Quartos já instalados — preservando edições do painel.");
   }

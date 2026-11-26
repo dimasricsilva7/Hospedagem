@@ -235,3 +235,48 @@ export async function getHotelDiscountPercent(hotelId: string): Promise<number> 
   const c = await db.campaign.findFirst({ where: { hotelId }, orderBy: { createdAt: "asc" }, select: { reservationConfig: true } });
   return c ? normalizeReservation(c.reservationConfig).discountPercent : 0;
 }
+
+type AdminReservationInput = {
+  hotelId: string; roomId: string; guestName: string; guestCpf?: string; guestPhone?: string; guestEmail?: string;
+  checkIn: string; checkInTime: string; checkOut: string; checkOutTime: string;
+  adults: number; children: number; rooms: number;
+  status: "PENDENTE" | "EM_ATENDIMENTO" | "CONFIRMADA" | "CANCELADA";
+};
+
+/** Cria reserva manualmente (admin, dados via WhatsApp). Recalcula totais no servidor; não exige campanha publicada. */
+export async function createAdminReservation(input: AdminReservationInput): Promise<{ ok: true; id: string; code: string } | { ok: false; error: string }> {
+  const hotel = await db.hotel.findUnique({ where: { id: input.hotelId }, select: { id: true, name: true, shortCode: true } });
+  if (!hotel) return { ok: false, error: "Hotel inválido." };
+
+  const room = await db.room.findFirst({ where: { id: input.roomId, hotelId: hotel.id } });
+  if (!room) return { ok: false, error: "Acomodação não encontrada neste hotel." };
+
+  const nights = nightsBetween(input.checkIn, input.checkOut);
+  if (nights <= 0) return { ok: false, error: "O check-out precisa ser depois do check-in." };
+
+  const campaign = await db.campaign.findFirst({ where: { hotelId: hotel.id }, orderBy: { createdAt: "asc" }, select: { id: true, reservationConfig: true } });
+  const discountPercent = campaign ? normalizeReservation(campaign.reservationConfig).discountPercent : 0;
+
+  const totals = computeTotals({
+    priceOriginalCents: room.priceOriginalCents,
+    pricePromoCents: applyDiscount(room.priceOriginalCents, room.pricePromoCents, discountPercent),
+    nights,
+    rooms: input.rooms,
+  });
+
+  const code = await generateUniqueReservationNumber(sanitizePrefix(hotel.shortCode || hotel.name));
+  if (!code) return { ok: false, error: "Não foi possível gerar o número da reserva. Tente novamente." };
+
+  const created = await db.reservationRequest.create({
+    data: {
+      code, hotelId: hotel.id, campaignId: campaign?.id ?? null, roomId: room.id, roomName: room.name,
+      guestName: input.guestName, guestCpf: input.guestCpf || null, guestPhone: input.guestPhone || null, guestEmail: input.guestEmail || null,
+      checkIn: input.checkIn, checkInTime: input.checkInTime, checkOut: input.checkOut, checkOutTime: input.checkOutTime,
+      nights, adults: input.adults, children: input.children, rooms: input.rooms,
+      priceOriginalCents: totals.priceOriginalCents, pricePromoCents: totals.pricePromoCents, discountPercent: totals.discountPercent,
+      totalOriginalCents: totals.totalOriginalCents, totalPromoCents: totals.totalPromoCents, status: input.status,
+    },
+    select: { id: true },
+  });
+  return { ok: true, id: created.id, code };
+}

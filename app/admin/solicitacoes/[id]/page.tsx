@@ -2,7 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { requireAdmin } from "@/app/server/auth";
 import { db } from "@/app/lib/db";
-import { centsToBRL, slugify } from "@/app/lib/reservation";
+import { centsToBRL, slugify, maskCpf } from "@/app/lib/reservation";
 import { formatDateTime, formatIsoDate } from "@/app/lib/format";
 import type { ReservationStatus } from "@prisma/client";
 import { updateReservationAction } from "../actions";
@@ -55,6 +55,7 @@ export default async function ReservationDetail({ params, searchParams }: { para
       <section className="rounded-2xl border border-slate-200 bg-white p-6">
         <dl className="grid gap-5 sm:grid-cols-2">
           <Item label="Cliente" value={r.guestName} />
+          <Item label="CPF" value={maskCpf(r.guestCpf) || "—"} />
           <Item label="Contato" value={[r.guestPhone, r.guestEmail].filter(Boolean).join(" · ")} />
           <Item label="Hotel" value={r.hotel?.name} />
           <Item label="Campanha" value={r.campaign?.name} />

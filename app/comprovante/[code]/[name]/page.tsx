@@ -3,9 +3,8 @@ import QRCode from "qrcode";
 import { db } from "@/app/lib/db";
 import { getPublicBaseUrl } from "@/app/server/settings";
 import { slugify } from "@/app/lib/reservation";
-import { normalizeReservation } from "@/app/lib/content";
 import { PrintButton } from "@/app/voucher/[id]/PrintButton";
-import { VoucherDoc, type VoucherData } from "@/app/components/VoucherDoc";
+import { VoucherDoc, buildVoucherData } from "@/app/components/VoucherDoc";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Comprovante de reserva", robots: { index: false, follow: false } };
@@ -19,7 +18,11 @@ export default async function ComprovantePage({ params }: { params: Promise<{ co
   const r = await db.reservationRequest
     .findUnique({
       where: { code: decodeURIComponent(code) },
-      include: { hotel: { select: { name: true, logoUrl: true, city: true, whatsapp: true } }, campaign: { select: { name: true, reservationConfig: true } } },
+      include: {
+        hotel: { select: { name: true, logoUrl: true, city: true, whatsapp: true } },
+        campaign: { select: { name: true, reservationConfig: true } },
+        room: { select: { mainImage: true, description: true, beds: true, maxAdults: true, maxChildren: true, amenities: true } },
+      },
     })
     .catch(() => null);
 
@@ -53,32 +56,7 @@ export default async function ComprovantePage({ params }: { params: Promise<{ co
   const selfUrl = `${base}/comprovante/${encodeURIComponent(r.code)}/${slugify(r.guestName)}`;
   const qr = await QRCode.toDataURL(selfUrl, { margin: 1, width: 200 });
   const filename = `${safe(r.guestName)} - ${safe(r.hotel?.name ?? "Reserva")} - ${r.code}`;
-
-  const data: VoucherData = {
-    code: r.code,
-    hotelName: r.hotel?.name ?? "",
-    hotelLogoUrl: r.hotel?.logoUrl,
-    hotelCity: r.hotel?.city,
-    hotelWhatsapp: r.hotel?.whatsapp,
-    guestName: r.guestName,
-    guestPhone: r.guestPhone,
-    guestEmail: r.guestEmail,
-    adults: r.adults,
-    children: r.children,
-    checkIn: r.checkIn,
-    checkInTime: r.checkInTime,
-    checkOut: r.checkOut,
-    checkOutTime: r.checkOutTime,
-    rooms: r.rooms,
-    nights: r.nights,
-    totalPromoCents: r.totalPromoCents,
-    discountPercent: r.discountPercent,
-    pricePromoCents: r.pricePromoCents,
-    priceOriginalCents: r.priceOriginalCents,
-    roomName: r.roomName,
-    campaignName: r.campaign?.name,
-    rules: r.campaign ? normalizeReservation(r.campaign.reservationConfig).rules : "",
-  };
+  const data = buildVoucherData(r);
 
   return (
     <main className="min-h-screen bg-slate-100 px-4 py-8 print:bg-white print:p-0">

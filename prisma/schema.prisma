@@ -184,6 +184,7 @@ model ReservationRequest {
   roomId             String?
   roomName           String            // snapshot do nome
   guestName          String
+  guestCpf           String?           // coletado via WhatsApp; exibido mascarado no voucher
   guestPhone         String?
   guestEmail         String?
   checkIn            String            // "YYYY-MM-DD" (sem fuso, evita drift)

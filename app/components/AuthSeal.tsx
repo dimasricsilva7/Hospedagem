@@ -1,28 +1,26 @@
-// Selo holográfico de autenticação do voucher validado. Puro CSS/SVG (ver globals.css).
+// Selo de autenticidade holográfico (estilo etiqueta de segurança). Nº de série = parte numérica do código.
+// Puro CSS/SVG (ver globals.css). O brilho holográfico passa automaticamente.
 export function AuthSeal({ code }: { code: string }) {
-  const pathId = `seal-${code.replace(/[^a-zA-Z0-9]/g, "")}`;
+  const serial = (code.match(/\d{3,}/)?.[0] ?? code).slice(-6);
+  const pid = "holo-" + code.replace(/[^a-zA-Z0-9]/g, "");
   return (
-    <div className="auth-seal" role="img" aria-label={`Selo de autenticação — reserva confirmada ${code}`}>
-      <div className="auth-seal__holo" />
-      <div className="auth-seal__guilloche" />
-      <svg className="auth-seal__ring" viewBox="0 0 200 200" aria-hidden>
+    <div className="holo-seal" role="img" aria-label={`Selo de autenticidade ${serial}`}>
+      <div className="holo-seal__bg" />
+      <svg className="holo-seal__mesh" viewBox="0 0 200 130" preserveAspectRatio="xMidYMid slice" aria-hidden>
         <defs>
-          <path id={pathId} d="M100,100 m-80,0 a80,80 0 1,1 160,0 a80,80 0 1,1 -160,0" fill="none" />
+          <pattern id={pid} width="120" height="30" patternUnits="userSpaceOnUse" patternTransform="rotate(-10)">
+            <text x="0" y="12" className="holo-seal__word">GENUINE ★ ORIGINAL ✦</text>
+            <text x="-34" y="26" className="holo-seal__word holo-seal__word--b">AUTHENTIC ★ SECURE ✦ VALID</text>
+          </pattern>
         </defs>
-        <text className="auth-seal__ringtext">
-          <textPath href={`#${pathId}`} startOffset="0">
-            RESERVA CONFIRMADA · AUTENTICADO · NANNAI MURO ALTO ·&nbsp;
-          </textPath>
-        </text>
+        <rect width="200" height="130" fill={`url(#${pid})`} />
       </svg>
-      <div className="auth-seal__core">
-        <svg viewBox="0 0 24 24" className="auth-seal__check" aria-hidden>
-          <path d="M20 6 9 17l-5-5" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
-        <span className="auth-seal__word">AUTENTICADO</span>
-        <span className="auth-seal__code">{code}</span>
+      <div className="holo-seal__face">
+        <span className="holo-seal__mini">SECURE ✦ GENUINE</span>
+        <span className="holo-seal__num">{serial}</span>
+        <span className="holo-seal__mini">AUTHENTIC ✦ ORIGINAL</span>
       </div>
-      <div className="auth-seal__sheen" />
+      <div className="holo-seal__sheen" />
     </div>
   );
 }
